@@ -40,7 +40,6 @@ component extends="Controller" {
 					schema_def.initialize();
 				}
 				catch (Database dbError) {
-					schema_def.purgeDatabase();
 					schema_def.delete();
 					throw ("Schema Creatation Failed: " & dbError.message & "<hr>" & dbError.Detail);
 				}

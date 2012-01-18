@@ -1,0 +1,11 @@
+Jake Feasel, Jan 18, 2012:
+
+This is the source behind the new website http://sqlfiddle.com.
+
+It was designed to run with Adobe ColdFusion 9 (although that may soon change to Railo), with PostgreSQL 9 as the backend for the management database.
+
+The framework used for coding the CF code is ColdFusion on Wheels (http://cfwheels.org).  The frontend uses jQuery.
+
+This project itself is intended to be used as a free platform for shared SQL testing and collaborative SQL problem 
+solving, similar to http://jsfiddle.net (but for SQL rather than JavaScript, of course). 
+
