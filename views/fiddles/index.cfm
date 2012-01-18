@@ -67,6 +67,12 @@
 							editAreaLoader.setValue("sql", resp["sql"]);
 							buildResultsTable(resp);
 						}
+						else
+						{
+							editAreaLoader.setValue("sql", "");	
+							$("#results").html("<tr><td>---</td></tr>");		
+							$("#results_notices").text("");				
+						}
 					}
 					else
 					{
