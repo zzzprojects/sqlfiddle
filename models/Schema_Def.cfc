@@ -4,7 +4,7 @@
 	function init() {
 		belongsTo(name="DB_Type", foreignKey="db_type_id");		
 		belongsTo(name="Host", foreignKey="current_host_id", joinType="outer");		
-		beforeDelete(purgeDatabase);
+		beforeDelete("purgeDatabase");
 	}
 	
 	
@@ -14,15 +14,14 @@
 		var db_type = model("DB_Type").findByKey(this.db_type_id);
 		var available_host_id = db_type.findAvailableHost().id;
 		var host = model("Host").findByKey(key=available_host_id, include="DB_Type");	
-		var apiRef = getAdminAPIREf();
 		
 		this.current_host_id = host.id;				
 		this.last_used = now();			
 		this.save();		
 			
 		host.initializeDatabase(this.short_code);
-		host.initializeDSN(this.short_code, apiRef);									
-		host.initializeSchema(this.short_code, this.ddl, apiRef);
+		host.initializeDSN(this.short_code);
+		host.initializeSchema(this.short_code, this.ddl);
 		
 	}
 	
@@ -30,14 +29,10 @@
 	{
 		if (IsNumeric(this.current_host_id))
 		{
-			var apiRef = getAdminAPIREf();
 			var host = model("Host").findByKey(key=this.current_host_id, include="DB_Type");	
-			var dsn_list = StructKeyList(apiRef.getDatasources());
-	
-			if (ListFind(dsn_list, this.short_code)) 
-				apiRef.deleteDatasource(this.short_code);		
 
 			try {									
+				host.dropDSN(this.short_code);		
 				host.dropDatabase(this.short_code);			
 			}
 			catch (Database dbError) {

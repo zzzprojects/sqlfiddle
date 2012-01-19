@@ -9,7 +9,7 @@ component extends="Controller" {
 		var md5 = Lcase(hash(params.schema_ddl, "MD5"));
 		var short_code = "";
 		
-		var existingSchema = model("Schema_Defs").findOne(where="db_type_id=#params.db_type_id# AND md5 = '#md5#'");
+		var existingSchema = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND md5 = '#md5#'");
 
 		if (IsObject(existingSchema) AND IsNumeric(existingSchema.current_host_id))
 		{
@@ -21,7 +21,7 @@ component extends="Controller" {
 		else
 		{
 			if (IsObject(existingSchema)) // schema record exists, but without an active database host
-			{
+			{	
 				short_code = existingSchema.short_code;		
 				existingSchema.initialize();
 			}

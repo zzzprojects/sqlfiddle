@@ -5,15 +5,4 @@
 --->
 <cfcomponent extends="Wheels">
 	
-	<cffunction name="getAdminAPIREf" returnType="CFIDE.adminapi.datasource">
-		<cfscript>
-			var myObj = {};
-			
-		  	createObject("component","CFIDE.adminapi.administrator").login(get('CFAdminPassword'));
-		    // Instantiate the data source object.
-		    myObj = createObject("component","CFIDE.adminapi.datasource");
-			return myObj;		
-		</cfscript>		
-	</cffunction>
-	
 </cfcomponent>

@@ -4,6 +4,7 @@
 	<cfset set(dataSourceUserName="")>
 	<cfset set(dataSourcePassword="")> 
 --->
+	<cfset set(dataSourceName="sqlfiddle")>
 
 <!---
 	If you leave this setting commented out, Wheels will try to determine the URL rewrite capabilities automatically.

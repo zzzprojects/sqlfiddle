@@ -5,4 +5,4 @@
 --->
 
 
-	<cfset set(CFAdminPassword="")> 
+	<cfset set(CFAdminPassword="admin")> 
