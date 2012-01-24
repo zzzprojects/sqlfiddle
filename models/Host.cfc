@@ -26,6 +26,7 @@
 		    dbusername="user_#arguments.databaseName#"
 		    dbpassword="#arguments.databaseName#"
 		    connectionTimeout="0"
+		    custom="#this.db_type.custom_jdbc_attributes#"
 		    allowed_select="true"
 		    allowed_insert="true"
 		    allowed_update="true"
