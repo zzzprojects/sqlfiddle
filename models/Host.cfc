@@ -56,6 +56,7 @@
 		    dsn="#Replace(this.jdbc_url_template, '##databaseName##', "db_" & arguments.datasourceName, 'ALL')#"
 		    dbusername="user_#arguments.datasourceName#"
 		    dbpassword="#arguments.datasourceName#"
+		    custom="#this.db_type.custom_jdbc_attributes#"
 		    connectionTimeout="0"
 		    allowed_select="true"
 		    allowed_insert="true"
