@@ -4,7 +4,6 @@
 	function init() {
 		belongsTo(name="DB_Type", foreignKey="db_type_id");		
 		belongsTo(name="Host", foreignKey="current_host_id", joinType="outer");		
-		beforeDelete("purgeDatabase");
 	}
 	
 	
@@ -38,7 +37,7 @@
 			catch (Database dbError) {
 				// database no longer exists for some reason?
 			}
-
+			
 			this.current_host_id = "";
 			this.save();
 				

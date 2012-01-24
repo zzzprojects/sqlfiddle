@@ -99,12 +99,19 @@
 					db_type_id: $("#db_type_id").val(),
 					schema_ddl: editAreaLoader.getValue("schema_ddl")
 				},
-				
+				dataType: "json",
 				success: function (data, textStatus, jqXHR) {
-					$("#schema_short_code").val($.trim(data));
-					$.bbq.pushState("#!" + $("#db_type_id").val() + '/' + $.trim(data));
-					$(".schema_ready").unblock();
-					$("#schema_notices").html("");	
+					if (data["short_code"])
+					{
+						$("#schema_short_code").val($.trim(data["short_code"]));
+						$.bbq.pushState("#!" + $("#db_type_id").val() + '/' + $.trim(data["short_code"]));
+						$(".schema_ready").unblock();
+						$("#schema_notices").html("");	
+					}
+					else
+					{
+						$("#schema_notices").html(data["error"]);	
+					}
 				},
 				error: function (jqXHR, textStatus, errorThrown)
 				{

@@ -6,53 +6,68 @@ component extends="Controller" {
 
 	function createSchema () {
 
-		var md5 = Lcase(hash(params.schema_ddl, "MD5"));
-		var short_code = "";
-		
-		var existingSchema = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND md5 = '#md5#'");
-
-		if (IsObject(existingSchema) AND IsNumeric(existingSchema.current_host_id))
+		try 
 		{
-			existingSchema.last_used = now();
-			existingSchema.save();
+	
+			if (Len(params.schema_ddl) GT 8000)
+				throw ("Your schema ddl is too large (more than 8000 characters).  Please submit a smaller DDL.");
+	
+			var md5 = Lcase(hash(params.schema_ddl, "MD5"));
+			var short_code = "";
 			
-			short_code = existingSchema.short_code;	
-		}
-		else
-		{
-			if (IsObject(existingSchema)) // schema record exists, but without an active database host
-			{	
-				short_code = existingSchema.short_code;		
-				existingSchema.initialize();
-			}
-			else // time to create a new schema
+			var existingSchema = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND md5 = '#md5#'");
+	
+			if (IsObject(existingSchema) AND IsNumeric(existingSchema.current_host_id))
 			{
-				short_code = model("Schema_Def").getShortCode(md5, params.db_type_id);
-
-				schema_def = model("Schema_Def").new();
-				schema_def.db_type_id = params.db_type_id;
-				schema_def.ddl = params.schema_ddl;
-				schema_def.short_code = short_code;
-				schema_def.md5 = md5;
-				schema_def.save();
+				existingSchema.last_used = now();
+				existingSchema.save();
 				
-				try {
-					schema_def.initialize();
+				short_code = existingSchema.short_code;	
+			}
+			else
+			{
+				if (IsObject(existingSchema)) // schema record exists, but without an active database host
+				{	
+					short_code = existingSchema.short_code;		
+					existingSchema.initialize();
 				}
-				catch (Database dbError) {
-					schema_def.delete();
-					throw ("Schema Creatation Failed: " & dbError.message & "<hr>" & dbError.Detail);
+				else // time to create a new schema
+				{
+					short_code = model("Schema_Def").getShortCode(md5, params.db_type_id);
+	
+					schema_def = model("Schema_Def").new();
+					schema_def.db_type_id = params.db_type_id;
+					schema_def.ddl = params.schema_ddl;
+					schema_def.short_code = short_code;
+					schema_def.md5 = md5;
+					schema_def.save();
+					
+					try {
+						schema_def.initialize();
+					}
+					catch (Database dbError) {
+						schema_def.purgeDatabase();
+						schema_def.delete();
+						throw ("Schema Creatation Failed: " & dbError.message & "<hr>" & dbError.Detail);
+					}
+					catch (Any e) {
+						throw ("Unknown Error Occurred: " & e.message & "<hr>" & e.Detail);
+					}
+					
+					
 				}
-				catch (Any e) {
-					throw ("Unknown Error Occurred: " & e.message & "<hr>" & e.Detail);
-				}
-				
 				
 			}
-			
+	
+			renderText(SerializeJSON({"short_code" = short_code}));
+		
+		}
+		catch (Any e) 
+		{
+			renderText(SerializeJSON({"error" = e.message}));					
 		}
 		
-		renderText(short_code);
+
 		
 		
 	}

@@ -6,7 +6,7 @@ component extends="Controller" {
 		var i = 0;
 		for (i = 1; i<= ArrayLen(stale_schemas); i++)
 		{
-			stale_schemas[i].purgeDatabase();
+			stale_schemas[i].purgeDatabase(1);
 		}
 		renderNothing();
 	}
