@@ -25,7 +25,7 @@
 			<textarea id="sql" style="height: 350px; width: 100%;" name="sql"></textarea>		
 			<input type="button" value="Run Query" id="runQuery" style="float:right">
 		</fieldset>
-	
+		<input type="hidden" name="query_id" id="query_id" value="">	
 		<fieldset id="results_fieldset">
 			<legend>Results</legend>
 			<table id="results" cellspacing="0" cellpadding="0">
@@ -49,6 +49,14 @@
 			var frag = $.param.fragment();
 			if (frag.length)
 			{
+				var fragArray = frag.split('/');
+
+				if (
+					(fragArray.length > 1 && $("#schema_short_code").val() != fragArray[1]) ||
+					(fragArray.length > 2 && $("#query_id").val() != fragArray[2])
+				   )
+				{
+
 				$.getJSON("<cfoutput>#URLFor(action='loadContent')#</cfoutput>", {fragment: frag}, function (resp) {
 					if (resp["db_type_id"])
 						$("#db_type_id").val(resp["db_type_id"]);
@@ -80,6 +88,8 @@
 						$(".schema_ready").block({ message: "Please provide schema definition."});						
 					}
 				});
+
+				}
 			}
 		}
 		reloadContent();
@@ -175,7 +185,7 @@
 				},
 				dataType: "json",
 				success: function (resp, textStatus, jqXHR) {
-
+					$("#query_id").val(resp["ID"]);
 					$.bbq.pushState("#!" + $("#db_type_id").val() + '/' + $("#schema_short_code").val() + '/' + resp["ID"]);
 					buildResultsTable(resp);
 					
