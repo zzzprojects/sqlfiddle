@@ -40,20 +40,23 @@ component extends="Controller" {
 					schema_def.ddl = params.schema_ddl;
 					schema_def.short_code = short_code;
 					schema_def.md5 = md5;
-					schema_def.save();
+
+					lock name="#params.db_type_id#_#short_code#" type="exclusive" timeout="60"
+					{
 					
-					try {
-						schema_def.initialize();
-					}
-					catch (Database dbError) {
-						schema_def.purgeDatabase();
-						schema_def.delete();
-						throw ("Schema Creatation Failed: " & dbError.message & "<hr>" & dbError.Detail);
-					}
-					catch (Any e) {
-						throw ("Unknown Error Occurred: " & e.message & "<hr>" & e.Detail);
-					}
-					
+						try {
+							schema_def.initialize();
+						}
+						catch (Database dbError) {
+							schema_def.purgeDatabase(false);
+							schema_def.delete();
+							throw ("Schema Creatation Failed: " & dbError.message & "<hr>" & dbError.Detail);
+						}
+						catch (Any e) {
+							throw ("Unknown Error Occurred: " & e.message & "<hr>" & e.Detail);
+						}
+						
+					}					
 					
 				}
 				

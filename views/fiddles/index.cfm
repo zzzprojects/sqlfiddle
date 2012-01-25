@@ -39,6 +39,7 @@
 
 	<script language="Javascript" type="text/javascript">
 	$(function () {
+		$("#buildSchema").data("originalValue", $("#buildSchema").val());
 		
 		$("#schema_ddl").data("ready", false);
 				
@@ -100,6 +101,10 @@
 			$(".schema_ready").block({ message: "Please provide schema definition."});
 	
 		$("#buildSchema").click(function () {
+				
+			var $button = $(this);
+			
+			$button.prop('disabled', true).val('Building Schema...');
 			
 			$.ajax({
 				
@@ -126,6 +131,10 @@
 				error: function (jqXHR, textStatus, errorThrown)
 				{
 					$("#schema_notices").html(errorThrown);	
+				},
+				complete: function (jqXHR, textStatus)
+				{
+					$button.prop('disabled', false).val($button.data("originalValue"));									
 				}
 			});
 			

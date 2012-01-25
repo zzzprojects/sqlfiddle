@@ -18,7 +18,7 @@
 		<cftransaction>
 		
 			<cftry>
-				<cfquery datasource="#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(this.sql)#</cfquery>
+				<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(this.sql)#</cfquery>
 				
 				<cfif IsDefined("ret")>
 					<cfset returnVal.succeeded = true>
