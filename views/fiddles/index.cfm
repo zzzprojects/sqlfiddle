@@ -14,7 +14,7 @@
 		</fieldset>
 		<fieldset id="schema_fieldset">
 			<legend>Schema DDL</legend>
-			<textarea id="schema_ddl" style="height: 350px; width: 100%;" name="schema_ddl"></textarea>		
+			<textarea onkeypress="handleSchemaChange()" id="schema_ddl" style="height: 350px; width: 100%;" name="schema_ddl"></textarea>		
 			<span id="schema_notices"></span>
 		</fieldset>
 	</div>
@@ -38,12 +38,28 @@
 </cfoutput>
 
 	<script language="Javascript" type="text/javascript">
+		function handleSchemaChange(e) {
+			if ($("#schema_ddl").data("ready"))
+			{
+				$("#schema_ddl").data("ready", false);
+				$(".schema_ready").block({ message: "Please rebuild schema definition."});										
+			}
+		}
+
+
+		function bindKeyUp(id) {
+		
+			$($('#frame_schema_ddl')[0].contentWindow).on('keypress', '*', handleSchemaChange);
+				
+		}
+
+
 	$(function () {
 		$("#buildSchema").data("originalValue", $("#buildSchema").val());
 		
 		$("#schema_ddl").data("ready", false);
 				
-		
+		$("#schema_fieldset").on('keypress', 'textarea', handleSchemaChange);
 		
 		function reloadContent()
 		{
@@ -118,6 +134,7 @@
 				success: function (data, textStatus, jqXHR) {
 					if (data["short_code"])
 					{
+						$("#schema_ddl").data("ready", true);
 						$("#schema_short_code").val($.trim(data["short_code"]));
 						$.bbq.pushState("#!" + $("#db_type_id").val() + '/' + $.trim(data["short_code"]));
 						$(".schema_ready").unblock();
@@ -130,6 +147,7 @@
 				},
 				error: function (jqXHR, textStatus, errorThrown)
 				{
+					$("#schema_ddl").data("ready", false);
 					$("#schema_notices").html(errorThrown);	
 				},
 				complete: function (jqXHR, textStatus)
@@ -220,7 +238,8 @@
 		,allow_toggle: true
 		,word_wrap: true
 		,language: "en"
-		,syntax: "sql"	
+		,syntax: "sql"
+		,EA_toggle_on_callback:"bindKeyUp"
 	});
 	
 	editAreaLoader.init({
