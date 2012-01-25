@@ -16,15 +16,17 @@
 		
 		this.current_host_id = host.id;				
 		this.last_used = now();			
-		this.save();		
-			
+
 		host.initializeDatabase(this.short_code);
 		host.initializeDSN(this.short_code);
 		host.initializeSchema(this.short_code, this.ddl);
+	
+		this.save();					
+		
 		
 	}
 	
-	function purgeDatabase()
+	function purgeDatabase(boolean saveAfterPurge = true)
 	{
 		if (IsNumeric(this.current_host_id))
 		{
@@ -38,9 +40,11 @@
 				// database no longer exists for some reason?
 			}
 			
-			this.current_host_id = "";
-			this.save();
-				
+			if (arguments.saveAfterPurge)
+			{
+				this.current_host_id = "";
+				this.save();
+			}
 		}
 	}
 	
