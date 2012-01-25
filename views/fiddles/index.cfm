@@ -14,7 +14,13 @@
 		</fieldset>
 		<fieldset id="schema_fieldset">
 			<legend>Schema DDL</legend>
-			<textarea onkeypress="handleSchemaChange()" id="schema_ddl" style="height: 350px; width: 100%;" name="schema_ddl"></textarea>		
+			<textarea onkeypress="handleSchemaChange()" id="schema_ddl" style="height: 350px; width: 100%;" name="schema_ddl">CREATE TABLE supportContacts (id int, type varchar(20), details varchar(20));
+
+INSERT INTO supportContacts
+(id, type, details)
+VALUES
+(1,'Email', 'admin@sqlfiddle.com'),
+(2,'Twitter', '@sqlfiddle');</textarea>		
 			<span id="schema_notices"></span>
 		</fieldset>
 	</div>
