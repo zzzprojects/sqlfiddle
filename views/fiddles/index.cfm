@@ -24,10 +24,13 @@ VALUES
 			<span id="schema_notices"></span>
 		</fieldset>
 		
-		<ul id="hostingPartners">
-			<li id="gn"><a href="http://www.geonorth.com"><img src="images/geonorth.png" alt="GeoNorth, LLC"></a><span>Need more direct, hands-on assistance with your database problems? Contact GeoNorth.  We're database experts.</span></li>
-			<li id="strata"><a href="http://www.stratascale.com"><img src="images/stratascale.png"></a><span>Looking for a great cloud hosting enviroment for your database? Contact Stratascale.</span></li>
-		</ul>
+		<div id="hosting">
+			<h4>Hosting Provided By:</h4>
+			<ul id="hostingPartners">
+				<li id="gn"><a href="http://www.geonorth.com"><img src="images/geonorth.png" alt="GeoNorth, LLC"></a><span>Need more direct, hands-on assistance with your database problems? Contact GeoNorth.  We're database experts.</span></li>
+				<li id="strata"><a href="http://www.stratascale.com"><img src="images/stratascale.png"></a><span>Looking for a great cloud hosting enviroment for your database? Contact Stratascale.</span></li>
+			</ul>
+		</div>
 
 	</div>
 	<input type="hidden" name="schema_short_code" id="schema_short_code" value="">
@@ -299,18 +302,20 @@ fieldset {
 
 }
 
-
+#hosting {
+	display: block;
+	min-width: 360px;
+	width: 60%;
+}
 
 #hostingPartners {
-	margin: 10px;
 	padding: 0px;
 	list-style-type: none;
-	width: 500px;
+	width: 350px;
 }
 
 #hostingPartners li {
-	padding: 5px;
-	margin-top: 10px;
+	margin: 20px 0;
 	font-family: sans-serif;
 	font-size: 8pt;
 	height: 50px;
