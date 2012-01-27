@@ -266,6 +266,9 @@ VALUES
         lineNumbers: true
       });
 
+	$.blockUI.defaults.overlayCSS.cursor = 'auto';
+	$.blockUI.defaults.css.cursor = 'auto';
+
 </script>
 
 <style>
