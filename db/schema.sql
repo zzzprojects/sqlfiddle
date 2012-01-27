@@ -8,6 +8,20 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
 SET search_path = public, pg_catalog;
 
 SET default_tablespace = '';
@@ -21,10 +35,11 @@ SET default_with_oids = false;
 CREATE TABLE db_types (
     id integer NOT NULL,
     friendly_name character varying(50),
-    jdbc_class_name character varying(50),
     jdbc_driver_name character varying(50),
     setup_script_template text,
-    drop_script_template text
+    jdbc_class_name character varying(50),
+    drop_script_template text,
+    custom_jdbc_attributes character varying(100)
 );
 
 
@@ -49,13 +64,6 @@ ALTER TABLE public.db_types_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE db_types_id_seq OWNED BY db_types.id;
-
-
---
--- Name: db_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('db_types_id_seq', 1, true);
 
 
 --
@@ -94,21 +102,14 @@ ALTER SEQUENCE hosts_id_seq OWNED BY hosts.id;
 
 
 --
--- Name: hosts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('hosts_id_seq', 1, true);
-
-
---
 -- Name: queries; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE queries (
-    id integer NOT NULL,
     schema_def_id integer NOT NULL,
     sql text,
-    md5 character varying(32)
+    md5 character varying(32),
+    id integer NOT NULL
 );
 
 
@@ -122,10 +123,10 @@ CREATE TABLE schema_defs (
     id integer NOT NULL,
     db_type_id integer NOT NULL,
     short_code character varying(32),
-    md5 character varying(32),
-    ddl text,
     last_used timestamp without time zone,
-    current_host_id integer
+    ddl text,
+    current_host_id integer,
+    md5 character varying(32)
 );
 
 
@@ -153,13 +154,6 @@ ALTER SEQUENCE schema_defs_id_seq OWNED BY schema_defs.id;
 
 
 --
--- Name: schema_defs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('schema_defs_id_seq', 1, true);
-
-
---
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -178,40 +172,6 @@ ALTER TABLE hosts ALTER COLUMN id SET DEFAULT nextval('hosts_id_seq'::regclass);
 --
 
 ALTER TABLE schema_defs ALTER COLUMN id SET DEFAULT nextval('schema_defs_id_seq'::regclass);
-
-
---
--- Data for Name: db_types; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY db_types (id, friendly_name, jdbc_driver_name, setup_script_template, jdbc_class_name, drop_script_template) FROM stdin;
-1	PostgreSQL 9.1.1	PostgreSQL	CREATE USER user_#databaseName# PASSWORD '#databaseName#';\nCREATE DATABASE db_#databaseName# OWNER user_#databaseName# ENCODING 'UTF8';	org.postgresql.Driver	 DROP DATABASE db_#databaseName#;\n DROP USER user_#databaseName#;\n
-\.
-
-
---
--- Data for Name: hosts; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY hosts (id, db_type_id, jdbc_url_template, cf_dsn) FROM stdin;
-1	1	jdbc:postgresql://127.0.0.1:5432/#databaseName#	sqlfiddle_pg1
-\.
-
-
---
--- Data for Name: queries; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY queries (schema_def_id, sql, md5, id) FROM stdin;
-\.
-
-
---
--- Data for Name: schema_defs; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY schema_defs (id, db_type_id, short_code, last_used, ddl, current_host_id, md5) FROM stdin;
-\.
 
 
 --

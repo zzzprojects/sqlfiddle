@@ -8,8 +8,14 @@
 	
 	<cffunction name="initializeDatabase">
 		<cfargument name="databaseName" type="string">
+
 		<cfset var sql = Replace(this.db_type.setup_script_template, '##databaseName##', databaseName, 'ALL')>
-		<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(sql)#</cfquery>
+                <cfset var statement = "">
+
+               	<cfset sql = REReplace(sql, "#chr(10)#GO#chr(10)#", '#chr(7)#', 'all')>
+		<cfloop list="#sql#" index="statement" delimiters="#chr(7)#">
+			<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(statement)#</cfquery>
+		</cfloop>
 	</cffunction>
 	
 	<cffunction name="initializeDSN">
@@ -44,7 +50,12 @@
 		<cfargument name="datasourceName" type="string">
 		<cfargument name="ddl" type="string">
 
-		<cfquery datasource="#this.db_type_id#_#arguments.datasourceName#">#PreserveSingleQuotes(arguments.ddl)#</cfquery>		
+		<cfset var statement = "">
+                <cfset var ddl_list = REReplace(arguments.ddl, "#chr(10)#GO#chr(10)#", '#chr(7)#', 'all')>
+
+                <cfloop list="#ddl_list#" index="statement" delimiters="#chr(7)#">
+			<cfquery datasource="#this.db_type_id#_#arguments.datasourceName#">#PreserveSingleQuotes(statement)#</cfquery>		
+		</cfloop>
 				
 		<cfadmin
 		    action="updateDatasource"
@@ -79,11 +90,16 @@
 	
 	<cffunction name="dropDatabase">
 		<cfargument name="databaseName" type="string">
+                <cfset var statement = "">
+
 		<cfif not IsDefined("this.db_type")>
 			<cfset this.db_type = model("DB_Type").findByKey(this.db_type_id)>
 		</cfif>
 		<cfset var sql = Replace(this.db_type.drop_script_template, '##databaseName##', databaseName, 'ALL')>
-		<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(sql)#</cfquery>
+                <cfset sql = REReplace(sql, "#chr(10)#GO#chr(10)#", '#chr(7)#', 'all')>
+                <cfloop list="#sql#" index="statement" delimiters="#chr(7)#">
+			<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(sql)#</cfquery>
+		</cfloop>
 	</cffunction>
 	
 </cfcomponent>

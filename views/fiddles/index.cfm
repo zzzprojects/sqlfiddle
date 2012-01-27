@@ -276,7 +276,7 @@ fieldset {
 }
 .field_groups {
 	float: left;
-	width: 50%;
+	width: 45%;
 	min-width: 512px;
 }
 #db_type_fieldset select {
@@ -287,12 +287,16 @@ fieldset {
 }
 
 #results {
-	border: solid thin black;
+        border-top: solid 1px black;
+        border-right: solid 1px black;
+
 }
 #results * {
 	margin: 0;
 	padding: 3;
-	border: solid thin black;
+	border-left: solid 1px black;
+        border-bottom: solid 1px black;
+
 }
 
 
