@@ -23,6 +23,12 @@ VALUES
 (2,'Twitter', '@sqlfiddle');</textarea>		
 			<span id="schema_notices"></span>
 		</fieldset>
+		
+		<ul id="hostingPartners">
+			<li id="gn"><a href="http://www.geonorth.com"><img src="images/geonorth.png" alt="GeoNorth, LLC"></a><span>Need more direct, hands-on assistance with your database problems? Contact GeoNorth.  We're database experts.</span></li>
+			<li id="strata"><a href="http://www.stratascale.com"><img src="images/stratascale.png"></a><span>Looking for a great cloud hosting enviroment for your database? Contact Stratascale.</span></li>
+		</ul>
+
 	</div>
 	<input type="hidden" name="schema_short_code" id="schema_short_code" value="">
 	<div class="field_groups schema_ready">
@@ -288,6 +294,43 @@ fieldset {
 	padding: 3;
 	border: solid thin black;
 }
+
+
+
+#hostingPartners {
+	margin: 10px;
+	padding: 0px;
+	list-style-type: none;
+	width: 500px;
+}
+
+#hostingPartners li {
+	padding: 5px;
+	margin-top: 10px;
+	font-family: sans-serif;
+	font-size: 8pt;
+	height: 50px;
+}
+
+#hostingPartners a {
+	display: inline-block;
+	width: 200px;
+	float: left;
+}
+#hostingPartners img {
+	height: 50px;
+	margin: 0 auto;
+	text-align: center;
+	display: block;
+}
+
+#hostingPartners span {
+	float: left;
+	display: block;
+	width: 150px;
+}
+
+
 
 
 </style>
