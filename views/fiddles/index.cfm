@@ -8,13 +8,16 @@
 					<option value="#id#">#friendly_name#</option>
 					</cfloop>
 				</select>
+<!--- 
 				
-				<input type="button" value="Build Schema from DDL" id="buildSchema">
-			
+				<input type="button" value="Sample Fiddle" id="sample">
+ --->
+				
 		</fieldset>
 		<fieldset id="schema_fieldset">
 			<legend>Schema DDL</legend>
-			<textarea onkeypress="handleSchemaChange()" id="schema_ddl" style="height: 350px; width: 100%;" name="schema_ddl">CREATE TABLE supportContacts (id int, type varchar(20), details varchar(20));
+			<textarea onkeypress="handleSchemaChange()" id="schema_ddl" style="height: 350px; width: 100%;" name="schema_ddl">CREATE TABLE supportContacts 
+	(id int, type varchar(20), details varchar(20));
 
 INSERT INTO supportContacts
 (id, type, details)
@@ -22,6 +25,10 @@ VALUES
 (1,'Email', 'admin@sqlfiddle.com'),
 (2,'Twitter', '@sqlfiddle');</textarea>		
 			<span id="schema_notices"></span>
+			
+			<input type="button" value="Build Live Schema from DDL" id="buildSchema">
+			
+
 		</fieldset>
 		
 		<div id="hosting">
@@ -53,7 +60,7 @@ VALUES
 </cfoutput>
 
 	<script language="Javascript" type="text/javascript">
-		function handleSchemaChange(e) {
+		function handleSchemaChange() {
 			if ($("#schema_ddl").data("ready"))
 			{
 				$("#schema_ddl").data("ready", false);
@@ -62,20 +69,15 @@ VALUES
 		}
 
 
-		function bindKeyUp(id) {
-		
-			$($('#frame_schema_ddl')[0].contentWindow).on('keypress', '*', handleSchemaChange);
-				
-		}
-
 
 	$(function () {
+		
+		$("#db_type_id").change(handleSchemaChange);
+		
 		$("#buildSchema").data("originalValue", $("#buildSchema").val());
 		
 		$("#schema_ddl").data("ready", false);
 				
-		$("#schema_fieldset").on('keypress', 'textarea', handleSchemaChange);
-		
 		function reloadContent()
 		{
 			var frag = $.param.fragment();
@@ -98,18 +100,18 @@ VALUES
 						
 					if (resp["ddl"])
 					{
-						editAreaLoader.setValue("schema_ddl", resp["ddl"]);		
+						schema_ddl_editor.setValue(resp["ddl"]);		
 						$("#schema_ddl").data("ready", true);
 						$(".schema_ready").unblock();
 				
 						if (resp["sql"])
 						{
-							editAreaLoader.setValue("sql", resp["sql"]);
+							sql_editor.setValue(resp["sql"]);
 							buildResultsTable(resp);
 						}
 						else
 						{
-							editAreaLoader.setValue("sql", "");	
+							sql_editor.setValue("");	
 							$("#results").html("<tr><td>---</td></tr>");		
 							$("#results_notices").text("");				
 						}
@@ -143,7 +145,7 @@ VALUES
 				url: "<cfoutput>#URLFor(action='createSchema')#</cfoutput>",
 				data: {
 					db_type_id: $("#db_type_id").val(),
-					schema_ddl: editAreaLoader.getValue("schema_ddl")
+					schema_ddl: schema_ddl_editor.getValue()
 				},
 				dataType: "json",
 				success: function (data, textStatus, jqXHR) {
@@ -223,7 +225,7 @@ VALUES
 				data: {
 					db_type_id: $("#db_type_id").val(),
 					schema_short_code: $("#schema_short_code").val(),
-					sql: editAreaLoader.getValue("sql")
+					sql: sql_editor.getValue()
 				},
 				dataType: "json",
 				success: function (resp, textStatus, jqXHR) {
@@ -243,8 +245,14 @@ VALUES
 				
 		});
 	
-	});
+		function setCodeMirrorWidth() {
+			$(".CodeMirror").width($(".field_groups").width() - 66);
+		}
+		setCodeMirrorWidth();
+		$(window).resize(setCodeMirrorWidth);
 	
+	});
+<!--- 	
 	// initialisation
 	editAreaLoader.init({
 		id: "schema_ddl"	// id of the textarea to transform		
@@ -265,10 +273,38 @@ VALUES
 		,word_wrap: true
 		,language: "en"
 		,syntax: "sql"	
-	});
+	}); --->
+	
+      schema_ddl_editor = CodeMirror.fromTextArea(document.getElementById("schema_ddl"), {
+        mode: "mysql",
+        lineNumbers: true,
+	    onChange: handleSchemaChange
+      });
+
+      sql_editor = CodeMirror.fromTextArea(document.getElementById("sql"), {
+        mode: "mysql",
+        lineNumbers: true
+      });
+
+	
 </script>
 
 <style>
+	
+      .CodeMirror {
+        border: 1px solid #eee;
+		width: 450px;
+		
+      }
+      .CodeMirror-scroll {
+		min-height: 300px;
+        height: auto;
+        overflow-y: hidden;
+        overflow-x: auto;
+      }
+	
+
+	
 #fiddleForm {
 	width: 100%;
 	min-width: 1024px;
@@ -285,7 +321,13 @@ fieldset {
 #db_type_fieldset select {
 	float: left;
 }
+
 #db_type_fieldset input {
+	float: right;
+}
+
+#schema_fieldset input {
+	margin-top: 10px;
 	float: right;
 }
 

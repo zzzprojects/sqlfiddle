@@ -2,9 +2,11 @@
 <html>
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-		#javaScriptIncludeTag("edit_area/edit_area_full")#
+		#javaScriptIncludeTag("codemirror")#
+		#javaScriptIncludeTag("mode/mysql/mysql")#		
 		#javaScriptIncludeTag("jquery.blockUI")#
 		#javaScriptIncludeTag("jquery.ba-bbq.min")#
+		#stylesheetLinkTag("codemirror")#
 		<title>SQL Fiddle</title>
 
 
