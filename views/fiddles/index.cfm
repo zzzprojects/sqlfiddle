@@ -244,36 +244,16 @@ VALUES
 			});
 				
 		});
-	
 		function setCodeMirrorWidth() {
 			$(".CodeMirror").width($(".field_groups").width() - 66);
 		}
 		setCodeMirrorWidth();
 		$(window).resize(setCodeMirrorWidth);
-	
+
+		if (!$.browser.msie)
+			$(".CodeMirror-scroll").css("height", "auto");
+
 	});
-<!--- 	
-	// initialisation
-	editAreaLoader.init({
-		id: "schema_ddl"	// id of the textarea to transform		
-		,start_highlight: true	// if start with highlight
-		,allow_resize: "both"
-		,allow_toggle: true
-		,word_wrap: true
-		,language: "en"
-		,syntax: "sql"
-		,EA_toggle_on_callback:"bindKeyUp"
-	});
-	
-	editAreaLoader.init({
-		id: "sql"	// id of the textarea to transform		
-		,start_highlight: true	// if start with highlight
-		,allow_resize: "both"
-		,allow_toggle: true
-		,word_wrap: true
-		,language: "en"
-		,syntax: "sql"	
-	}); --->
 	
       schema_ddl_editor = CodeMirror.fromTextArea(document.getElementById("schema_ddl"), {
         mode: "mysql",
@@ -286,7 +266,6 @@ VALUES
         lineNumbers: true
       });
 
-	
 </script>
 
 <style>
@@ -297,8 +276,7 @@ VALUES
 		
       }
       .CodeMirror-scroll {
-		min-height: 300px;
-        height: auto;
+	min-height: 300px;
         overflow-y: hidden;
         overflow-x: auto;
       }
@@ -373,6 +351,7 @@ fieldset {
 	margin: 0 auto;
 	text-align: center;
 	display: block;
+	border: none;
 }
 
 #hostingPartners span {
