@@ -15,14 +15,7 @@
 		<fieldset id="schema_fieldset">
 			<legend>Schema DDL</legend>
 			<span id="database_notes"></span>
-			<textarea onkeypress="handleSchemaChange()" id="schema_ddl" style="height: 350px; width: 100%;" name="schema_ddl">CREATE TABLE supportContacts 
-	(id int, type varchar(20), details varchar(20));
-
-INSERT INTO supportContacts
-(id, type, details)
-VALUES
-(1,'Email', 'admin@sqlfiddle.com'),
-(2,'Twitter', '@sqlfiddle');</textarea>		
+			<textarea onkeypress="handleSchemaChange()" id="schema_ddl" style="height: 350px; width: 100%;" name="schema_ddl"></textarea>		
 			<span id="schema_notices"></span>
 			
 			<input type="button" value="Build Live Schema from DDL" id="buildSchema">

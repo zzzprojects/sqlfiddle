@@ -50,7 +50,7 @@ fieldset {
 }
 #results * {
 	margin: 0;
-	padding: 3;
+	padding: 3px;
 	border-left: solid 1px black;
         border-bottom: solid 1px black;
 

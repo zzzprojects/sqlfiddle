@@ -1,66 +1,65 @@
-	function handleSchemaChange() {
-		if ($("#schema_ddl").data("ready"))
-		{
-			$("#schema_ddl").data("ready", false);
-			$(".schema_ready").block({ message: "Please rebuild schema definition."});										
-		}
-	}
-
-	function displayDatabaseNotes() {
-		$("#database_notes").text($("#db_type_id :selected").data('note'));		
-	}
-
-	function updateSampleButtonStatus() {
-		if ($("#db_type_id :selected").data('fragment').length == 0)
-		{
-			$("#sample")
-				.prop("disabled", true)
-				.attr("title", "This database type has no sample available.");
-		}
-		else
-		{
-			$("#sample")
-			.prop("disabled", false)
-			.attr("title", "Click to see a sample database schema and query for this database type.");			
-		}
-	}
-	
-	$(function () {
-		
-		displayDatabaseNotes();
-		updateSampleButtonStatus();
-		
-		$("#db_type_id").change(function () {
-			displayDatabaseNotes();
-			handleSchemaChange();
-			updateSampleButtonStatus();
-		});
-		
-		$("#buildSchema").data("originalValue", $("#buildSchema").val());
-		
+function handleSchemaChange() {
+	if ($("#schema_ddl").data("ready"))
+	{
 		$("#schema_ddl").data("ready", false);
+		$(".schema_ready").block({ message: "Please rebuild schema definition."});										
+	}
+}
+
+function displayDatabaseNotes() {
+	$("#database_notes").text($("#db_type_id :selected").data('note'));		
+}
+
+function updateSampleButtonStatus() {
+	if ($("#db_type_id :selected").data('fragment').length == 0)
+	{
+		$("#sample")
+			.prop("disabled", true)
+			.attr("title", "This database type has no sample available.");
+	}
+	else
+	{
+		$("#sample")
+		.prop("disabled", false)
+		.attr("title", "Click to see a sample database schema and query for this database type.");			
+	}
+}
+
+$(function () {
+	
+	displayDatabaseNotes();
+	updateSampleButtonStatus();
+	
+	$("#db_type_id").change(function () {
+		displayDatabaseNotes();
+		handleSchemaChange();
+		updateSampleButtonStatus();
+	});
+	
+	$("#buildSchema").data("originalValue", $("#buildSchema").val());
+	
+	$("#schema_ddl").data("ready", false);
+	
+	$("#sample").click(function () {
 		
-		$("#sample").click(function () {
-			
-			$.bbq.pushState("#!" + $("#db_type_id :selected").data('fragment'));
-			reloadContent();
-			
-		});
+		$.bbq.pushState("#!" + $("#db_type_id :selected").data('fragment'));
 		
-		function reloadContent()
+	});
+	
+	function reloadContent()
+	{
+		var frag = $.param.fragment();
+		if (frag.length)
 		{
-			var frag = $.param.fragment();
-			if (frag.length)
+			var fragArray = frag.split('/');
+
+			if (
+				(fragArray.length > 1 && $("#schema_short_code").val() != fragArray[1]) ||
+				(fragArray.length > 2 && $("#query_id").val() != fragArray[2])
+			   )
 			{
-				var fragArray = frag.split('/');
 
-				if (
-					(fragArray.length > 1 && $("#schema_short_code").val() != fragArray[1]) ||
-					(fragArray.length > 2 && $("#query_id").val() != fragArray[2])
-				   )
-				{
-
-				$.getJSON("<cfoutput>#URLFor(action='loadContent')#</cfoutput>", {fragment: frag}, function (resp) {
+			$.getJSON("/fiddles/loadContent", {fragment: frag}, function (resp) {
 					if (resp["db_type_id"])
 					{
 						$("#db_type_id").val(resp["db_type_id"]);
@@ -115,7 +114,7 @@
 			$.ajax({
 				
 				type: "POST",
-				url: "<cfoutput>#URLFor(action='createSchema')#</cfoutput>",
+				url: "/fiddles/createSchema",
 				data: {
 					db_type_id: $("#db_type_id").val(),
 					schema_ddl: schema_ddl_editor.getValue()
@@ -194,7 +193,7 @@
 			$.ajax({
 				
 				type: "POST",
-				url: "<cfoutput>#URLFor(action='runQuery')#</cfoutput>",
+				url: "/fiddles/runQuery",
 				data: {
 					db_type_id: $("#db_type_id").val(),
 					schema_short_code: $("#schema_short_code").val(),
