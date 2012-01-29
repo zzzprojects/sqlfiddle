@@ -21,8 +21,12 @@
 		<cftransaction>
 		
 			<cftry>
+				<cfif Len(this.schema_def.db_type.batch_separator)>
+			                <cfset sqlBatchList = REReplace(this.sql, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+				<cfelse>
+					<cfset sqlBatchList = this.sql>
+				</cfif>
 
-		                <cfset sqlBatchList = REReplace(this.sql, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
                 		<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
 				<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
                 		</cfloop>
