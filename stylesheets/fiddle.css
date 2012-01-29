@@ -1,0 +1,96 @@
+	
+.CodeMirror {
+	border: 1px solid #eee;
+	width: 450px;
+
+}
+.CodeMirror-scroll {
+	min-height: 300px;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+	
+#database_notes {
+	font-family: sans-serif;
+	font-size: 8pt;
+	padding: 10px 0;
+	display: block;
+}
+	
+#fiddleForm {
+	width: 100%;
+	min-width: 1024px;
+}	
+fieldset {
+	width: 90%;
+	min-width: 450px;
+}
+.field_groups {
+	float: left;
+	width: 45%;
+	min-width: 512px;
+}
+#db_type_fieldset select {
+	float: left;
+}
+
+#db_type_fieldset input {
+	float: right;
+}
+
+#schema_fieldset input {
+	margin-top: 10px;
+	float: right;
+}
+
+#results {
+        border-top: solid 1px black;
+        border-right: solid 1px black;
+
+}
+#results * {
+	margin: 0;
+	padding: 3;
+	border-left: solid 1px black;
+        border-bottom: solid 1px black;
+
+}
+
+#hosting {
+	display: block;
+	min-width: 360px;
+	width: 60%;
+}
+
+#hostingPartners {
+	padding: 0px;
+	list-style-type: none;
+	width: 350px;
+}
+
+#hostingPartners li {
+	margin: 20px 0;
+	font-family: sans-serif;
+	font-size: 8pt;
+	height: 50px;
+}
+
+#hostingPartners a {
+	display: inline-block;
+	width: 200px;
+	float: left;
+}
+#hostingPartners img {
+	height: 50px;
+	margin: 0 auto;
+	text-align: center;
+	display: block;
+	border: none;
+}
+
+#hostingPartners span {
+	float: left;
+	display: block;
+	width: 150px;
+}
+

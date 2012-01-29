@@ -41,7 +41,8 @@ CREATE TABLE db_types (
     drop_script_template text,
     custom_jdbc_attributes character varying(100),
     batch_separator character varying(5),
-    notes character varying(250)
+    notes character varying(250),
+    sample_fragment character varying(50)
 );
 
 

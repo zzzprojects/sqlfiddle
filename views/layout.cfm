@@ -6,7 +6,9 @@
 		#javaScriptIncludeTag("mode/mysql/mysql")#		
 		#javaScriptIncludeTag("jquery.blockUI")#
 		#javaScriptIncludeTag("jquery.ba-bbq.min")#
+		#javaScriptIncludeTag("fiddle")#
 		#stylesheetLinkTag("codemirror")#
+		#stylesheetLinkTag("fiddle")#
 		<title>SQL Fiddle</title>
 
 
