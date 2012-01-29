@@ -5,7 +5,7 @@
 			<legend>Database Type</legend>
 				<select id="db_type_id">
 					<cfloop query="db_types">
-					<option value="#id#">#friendly_name#</option>
+					<option value="#id#" data-note="#HTMLEditFormat(notes)#">#friendly_name#</option>
 					</cfloop>
 				</select>
 <!--- 
