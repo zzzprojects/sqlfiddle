@@ -1,7 +1,7 @@
 <cfoutput><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
 <html>
 	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		#javaScriptIncludeTag("jquery.min")#
 		#javaScriptIncludeTag("codemirror")#
 		#javaScriptIncludeTag("mode/mysql/mysql")#		
 		#javaScriptIncludeTag("jquery.blockUI")#
