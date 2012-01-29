@@ -11,14 +11,21 @@
 		<cfset var returnVal = {}>
 		<cfset var resultInfo = {}>
 		<cfset var ret = QueryNew("")>
-		<cfif not IsDefined("this.schema_def")>
-			<cfset this.schema_def = model("Schema_Def").findByKey(this.schema_def_id)>
+                <cfset var statement = "">
+		<cfset var sqlBatchList = "">
+
+		<cfif not IsDefined("this.schema_def") OR not IsDefined("this.schema_def.db_type")>
+			<cfset this.schema_def = model("Schema_Def").findByKey(key=this.schema_def_id, include="DB_Type")>
 		</cfif>
 		
 		<cftransaction>
 		
 			<cftry>
-				<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(this.sql)#</cfquery>
+
+		                <cfset sqlBatchList = REReplace(this.sql, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+                		<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
+				<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
+                		</cfloop>
 				
 				<cfif IsDefined("ret")>
 					<cfset returnVal.succeeded = true>

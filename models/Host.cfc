@@ -12,7 +12,7 @@
 		<cfset var sql = Replace(this.db_type.setup_script_template, '##databaseName##', databaseName, 'ALL')>
                 <cfset var statement = "">
 
-               	<cfset sql = REReplace(sql, "#chr(10)#GO#chr(10)#", '#chr(7)#', 'all')>
+               	<cfset sql = REReplace(sql, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
 		<cfloop list="#sql#" index="statement" delimiters="#chr(7)#">
 			<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(statement)#</cfquery>
 		</cfloop>
@@ -46,17 +46,17 @@
 		
 	</cffunction>
 	
-	<cffunction name="initializeSchema">
+	<cffunction name="initializeSchema" output=true>
 		<cfargument name="datasourceName" type="string">
 		<cfargument name="ddl" type="string">
 
 		<cfset var statement = "">
-                <cfset var ddl_list = REReplace(arguments.ddl, "#chr(10)#GO#chr(10)#", '#chr(7)#', 'all')>
+                <cfset var ddl_list = REReplace(arguments.ddl, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
 
                 <cfloop list="#ddl_list#" index="statement" delimiters="#chr(7)#">
-			<cfquery datasource="#this.db_type_id#_#arguments.datasourceName#">#PreserveSingleQuotes(statement)#</cfquery>		
+			<cfquery datasource="#this.db_type_id#_#arguments.datasourceName#">#PreserveSingleQuotes(statement)#</cfquery>
 		</cfloop>
-				
+
 		<cfadmin
 		    action="updateDatasource"
 		    type="web"
@@ -96,7 +96,7 @@
 			<cfset this.db_type = model("DB_Type").findByKey(this.db_type_id)>
 		</cfif>
 		<cfset var sql = Replace(this.db_type.drop_script_template, '##databaseName##', databaseName, 'ALL')>
-                <cfset sql = REReplace(sql, "#chr(10)#GO#chr(10)#", '#chr(7)#', 'all')>
+                <cfset sql = REReplace(sql, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
                 <cfloop list="#sql#" index="statement" delimiters="#chr(7)#">
 			<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(sql)#</cfquery>
 		</cfloop>
