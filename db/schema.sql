@@ -39,7 +39,9 @@ CREATE TABLE db_types (
     setup_script_template text,
     jdbc_class_name character varying(50),
     drop_script_template text,
-    custom_jdbc_attributes character varying(100)
+    custom_jdbc_attributes character varying(100),
+    batch_separator character varying(5),
+    notes character varying(250)
 );
 
 
