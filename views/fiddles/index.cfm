@@ -30,12 +30,12 @@
 				<li id="strata"><a href="http://www.stratascale.com"><img src="images/stratascale.png"></a><span>Looking for a great cloud hosting environment for your database? Contact Stratascale.</span></li>
 			</ul>
 		</div>
-
-
 		<div id="meta">
 			<a href="#URLFor(route='about')#">About SQL Fiddle</a>
 			
 		</div>
+
+
 	</div>
 	<input type="hidden" name="schema_short_code" id="schema_short_code" value="">
 	<div class="field_groups schema_ready">
