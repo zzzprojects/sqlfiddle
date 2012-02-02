@@ -80,7 +80,7 @@
 	
 	<br><br>
 	
-	I had been having fun answering questions on StackOverflow, particularlly related to a few main categories: 
+	I had been having fun answering questions on StackOverflow, particularly related to a few main categories: 
 	<a href="http://stackoverflow.com/search?q=user:808921+[coldfusion]">ColdFusion</a>, 
 	<a href="http://stackoverflow.com/search?q=user:808921+[jquery]">jQuery</a>, and 
 	<a href="http://stackoverflow.com/search?q=user:808921+[sql]">SQL</a>.
