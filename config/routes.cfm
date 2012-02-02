@@ -3,3 +3,4 @@
 	The default route is the one that will be called on your application's "home" page.
 --->
 <cfset addRoute(name="home", pattern="", controller="fiddles", action="index")>
+<cfset addRoute(name="about", pattern="/about", controller="meta", action="about")>

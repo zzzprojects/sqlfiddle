@@ -57,12 +57,12 @@
 		<cfset var ddl_list = "">
 
 		<cfif Len(this.db_type.batch_separator)>
-	                <cfset ddl_list = REReplace(arguments.ddl, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+	        <cfset ddl_list = REReplace(arguments.ddl, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
 		<cfelse>
 			<cfset ddl_list = arguments.ddl>
 		</cfif>
 
-                <cfloop list="#ddl_list#" index="statement" delimiters="#chr(7)#">
+        <cfloop list="#ddl_list#" index="statement" delimiters="#chr(7)#">
 			<cfquery datasource="#this.db_type_id#_#arguments.datasourceName#">#PreserveSingleQuotes(statement)#</cfquery>
 		</cfloop>
 
@@ -106,11 +106,11 @@
 		</cfif>
 		<cfset var sql = Replace(this.db_type.drop_script_template, '##databaseName##', databaseName, 'ALL')>
 
-                <cfif Len(this.db_type.batch_separator)>
+        <cfif Len(this.db_type.batch_separator)>
 	                <cfset sql = REReplace(sql, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
 		</cfif>
 
-                <cfloop list="#sql#" index="statement" delimiters="#chr(7)#">
+        <cfloop list="#sql#" index="statement" delimiters="#chr(7)#">
 			<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(sql)#</cfquery>
 		</cfloop>
 

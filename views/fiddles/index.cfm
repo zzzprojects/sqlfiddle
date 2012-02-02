@@ -31,6 +31,11 @@
 			</ul>
 		</div>
 
+
+		<div id="meta">
+			<a href="#URLFor(route='about')#">About SQL Fiddle</a>
+			
+		</div>
 	</div>
 	<input type="hidden" name="schema_short_code" id="schema_short_code" value="">
 	<div class="field_groups schema_ready">

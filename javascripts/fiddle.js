@@ -59,7 +59,7 @@ $(function () {
 			   )
 			{
 
-			$.getJSON("/fiddles/loadContent", {fragment: frag}, function (resp) {
+			$.getJSON("/index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
 					if (resp["db_type_id"])
 					{
 						$("#db_type_id").val(resp["db_type_id"]);
@@ -114,7 +114,7 @@ $(function () {
 			$.ajax({
 				
 				type: "POST",
-				url: "/fiddles/createSchema",
+				url: "/index.cfm/fiddles/createSchema",
 				data: {
 					db_type_id: $("#db_type_id").val(),
 					schema_ddl: schema_ddl_editor.getValue()
@@ -193,7 +193,7 @@ $(function () {
 			$.ajax({
 				
 				type: "POST",
-				url: "/fiddles/runQuery",
+				url: "/index.cfm/fiddles/runQuery",
 				data: {
 					db_type_id: $("#db_type_id").val(),
 					schema_short_code: $("#schema_short_code").val(),

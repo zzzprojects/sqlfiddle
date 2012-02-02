@@ -1,7 +1,7 @@
 component extends="Controller" {
 
 	function index() {
-		db_types = model("DB_Type").findAll(order="friendly_name");
+		db_types = model("DB_Type").findAll(order="friendly_name", cache="true");
 	}
 
 	function createSchema () {
@@ -15,7 +15,7 @@ component extends="Controller" {
 			var md5 = Lcase(hash(params.schema_ddl, "MD5"));
 			var short_code = "";
 			
-			var existingSchema = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND md5 = '#md5#'");
+			var existingSchema = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND md5 = '#md5#'", cache="true");
 	
 			if (IsObject(existingSchema) AND IsNumeric(existingSchema.current_host_id))
 			{
@@ -77,7 +77,7 @@ component extends="Controller" {
 	
 	function runQuery() {
 		
-		var schema_def = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND short_code='#params.schema_short_code#'");
+		var schema_def = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND short_code='#params.schema_short_code#'", cache="true");
 		var md5 = Lcase(hash(params.sql, "MD5"));
 
 		if (! IsObject(schema_def))
@@ -90,7 +90,7 @@ component extends="Controller" {
 			schema_def.initialize();		
 		}
 		
-		query = model("Query").findOne(where="md5 = '#md5#' AND schema_def_id = #schema_def.id#", include="Schema_Def");
+		query = model("Query").findOne(where="md5 = '#md5#' AND schema_def_id = #schema_def.id#", include="Schema_Def", cache="true");
 
 		if (! IsObject(query))
 		{
@@ -128,7 +128,7 @@ component extends="Controller" {
 			
 			if (ArrayLen(parts) >= 2 AND IsNumeric(parts[1]))
 			{
-				schema_def = model("Schema_Def").findOne(where="db_type_id=#parts[1]# AND short_code = '#parts[2]#'");
+				schema_def = model("Schema_Def").findOne(where="db_type_id=#parts[1]# AND short_code = '#parts[2]#'", cache="true");
 				
 				if (IsObject(schema_def))
 				{
@@ -150,7 +150,7 @@ component extends="Controller" {
 			{
 				if (IsNumeric(parts[3]))
 				{
-					myQuery = model("Query").findOne(where="id=#parts[3]# AND schema_def_id=#schema_def.id#");
+					myQuery = model("Query").findOne(where="id=#parts[3]# AND schema_def_id=#schema_def.id#", cache="true");
 					if (IsObject(myQuery))
 					{
 						returnVal["sql"] = myQuery.sql;	

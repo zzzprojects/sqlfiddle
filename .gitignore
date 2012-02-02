@@ -1,3 +1,5 @@
 WEB-INF
 .project
 .DS_Store
+config/production/settings.cfm
+config/environment.cfm

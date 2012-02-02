@@ -10,9 +10,9 @@
 	function initialize()
 	{
 			
-		var db_type = model("DB_Type").findByKey(this.db_type_id);
+		var db_type = model("DB_Type").findByKey(key=this.db_type_id, cache="true");
 		var available_host_id = db_type.findAvailableHost().id;
-		var host = model("Host").findByKey(key=available_host_id, include="DB_Type");	
+		var host = model("Host").findByKey(key=available_host_id, include="DB_Type", cache="true");	
 		
 		this.current_host_id = host.id;				
 		this.last_used = now();			
