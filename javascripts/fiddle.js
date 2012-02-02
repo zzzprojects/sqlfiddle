@@ -216,10 +216,12 @@ $(function () {
 			});
 				
 		});
+
 		function setCodeMirrorWidth() {
 			$(".CodeMirror").width($(".field_groups").width() - 66);
 		}
-		setCodeMirrorWidth();
+
+		setTimeout(setCodeMirrorWidth, 1);
 		$(window).resize(setCodeMirrorWidth);
 
 		if (!$.browser.msie)
