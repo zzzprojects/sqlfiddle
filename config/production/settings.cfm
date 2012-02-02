@@ -3,6 +3,6 @@
 	A variable set in this file will override the one in "config/settings.cfm".
 	Example: <cfset set(errorEmailAddress="someone@somewhere.com")>
 --->
-	<cfset set(CFAdminPassword="H@X0r3d!")> 
+	<cfset set(CFAdminPassword="")> 
 
 <cfset set(URLRewriting="On")>
