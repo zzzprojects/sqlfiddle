@@ -15,7 +15,7 @@ component extends="Controller" {
 			var md5 = Lcase(hash(params.schema_ddl, "MD5"));
 			var short_code = "";
 			
-			var existingSchema = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND md5 = '#md5#'", cache="true");
+			var existingSchema = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND md5 = '#md5#'");
 	
 			if (IsObject(existingSchema) AND IsNumeric(existingSchema.current_host_id))
 			{
@@ -90,7 +90,7 @@ component extends="Controller" {
 			schema_def.initialize();		
 		}
 		
-		query = model("Query").findOne(where="md5 = '#md5#' AND schema_def_id = #schema_def.id#", include="Schema_Def", cache="true");
+		query = model("Query").findOne(where="md5 = '#md5#' AND schema_def_id = #schema_def.id#", include="Schema_Def");
 
 		if (! IsObject(query))
 		{
