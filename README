@@ -2,46 +2,26 @@ About SQLFiddle.com
 
 What am I supposed to do here?
 
-	SQL Fiddle is a tool for database developers to test out their SQL queries.  If you do not know SQL or basic database
-	concepts, this site is not going to be very useful to you.  However, if you are a database developer, there are a few 
-	different use-cases of SQL Fiddle intended for you:
+	SQL Fiddle is a tool for database developers to test out their SQL queries.  If you do not know SQL or basic database concepts, this site is not going to be very useful to you.  However, if you are a database developer, there are a few different use-cases of SQL Fiddle intended for you:
 			
-			You want help with a tricky query, and you'd like to post a question to a Q/A site like 
-			StackOverflow.  Build a 
-			representative database (schema and data) and post a link to it in your question.  Unique 
-			URLs for each database (and each query) will be generated as you use the site; just copy and paste the 
-			URL that you want to share, and it will be available for anyone who wants to take a look.  They will 
-			then be able to use your DDL and your SQL as a starting point for answering your question.  When they
-			have something they'd like to share with you, they can then send you a link back to their query.
+			You want help with a tricky query, and you'd like to post a question to a Q/A site like StackOverflow.  Build a representative database (schema and data) and post a link to it in your question.  Unique URLs for each database (and each query) will be generated as you use the site; just copy and paste the URL that you want to share, and it will be available for anyone who wants to take a look.  They will then be able to use your DDL and your SQL as a starting point for answering your question.  When they have something they'd like to share with you, they can then send you a link back to their query.
 					
-			You want to compare and contrast SQL statements in different database backends.  SQLFiddle easily lets
-			you switch which database provider (MySQL, PostgreSQL, MS SQL Server, and Oracle) your queries run
-			against.  This will allow you to quickly evaluate query porting efforts, or language options available
-			in each environment.
+			You want to compare and contrast SQL statements in different database backends.  SQLFiddle easily lets you switch which database provider (MySQL, PostgreSQL, MS SQL Server, and Oracle) your queries run against.  This will allow you to quickly evaluate query porting efforts, or language options available in each environment.
 			
-			You do not have a particular database platform readily available, but you would like to see what a given
-			query would look like in that environment.  Using SQL Fiddle, you don't need to bother spinning up a 
-			whole installation for your evaluation; just creating your database and queries here!
+			You do not have a particular database platform readily available, but you would like to see what a given query would look like in that environment.  Using SQL Fiddle, you don't need to bother spinning up a whole installation for your evaluation; just creating your database and queries here!
 		
 
 
 How does it work?
 
-	The Schema DDL that is provided is used to generate a private database on the fly.  If anything is changed in your
-	DDL (even a single space!), then you will be prompted to generate a new schema and will be operating in a new database.
+	The Schema DDL that is provided is used to generate a private database on the fly.  If anything is changed in your DDL (even a single space!), then you will be prompted to generate a new schema and will be operating in a new database.
 	
 
 	
-	All SQL queries are run within a transaction that gets immediately rolled-back after the SQL executes.  This is so
-	that the underlying database structure does not change from query to query, which makes it possible to share anonymously
-	online with any number of users (each of whom may be writing queries in the same shared database, potentially modifying 
-	the structure and thus -- if not for the rollback -- each other's results).
+	All SQL queries are run within a transaction that gets immediately rolled-back after the SQL executes.  This is so that the underlying database structure does not change from query to query, which makes it possible to share anonymously online with any number of users (each of whom may be writing queries in the same shared database, potentially modifying the structure and thus -- if not for the rollback -- each other's results).
 
 	
-	As you create schemas and write queries, unique URLs that refer to your particular schema and query will be
-	visible in your address bar.  You can share these with anyone, and they will be able to see what you've done
-	so far.  You will also be able to use your normal browser functions like 'back', 'forward', and 'reload', and you 
-	will see the various stages of your work, as you would expect.
+	As you create schemas and write queries, unique URLs that refer to your particular schema and query will be visible in your address bar.  You can share these with anyone, and they will be able to see what you've done so far.  You will also be able to use your normal browser functions like 'back', 'forward', and 'reload', and you will see the various stages of your work, as you would expect.
 	
 
 
@@ -56,35 +36,29 @@ Who should I contact for help/feedback?
 Who built this site, and why?
 
 	
-	SQLFiddle.com was built by me, Jake Feasel, 
-	a web developer from Anchorage, Alaska.  I started developing the site around the middle of January, 2012.
+	SQLFiddle.com was built by me, Jake Feasel, a web developer from Anchorage, Alaska.  I started developing the site around the middle of January, 2012.
 	
-	I had been having fun answering questions on StackOverflow, particularly related to a few main categories: 
-	ColdFusion, jQuery, and SQL.
+	I had been having fun answering questions on StackOverflow, particularly related to a few main categories: ColdFusion, jQuery, and SQL.
 
-	I found JS Fiddle to be a great tool for answering javascript / jQuery questions,
-	but I also found that there was nothing available that offered similar functionality for the SQL questions. So, that
-	was my inspiration to build this site.  Basically, I built this site as a tool for developers like me to be more
-	effective in assisting other developers.
+	I found JS Fiddle to be a great tool for answering javascript / jQuery questions, but I also found that there was nothing available that offered similar functionality for the SQL questions. So, that was my inspiration to build this site.  Basically, I built this site as a tool for developers like me to be more effective in assisting other developers.
 	
 
 
 
 What platform is it running on?
 
-	This site uses many different technologies.  The primary ones, in order from client to server are these:
+This site uses many different technologies.  The primary ones, in order from client to server are these:
 	
-	
-		CodeMirror - for browser-based SQL editing with text highlighting.
-		jQuery - AJAX, plus misc JS goodness. (Also jq plugins Block UI and BBQ).
-		ColdFusion on Wheels - ColdFusion framework modeled after Ruby on Rails.
-		Railo - Open Source CFML Application server.
-		Tomcat - Open Source Java Servlet Engine
-		Apache HTTPD - Open Source HTTP Server
-		PostgreSQL - Among others, of course, but PG is the central database host for this platform.
-		CentOS - Free, stable Linux distribution.
-		GeoNorth - Hosting and Consulting Company (who I work for), generously setting aside resources for this site.
-		StrataScale - VPS Cloud Hosting Provider
+CodeMirror - for browser-based SQL editing with text highlighting.
+jQuery - AJAX, plus misc JS goodness. (Also jq plugins Block UI and BBQ).
+ColdFusion on Wheels - ColdFusion framework modeled after Ruby on Rails.
+Railo - Open Source CFML Application server.
+Tomcat - Open Source Java Servlet Engine
+Apache HTTPD - Open Source HTTP Server
+PostgreSQL - Among others, of course, but PG is the central database host for this platform.
+CentOS - Free, stable Linux distribution.
+GeoNorth - Hosting and Consulting Company (who I work for), generously setting aside resources for this site.
+StrataScale - VPS Cloud Hosting Provider
 	
 
 	
