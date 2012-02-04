@@ -88,7 +88,7 @@ component extends="Controller" {
 	
 	function runQuery() {
 		
-		var schema_def = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND short_code='#params.schema_short_code#'", cache="true");
+		var schema_def = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND short_code='#params.schema_short_code#'");
 		var md5 = Lcase(hash(params.sql, "MD5"));
 
 		if (! IsObject(schema_def))
@@ -139,7 +139,7 @@ component extends="Controller" {
 			
 			if (ArrayLen(parts) >= 2 AND IsNumeric(parts[1]))
 			{
-				schema_def = model("Schema_Def").findOne(where="db_type_id=#parts[1]# AND short_code = '#parts[2]#'", cache="true");
+				schema_def = model("Schema_Def").findOne(where="db_type_id=#parts[1]# AND short_code = '#parts[2]#'");
 				
 				if (IsObject(schema_def))
 				{
