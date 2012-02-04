@@ -1,6 +1,7 @@
-component extends="Controller" {
+<cfcomponent extends="Controller">
 
-	function cleanup() {
+	<cffunction name="cleanup">
+		<cfscript>
 	
 		var stale_schemas = model("Schema_Def").findAll(where="last_used < '#DateAdd('n', -30, Now())#' AND current_host_id IS NOT NULL", returnAs="objects");
 		var i = 0;
@@ -8,7 +9,16 @@ component extends="Controller" {
 		{
 			stale_schemas[i].purgeDatabase(1);
 		}
-		renderNothing();
-	}
 
-}
+		
+		</cfscript>
+
+		<cfobjectcache 
+		    action = "clear" />
+
+		<cfset renderNothing()>
+
+
+	</cffunction>
+
+</cfcomponent>
