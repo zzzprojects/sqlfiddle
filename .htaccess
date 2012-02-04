@@ -7,5 +7,5 @@
 
 Options +FollowSymLinks
 RewriteEngine On
-RewriteCond %{REQUEST_URI} !^.*/(flex2gateway|jrunscripts|cfide|cfformgateway|cffileservlet|railo-context|files|images|javascripts|miscellaneous|stylesheets|robots.txt|sitemap.xml|rewrite.cfm|favicon.ico)($|/.*$) [NC]
+RewriteCond %{REQUEST_URI} !^.*/(flex2gateway|jrunscripts|cfide|cfformgateway|cffileservlet|railo-context|files|images|javascripts|miscellaneous|stylesheets|robots.txt|sitemap.xml|rewrite.cfm|favicon.ico|index.html)?($|/.*$) [NC]
 RewriteRule ^(.*)$ ./rewrite.cfm/$1 [NS,L]
