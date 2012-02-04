@@ -27,8 +27,31 @@ function updateSampleButtonStatus() {
 
 $(function () {
 	
-	displayDatabaseNotes();
-	updateSampleButtonStatus();
+	
+	$.getJSON("/index.cfm/fiddles/db_types", function (resp) {
+			
+		db_types = $("#db_type_id");
+		for (var i = 0; i < resp["ROWCOUNT"]; i++)
+		{
+			var opt = $("<option>", {value : resp["DATA"]["id"][i] })
+							.text(resp["DATA"]["friendly_name"][i])
+							.data('note', resp["DATA"]["notes"][i])
+							.data('fragment', resp["DATA"]["sample_fragment"][i]);
+						
+			db_types.append(opt);
+		
+		}
+
+		reloadContent();
+		
+		$('option:first', db_types).remove();
+		
+		displayDatabaseNotes();
+		updateSampleButtonStatus();
+
+
+	});
+	
 	
 	$("#db_type_id").change(function () {
 		displayDatabaseNotes();
@@ -98,7 +121,6 @@ $(function () {
 				}
 			}
 		}
-		reloadContent();
 		
 		$(window).bind( 'hashchange', reloadContent);
 	
@@ -241,6 +263,50 @@ $(function () {
 		
 		
 	});
+
+	
+	$("#parse").click(function () {
+	
+	    var raw = $("#raw").val();
+	    var lines = raw.split("\n");
+	
+	    var output = "INSERT INTO Table1\n( ";
+	
+	    var elements = lines[0].split('|');
+	
+	    for (var j = 1; j < elements.length-1; j++)
+	    {
+	            var value = elements[j].replace(/(^\s*)|(\s*$)/g, '');
+	            output +=  value + ((j < elements.length-2) ? "," : "");
+	    }
+	
+	
+	    output += " )\nVALUES\n";
+	
+	    for (var i=2;i<lines.length;i++)
+	    {
+	            output += "( ";
+	            var elements = lines[i].split('|');
+	
+	            for (var j = 1; j < elements.length-1; j++)
+	            {
+	                    var value = elements[j].replace(/(^\s*)|(\s*$)/g, '');
+	                    if (isNaN(value))
+	                            value = "'" + value + "'";
+	                    output +=  value + ((j < elements.length-2) ? "," : "");
+	            }
+	
+	            output += ")" + ((i < lines.length-1) ? ",\n" : "");
+	            //output += (i + ": " + lines[i] + "<br>");
+	    }
+	
+	
+	    $("#output").html(output);
+	
+	});
+
+
+
 
 	$.blockUI.defaults.overlayCSS.cursor = 'auto';
 	$.blockUI.defaults.css.cursor = 'auto';

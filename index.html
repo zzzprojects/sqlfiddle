@@ -1,0 +1,102 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+	<head>
+		
+		<link href="/stylesheets/codemirror.css" media="all" rel="stylesheet" type="text/css" />
+
+		<link href="/stylesheets/fiddle.css" media="all" rel="stylesheet" type="text/css" />
+
+		
+		<title>SQL Fiddle</title>
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-28576776-1']);
+  _gaq.push(['_setDomainName', 'sqlfiddle.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+	</head>
+	<body>
+		
+<form action='' method='post' id="fiddleForm" onSubmit="return false;">
+	<div class="field_groups">
+		<fieldset id="db_type_fieldset">
+			<legend>Database Type</legend>
+				<select id="db_type_id"><option disabled>--- Loading ---</option>
+				</select>
+
+				<input type="button" value="View Sample Fiddle" id="sample">
+				
+		</fieldset>
+		<fieldset id="schema_fieldset">
+			<legend>Schema DDL</legend>
+			<span id="database_notes"></span>
+			<textarea onkeypress="handleSchemaChange()" id="schema_ddl" style="height: 350px; width: 100%;" name="schema_ddl"></textarea>		
+			<span id="schema_notices"></span>
+			
+			<input type="button" value="Build Live Schema from DDL" id="buildSchema">
+			
+
+		</fieldset>
+		
+		<div id="hosting">
+			<h4>Hosting Provided By:</h4>
+			<ul id="hostingPartners">
+				<li id="gn"><a href="http://www.geonorth.com"><img src="images/geonorth.png" alt="GeoNorth, LLC"></a><span>Need more direct, hands-on assistance with your database problems? Contact GeoNorth.  We're database experts.</span></li>
+				<li id="strata"><a href="http://www.stratascale.com"><img src="images/stratascale.png"></a><span>Looking for a great cloud hosting environment for your database? Contact Stratascale.</span></li>
+			</ul>
+		</div>
+		<div id="meta">
+			<a href="/index.cfm?controller=meta&action=about">About SQL Fiddle</a>
+			
+		</div>
+
+
+	</div>
+	<input type="hidden" name="schema_short_code" id="schema_short_code" value="">
+	<div class="field_groups schema_ready">
+		<fieldset id="schema_fieldset">
+			<legend>SQL</legend>
+			<textarea id="sql" style="height: 350px; width: 100%;" name="sql"></textarea>		
+			<input type="button" value="Run Query" id="runQuery" style="float:right">
+		</fieldset>
+		<input type="hidden" name="query_id" id="query_id" value="">	
+		<fieldset id="results_fieldset">
+			<legend>Results</legend>
+			<table id="results" cellspacing="0" cellpadding="0">
+				<tr><td>---</td></tr>
+			</table><br>
+			<span id="results_notices"></span>
+		</fieldset>
+	</div>
+</form>
+
+
+	</body>
+
+	<script src="/javascripts/jquery.min.js" type="text/javascript"></script>
+
+	<script src="/javascripts/codemirror.js" type="text/javascript"></script>
+
+	<script src="/javascripts/mode/mysql/mysql.js" type="text/javascript"></script>
+		
+	<script src="/javascripts/jquery.blockUI.js" type="text/javascript"></script>
+
+	<script src="/javascripts/jquery.ba-bbq.min.js" type="text/javascript"></script>
+
+	<script src="/javascripts/fiddle.js" type="text/javascript"></script>
+
+	
+	
+</html>
