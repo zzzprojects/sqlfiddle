@@ -93,13 +93,13 @@ $(function () {
 					if (resp["short_code"])
 						$("#schema_short_code").val(resp["short_code"]);
 						
-					if (resp["ddl"])
+					if (typeof resp["ddl"] !== "undefined")
 					{
 						schema_ddl_editor.setValue(resp["ddl"]);		
 						$("#schema_ddl").data("ready", true);
 						$(".schema_ready").unblock();
 				
-						if (resp["sql"])
+						if (typeof resp["sql"] !== "undefined")
 						{
 							sql_editor.setValue(resp["sql"]);
 							buildResultsTable(resp);
@@ -198,6 +198,8 @@ $(function () {
 					}
 					$("#results").append(tmp_html);
 				}
+				if (typeof resp["EXECUTIONTIME"] === "undefined")
+					resp["EXECUTIONTIME"] = 0;
 				$("#results_notices").text("Record Count: " + j + "; Execution Time: " + resp["EXECUTIONTIME"] + "ms");
 			}
 			else

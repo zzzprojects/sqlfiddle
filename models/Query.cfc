@@ -34,11 +34,13 @@
 				<cfif IsDefined("ret")>
 					<cfset returnVal.succeeded = true>
 					<cfset returnVal.results = ret>
+					<cfif IsDefined("resultInfo.ExecutionTime")>
+						<cfset returnVal.ExecutionTime = resultInfo.ExecutionTime>
+					</cfif>
 				<cfelse>
 					<cfset returnVal.succeeded = false>
 					<cfset returnVal.errorMessage = "Query returned no results.  Include SELECT query as final portion of your SQL to view how your query modifies the schema (use semi-colons to separate different queries within your SQL).">
 				</cfif>
-				<cfset returnVal.ExecutionTime = resultInfo.ExecutionTime>
 				
 				<cfcatch type="database">
 					<cfset returnVal.succeeded = false>
