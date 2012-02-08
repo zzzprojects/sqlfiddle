@@ -104,14 +104,14 @@
 		<cfif not IsDefined("this.db_type")>
 			<cfset this.db_type = model("DB_Type").findByKey(this.db_type_id)>
 		</cfif>
-		<cfset var sql = Replace(this.db_type.drop_script_template, '##databaseName##', databaseName, 'ALL')>
+		<cfset var sql = Replace(this.db_type.drop_script_template, '##databaseName##', ucase(databaseName), 'ALL')>
 
-        <cfif Len(this.db_type.batch_separator)>
+	        <cfif Len(this.db_type.batch_separator)>
 	                <cfset sql = REReplace(sql, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
 		</cfif>
 
-        <cfloop list="#sql#" index="statement" delimiters="#chr(7)#">
-			<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(sql)#</cfquery>
+        	<cfloop list="#sql#" index="statement" delimiters="#chr(7)#">
+			<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(statement)#</cfquery>
 		</cfloop>
 
 
