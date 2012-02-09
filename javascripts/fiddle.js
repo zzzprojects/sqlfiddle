@@ -201,6 +201,10 @@ $(function () {
 				if (typeof resp["EXECUTIONTIME"] === "undefined")
 					resp["EXECUTIONTIME"] = 0;
 				$("#results_notices").text("Record Count: " + j + "; Execution Time: " + resp["EXECUTIONTIME"] + "ms");
+				if (j == 0)
+				{
+					$("#results_notices").html($("#results_notices").text() + "<br><i style='font-size:9pt'>Note: you must include a SELECT as the final statement to see records returned.  All changes to the schema will be immediately rolled back.</i>");
+				}
 			}
 			else
 			{
