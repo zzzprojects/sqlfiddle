@@ -23,30 +23,24 @@
 	
 	<cffunction name="initializeDSN">
 		<cfargument name="databaseName" type="string">
-				
-		<cfadmin
-		    action="updateDatasource"
-		    type="web"
-		    password="#get('CFAdminPassword')#"
-		    classname="#this.db_type.jdbc_class_name#"
-		    newName="#this.db_type_id#_#arguments.databaseName#"
-		    name="#this.db_type_id#_#arguments.databaseName#"
-		    dsn="#Replace(this.jdbc_url_template, '##databaseName##', "db_" & arguments.databaseName, 'ALL')#"
-		    dbusername="user_#arguments.databaseName#"
-		    dbpassword="#arguments.databaseName#"
-		    connectionTimeout="-1"
-		    custom="#this.db_type.custom_jdbc_attributes#"
-		    allowed_select="true"
-		    allowed_insert="true"
-		    allowed_update="true"
-		    allowed_delete="true"
-		    allowed_alter="true"
-		    allowed_drop="true"
-		    allowed_revoke="false"
-		    allowed_create="true"
-		    allowed_grant="false">
-			
-		
+
+		<cfscript>
+			setDatasource(
+				adminPassword=get('CFAdminPassword'),
+				name="#this.db_type_id#_#arguments.databaseName#",
+				class=this.db_type.jdbc_class_name,
+				jdbcurl="#Replace(this.jdbc_url_template, '##databaseName##', "db_" & arguments.databaseName, 'ALL')#",
+				username="user_#arguments.databaseName#",
+				password=arguments.databaseName,
+				customJDBCArguments=this.db_type.custom_jdbc_attributes,
+				timeout=0,
+				allowed_grant=false,
+				allowed_revoke=false,
+				pooling=false,
+				description = "Created on #DateFormat(Now(), 'mm/dd/yyyy')# #TimeFormat(Now(), 'hh:mm:ss tt')#"
+			);
+		</cfscript>
+
 	</cffunction>
 	
 	<cffunction name="initializeSchema" output=true>
@@ -66,34 +60,30 @@
 			<cfquery datasource="#this.db_type_id#_#arguments.datasourceName#">#PreserveSingleQuotes(statement)#</cfquery>
 		</cfloop>
 
-		<cfadmin
-		    action="updateDatasource"
-		    type="web"
-		    password="#get('CFAdminPassword')#"
-		    classname="#this.db_type.jdbc_class_name#"
-		    newName="#this.db_type_id#_#arguments.datasourceName#"
-		    name="#this.db_type_id#_#arguments.datasourceName#"
-		    dsn="#Replace(this.jdbc_url_template, '##databaseName##', "db_" & arguments.datasourceName, 'ALL')#"
-		    dbusername="user_#arguments.datasourceName#"
-		    dbpassword="#arguments.datasourceName#"
-		    custom="#this.db_type.custom_jdbc_attributes#"
-		    connectionTimeout="-1"
-		    allowed_select="true"
-		    allowed_insert="true"
-		    allowed_update="true"
-		    allowed_delete="true"
-		    allowed_alter="false"
-		    allowed_drop="false"
-		    allowed_revoke="false"
-		    allowed_create="false"
-		    allowed_grant="false">
-
-	</cffunction>
-
-	
-	<cffunction name="dropDSN">
-		<cfargument name="databaseName" type="string">
-		<cfadmin action="removeDatasource" name="#this.db_type_id#_#databaseName#" type="web" password="#get('CFAdminPassword')#">
+		<cfscript>
+			setDatasource(
+				adminPassword=get('CFAdminPassword'),
+				name="#this.db_type_id#_#arguments.datasourceName#",
+				class=this.db_type.jdbc_class_name,
+				jdbcurl="#Replace(this.jdbc_url_template, '##databaseName##', "db_" & arguments.datasourceName, 'ALL')#",
+				username="user_#arguments.datasourceName#",
+				password=arguments.datasourceName,
+				customJDBCArguments=this.db_type.custom_jdbc_attributes,
+				timeout=0,
+			    allowed_select=true,
+			    allowed_insert=true,
+			    allowed_update=true,
+			    allowed_delete=true,
+			    allowed_alter=false,
+			    allowed_drop=false,
+			    allowed_revoke=false,
+			    allowed_create=false,
+			    allowed_grant=false,
+				pooling=false,
+				description = "Created on #DateFormat(Now(), 'mm/dd/yyyy')# #TimeFormat(Now(), 'hh:mm:ss tt')#"
+			);
+		</cfscript>
+		
 	</cffunction>
 
 	

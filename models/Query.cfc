@@ -44,7 +44,13 @@
 				
 				<cfcatch type="database">
 					<cfset returnVal.succeeded = false>
-					<cfset returnVal.errorMessage = cfcatch.message & ": " & cfcatch.queryError>
+					
+					<cfif IsDefined("cfcatch.queryError")>
+						<cfset returnVal.errorMessage = cfcatch.message & ": " & cfcatch.queryError>
+					<cfelse>
+						<cfset returnVal.errorMessage = cfcatch.message>
+					</cfif>
+					
 				</cfcatch>
 				<cffinally>		
 					<cftransaction action="rollback" />

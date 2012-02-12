@@ -2,12 +2,12 @@ component extends="Controller" {
 
 	function index() {
 		//db_types = model("DB_Type").findAll(order="friendly_name", cache="true");		
-		location(url='/index.html', addtoken=false);
+		location(url='index.html', addtoken=false);
 	}
 
 	function db_types() {
 		db_types = model("DB_Type").findAll(order="friendly_name", cache="true");			
-		renderText(SerializeJSON(db_types, true));
+		renderText(SerializeJSON(db_types));
 	}
 
 	function bootstrap() {
