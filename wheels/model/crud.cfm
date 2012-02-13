@@ -185,13 +185,13 @@
 							for (loc.i=1; loc.i <= loc.iEnd; loc.i++)
 							{
 								loc.property = primaryKeys(loc.i);
-								ArrayAppend(loc.keyComboValues, "#tableName()#.#loc.property# = #variables.wheels.class.adapter.$quoteValue(loc.values[loc.property][loc.k])#");
+								ArrayAppend(loc.keyComboValues, "#tableName()#.#loc.property# = #variables.wheels.class.adapter.$quoteValue(str=loc.values[loc.property][loc.k], type=validationTypeForProperty(loc.property))#");
 							}
 							loc.paginationWhere = ListAppend(loc.paginationWhere, "(" & ArrayToList(loc.keyComboValues, " AND ") & ")", Chr(7));
  						}
 						loc.paginationWhere = Replace(loc.paginationWhere, Chr(7), " OR ", "all");
  						if (Len(arguments.where) && Len(arguments.include)) // this can be improved to also check if the where clause checks on a joined table, if not we can use the simple where clause with just the ids
- 							arguments.where = "(" & arguments.where & ")" & " AND " & loc.paginationWhere;
+ 							arguments.where = "(#arguments.where#) AND (#loc.paginationWhere#)";
  						else
 						{
 							arguments.where = loc.paginationWhere;
@@ -997,6 +997,13 @@
 	<cfargument name="reload" type="boolean" required="true">
 	<cfscript>
 		var loc = {};
+		
+		// if no changes, no need to perform update
+		if(!hasChanged())
+		{
+			return true;			
+		}
+		
 		if (variables.wheels.class.timeStampingOnUpdate)
 			$timestampProperty(property=variables.wheels.class.timeStampOnUpdateProperty);
 		loc.sql = [];

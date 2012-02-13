@@ -687,12 +687,7 @@
 				loc.value = this[ListGetAt(arguments.keys, loc.i)];
 			else 
 				loc.value = "";
-			loc.toAppend = loc.key & "=";
-			if (!IsNumeric(loc.value))
-				loc.toAppend = loc.toAppend & "'";
-			loc.toAppend = loc.toAppend & loc.value;
-			if (!IsNumeric(loc.value))
-				loc.toAppend = loc.toAppend & "'";
+			loc.toAppend = loc.key & "=" & variables.wheels.class.adapter.$quoteValue(str=loc.value, type=validationTypeForProperty(loc.key));
 			loc.returnValue = ListAppend(loc.returnValue, loc.toAppend, " ");
 			if (loc.i < loc.iEnd)
 				loc.returnValue = ListAppend(loc.returnValue, "AND", " ");

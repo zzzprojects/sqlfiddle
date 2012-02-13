@@ -77,8 +77,11 @@
 			case "binary":
 				arguments.value = ToString(arguments.value);
 				break;
-			case "float": case "integer": case "boolean":
+			case "float": case "integer":
 				arguments.value = Val(arguments.value);
+				break;
+			case "boolean":
+				arguments.value = ( arguments.value IS true );
 				break;
 			case "datetime":
 				// createdatetime will throw an error

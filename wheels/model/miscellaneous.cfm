@@ -362,7 +362,7 @@
 		arguments.maxRows = arguments.perPage;
 
 		// endrow for cfloop
-		arguments.endRow = arguments.startRow + arguments.perPage;
+		arguments.endRow = (arguments.startRow - 1) + arguments.perPage;
 
 		// endRow shouldn't be greater then the totalRecords or less than startRow
 		if (arguments.endRow gte arguments.totalRecords)
