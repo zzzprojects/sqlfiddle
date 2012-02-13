@@ -33,7 +33,7 @@
 		
 			You do not have a particular database platform readily available, but you would like to see what a given
 			query would look like in that environment.  Using SQL Fiddle, you don't need to bother spinning up a 
-			whole installation for your evaluation; just creating your database and queries here!
+			whole installation for your evaluation; just create your database and queries here!
 		
 		</li>
 		

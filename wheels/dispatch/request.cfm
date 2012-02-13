@@ -377,6 +377,10 @@
 			arguments.params.action = arguments.route.action;
 		}
 
+		// filter out illegal characters from the controller and action arguments
+		arguments.params.controller = ReReplace(arguments.params.controller, "[^0-9A-Za-z-_]", "", "all");
+		arguments.params.action = ReReplace(arguments.params.action, "[^0-9A-Za-z-_]", "", "all");
+
 		// convert controller to upperCamelCase and action to normal camelCase
 		arguments.params.controller = REReplace(arguments.params.controller, "(^|-)([a-z])", "\u\2", "all");
 		arguments.params.action = REReplace(arguments.params.action, "-([a-z])", "\u\1", "all");

@@ -11,7 +11,7 @@ function displayDatabaseNotes() {
 }
 
 function updateSampleButtonStatus() {
-	if ($("#db_type_id :selected").data('fragment').length == 0)
+	if (! $("#db_type_id :selected").data('fragment'))
 	{
 		$("#sample")
 			.prop("disabled", true)
@@ -28,16 +28,22 @@ function updateSampleButtonStatus() {
 $(function () {
 	
 	
-	$.getJSON("/index.cfm/fiddles/db_types", function (resp) {
+	$.getJSON("index.cfm/fiddles/db_types", function (resp) {
 			
-		db_types = $("#db_type_id");
-		for (var i = 0; i < resp["ROWCOUNT"]; i++)
+		var db_types = $("#db_type_id");
+		var columnIdx = {};
+		for (var i = 0; i < resp["COLUMNS"].length; i++)
 		{
-			var opt = $("<option>", {value : resp["DATA"]["id"][i] })
-							.text(resp["DATA"]["friendly_name"][i])
-							.data('note', resp["DATA"]["notes"][i])
-							.data('fragment', resp["DATA"]["sample_fragment"][i]);
-						
+			columnIdx[resp["COLUMNS"][i]] = i;
+		}
+		
+		for (var i = 0; i < resp["DATA"].length; i++)
+		{
+			var opt = $("<option>", {value : resp["DATA"][i][columnIdx["ID"]] })
+							.text(resp["DATA"][i][columnIdx["FRIENDLY_NAME"]])
+							.data('note', resp["DATA"][i][columnIdx["NOTES"]])
+							.data('fragment', resp["DATA"][i][columnIdx["SAMPLE_FRAGMENT"]]);
+
 			db_types.append(opt);
 		
 		}
@@ -122,7 +128,7 @@ $(function () {
 			   )
 			{
 
-			$.getJSON("/index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
+			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
 					if (resp["db_type_id"])
 					{
 						$("#db_type_id").val(resp["db_type_id"]);
@@ -133,13 +139,13 @@ $(function () {
 					if (resp["short_code"])
 						$("#schema_short_code").val(resp["short_code"]);
 						
-					if (resp["ddl"])
+					if (typeof resp["ddl"] !== "undefined")
 					{
 						schema_ddl_editor.setValue(resp["ddl"]);		
 						$("#schema_ddl").data("ready", true);
 						$(".schema_ready").unblock();
 				
-						if (resp["sql"])
+						if (typeof resp["sql"] !== "undefined")
 						{
 							sql_editor.setValue(resp["sql"]);
 							buildResultsTable(resp);
@@ -176,7 +182,7 @@ $(function () {
 			$.ajax({
 				
 				type: "POST",
-				url: "/index.cfm/fiddles/createSchema",
+				url: "index.cfm/fiddles/createSchema",
 				data: {
 					db_type_id: $("#db_type_id").val(),
 					schema_ddl: schema_ddl_editor.getValue()
@@ -238,7 +244,13 @@ $(function () {
 					}
 					$("#results").append(tmp_html);
 				}
+				if (typeof resp["EXECUTIONTIME"] === "undefined")
+					resp["EXECUTIONTIME"] = 0;
 				$("#results_notices").text("Record Count: " + j + "; Execution Time: " + resp["EXECUTIONTIME"] + "ms");
+				if (j == 0)
+				{
+					$("#results_notices").html($("#results_notices").text() + "<br><i style='font-size:9pt'>Note: you must include a SELECT as the final statement to see records returned.  All changes to the schema will be immediately rolled back.</i>");
+				}
 			}
 			else
 			{
@@ -255,7 +267,7 @@ $(function () {
 			$.ajax({
 				
 				type: "POST",
-				url: "/index.cfm/fiddles/runQuery",
+				url: "index.cfm/fiddles/runQuery",
 				data: {
 					db_type_id: $("#db_type_id").val(),
 					schema_short_code: $("#schema_short_code").val(),

@@ -591,7 +591,7 @@
 		// create the WHERE clause to be used in the query that checks if an identical value already exists
 		// wrap value in single quotes unless it's numeric
 		// example: "userName='Joe'"
-		ArrayAppend(loc.where, "#arguments.property#=#variables.wheels.class.adapter.$quoteValue(this[arguments.property])#");
+		ArrayAppend(loc.where, "#arguments.property#=#variables.wheels.class.adapter.$quoteValue(str=this[arguments.property], type=validationTypeForProperty(arguments.property))#");
 
 		// add scopes to the WHERE clause if passed in, this means that checks for other properties are done in the WHERE clause as well
 		// example: "userName='Joe'" becomes "userName='Joe' AND account=1" if scope is "account" for example
@@ -602,12 +602,12 @@
 			for (loc.i=1; loc.i <= loc.iEnd; loc.i++)
 			{
 				loc.property = ListGetAt(arguments.scope, loc.i);
-				ArrayAppend(loc.where, "#loc.property#=#variables.wheels.class.adapter.$quoteValue(this[loc.property])#");
+				ArrayAppend(loc.where, "#loc.property#=#variables.wheels.class.adapter.$quoteValue(str=this[loc.property], type=validationTypeForProperty(loc.property))#");
 			}
 		}
 
 		// try to fetch existing object from the database
-		loc.existingObject = findOne(where=ArrayToList(loc.where, " AND "), reload=true, includeSoftDeletes=arguments.includeSoftDeletes);
+		loc.existingObject = findOne(select=primaryKey(),where=ArrayToList(loc.where, " AND "), reload=true, includeSoftDeletes=arguments.includeSoftDeletes);
 
 		// we add an error if an object was found in the database and the current object is either not saved yet or not the same as the one in the database
 		if (IsObject(loc.existingObject) && (isNew() || loc.existingObject.key() != key($persisted=true)))

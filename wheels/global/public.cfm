@@ -396,9 +396,17 @@
 			else
 				loc.returnValue = request.cgi.server_name & loc.returnValue;
 			if (Len(arguments.protocol))
+			{
 				loc.returnValue = arguments.protocol & "://" & loc.returnValue;
+			}
+			else if (request.cgi.server_port_secure)
+			{
+				loc.returnValue = "https://" & loc.returnValue;
+			}
 			else
-				loc.returnValue = SpanExcluding(LCase(request.cgi.server_protocol), "/") & "://" & loc.returnValue;
+			{
+				loc.returnValue = "http://" & loc.returnValue;
+			}
 		}
 	</cfscript>
 	<cfreturn loc.returnValue>
