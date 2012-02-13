@@ -69,13 +69,21 @@ $(function () {
 			Parse: function () {
 				if (! $("#raw").hasClass("disabledText") && $.trim($("#raw").val()).length)
 				{
-					var builder = new ddl_builder({tableName: 'FooTable'}).setupForDBType($("#db_type_id option:selected").data("simple_name"));
+					var builder = new ddl_builder({tableName: $("#tableName").val()}).setupForDBType($("#db_type_id option:selected").data("simple_name"));
 					$("#parseResults").text(builder.parse($("#raw").val()));
 				}
 			},
 			"Append to DDL": function () {
 				
-				console.log('Clicked parse')
+				if (! $("#raw").hasClass("disabledText") && $.trim($("#raw").val()).length)
+				{
+					var builder = new ddl_builder({tableName: $("#tableName").val()}).setupForDBType($("#db_type_id option:selected").data("simple_name"));
+					schema_ddl_editor.setValue(
+						schema_ddl_editor.getValue() + "\n" + builder.parse($("#raw").val())
+					);
+					$(this).dialog('close');
+					
+				}
 				
 			}
 			
