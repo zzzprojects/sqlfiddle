@@ -86,6 +86,18 @@
 		
 	</cffunction>
 
+
+	<cffunction name="dropDSN">
+		<cfargument name="databaseName" type="string">
+		<cfscript>
+			deleteDatasource(
+				adminPassword=get('CFAdminPassword'),
+				name="#this.db_type_id#_#arguments.databaseName#"
+			);
+		</cfscript>
+	</cffunction>
+
+
 	
 	<cffunction name="dropDatabase">
 		<cfargument name="databaseName" type="string">
