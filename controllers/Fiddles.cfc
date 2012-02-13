@@ -1,17 +1,16 @@
 component extends="Controller" {
 
 	function index() {
-		//db_types = model("DB_Type").findAll(order="friendly_name", cache="true");		
 		location(url='index.html', addtoken=false);
 	}
 
 	function db_types() {
-		db_types = model("DB_Type").findAll(order="friendly_name", cache="true");			
+		db_types = model("DB_Type").findAll(select="id,full_name,sample_fragment,simple_name,notes", order="full_name", cache="true");			
 		renderText(SerializeJSON(db_types));
 	}
 
 	function bootstrap() {
-		db_types = model("DB_Type").findAll(order="friendly_name", cache="true");
+		db_types = model("DB_Type").findAll(order="full_name", cache="true");
 		renderPage(layout="/layout_bootstrap");			
 	}
 
@@ -87,6 +86,9 @@ component extends="Controller" {
 	}
 	
 	function runQuery() {
+	
+		if (Len(params.sql) GT 8000)
+			throw ("Your sql is too large (more than 8000 characters).  Please submit a smaller SQL statement.");
 		
 		var schema_def = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND short_code='#params.schema_short_code#'");
 		var md5 = Lcase(hash(params.sql, "MD5"));

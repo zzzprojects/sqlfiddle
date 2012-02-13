@@ -40,8 +40,9 @@ $(function () {
 		for (var i = 0; i < resp["DATA"].length; i++)
 		{
 			var opt = $("<option>", {value : resp["DATA"][i][columnIdx["ID"]] })
-							.text(resp["DATA"][i][columnIdx["FRIENDLY_NAME"]])
+							.text(resp["DATA"][i][columnIdx["FULL_NAME"]])
 							.data('note', resp["DATA"][i][columnIdx["NOTES"]])
+							.data('simple_name', resp["DATA"][i][columnIdx["SIMPLE_NAME"]])
 							.data('fragment', resp["DATA"][i][columnIdx["SAMPLE_FRAGMENT"]]);
 
 			db_types.append(opt);
@@ -68,7 +69,7 @@ $(function () {
 			Parse: function () {
 				if (! $("#raw").hasClass("disabledText") && $.trim($("#raw").val()).length)
 				{
-					var builder = new ddl_builder({tableName: 'FooTable'}).setupForDBType('Oracle');
+					var builder = new ddl_builder({tableName: 'FooTable'}).setupForDBType($("#db_type_id option:selected").data("simple_name"));
 					$("#parseResults").text(builder.parse($("#raw").val()));
 				}
 			},

@@ -34,8 +34,8 @@ SET default_with_oids = false;
 
 CREATE TABLE db_types (
     id integer NOT NULL,
-    friendly_name character varying(50),
-    jdbc_driver_name character varying(50),
+    full_name character varying(50),
+    simple_name character varying(50),
     setup_script_template text,
     jdbc_class_name character varying(50),
     drop_script_template text,
