@@ -84,12 +84,14 @@ VALUES\n\
 								fieldSuffix: ']', 
 							});	
 			break;
+/*
 			case 'MySQL':
 				this.setup({ 
 								fieldPrefix: '`',
 								fieldSuffix: '`', 
 							});	
 			break;
+*/
 			case 'Oracle':	
 				var template = 
 "CREATE TABLE {{fieldPrefix}}{{tableName}}{{fieldSuffix}}\n\
