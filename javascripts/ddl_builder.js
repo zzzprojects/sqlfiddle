@@ -279,7 +279,21 @@ SELECT * FROM dual";
 	/* HandlebarsJS-using code below */
     
 	Handlebars.registerHelper("formatted_field", function(root) {
-		var colType = root.columns[this.index].type;
+	
+		var colType = '';
+		var index = -1;
+		for (var j = 0; j < root.columns.length; j++)
+		{
+			if (root.columns[j])
+				index++;
+				
+			if (index == this.index)
+			{
+				colType = root.columns[j].type;
+				break;
+			}
+		}
+		
 		
 		if (!this.v.length)
 			return 'NULL';
