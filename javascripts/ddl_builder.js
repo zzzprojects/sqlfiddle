@@ -52,7 +52,7 @@ INSERT INTO {{fieldPrefix}}{{tableName}}{{fieldSuffix}}\n\
 	({{#each_with_index columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}}{{/each_with_index}})\n\
 VALUES\n\
 	{{#each_with_index data}}{{#if index}},\n\
-	{{/if}}({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}}){{/each_with_index}}";
+	{{/if}}({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}}){{/each_with_index}};";
 
 		this.compiledTemplate = Handlebars.compile(this.ddlTemplate);
 		this.setup(args);
@@ -89,6 +89,12 @@ VALUES\n\
 				this.setup({ 
 								fieldPrefix: '`',
 								fieldSuffix: '`', 
+							});	
+			break;
+			case 'PostgreSQL':
+				this.setup({ 
+								fieldPrefix: '"',
+								fieldSuffix: '"', 
 							});	
 			break;
 */
@@ -159,12 +165,12 @@ SELECT * FROM dual";
 	    				this_separator = new RegExp("\\s+");
 	    			else
 	    				this_separator = $.trim(this_separator);
-					console.log(found_separator instanceof RegExp);
+
 					if (this_separator instanceof RegExp || this_separator.length)
 					{
 		    			if (!(found_separator instanceof RegExp) && !found_separator.length)
 		    				found_separator = this_separator;
-		    			else if (found_separator != this_separator)
+		    			else if (found_separator.toString() != this_separator.toString())
 		    				return {status: false, message: 'Unable to find consistent column separator in header row'}; // different separators founds?
 	    			}
 	    			else if (! (this_separator instanceof RegExp) && !(found_separator instanceof RegExp) && !found_separator.length)	
@@ -295,7 +301,7 @@ SELECT * FROM dual";
 		}
 		
 		
-		if (!this.v.length)
+		if (!this.v.length || this.v.toUpperCase() == 'NULL')
 			return 'NULL';
 		if (colType == 'charType')
 			return new Handlebars.SafeString("'" + this.v.replace(/'/g, "''") + "'");
