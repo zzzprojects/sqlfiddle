@@ -52,6 +52,46 @@ $(function () {
 
 	});
 	
+	$("#textToDDLModal").dialog({
+		title: "Transform Text to DDL",
+		autoOpen: false,
+		width: 520,
+		zIndex: 2000,
+		buttons: {
+			
+			Parse: function () {
+				if (! $("#raw").hasClass("disabledText") && $.trim($("#raw").val()).length)
+				{
+					var builder = new ddl_builder({tableName: 'FooTable'}).setupForDBType('Oracle');
+					$("#parseResults").text(builder.parse($("#raw").val()));
+				}
+			},
+			"Append to DDL": function () {
+				
+				console.log('Clicked parse')
+				
+			}
+			
+		}
+	});
+	
+	$("#textParse").click(function () {
+		$("#textToDDLModal").dialog('open');
+	});
+	
+	$("#raw").bind("click", resetDisabledText);
+	$("#raw").bind("keydown", resetDisabledText);
+	
+	function resetDisabledText() {
+
+		$(this).removeClass("disabledText");
+		
+		
+		if ($.trim($(this).val()) == 'Paste formatted text here.')
+			$(this).val("");
+		
+	}
+	
 	
 	$("#db_type_id").change(function () {
 		displayDatabaseNotes();
@@ -268,46 +308,11 @@ $(function () {
 	$("#parse").click(function () {
 	
 	    var raw = $("#raw").val();
-	    var lines = raw.split("\n");
-	
-	    var output = "INSERT INTO Table1\n( ";
-	
-	    var elements = lines[0].split('|');
-	
-	    for (var j = 1; j < elements.length-1; j++)
-	    {
-	            var value = elements[j].replace(/(^\s*)|(\s*$)/g, '');
-	            output +=  value + ((j < elements.length-2) ? "," : "");
-	    }
-	
-	
-	    output += " )\nVALUES\n";
-	
-	    for (var i=2;i<lines.length;i++)
-	    {
-	            output += "( ";
-	            var elements = lines[i].split('|');
-	
-	            for (var j = 1; j < elements.length-1; j++)
-	            {
-	                    var value = elements[j].replace(/(^\s*)|(\s*$)/g, '');
-	                    if (isNaN(value))
-	                            value = "'" + value + "'";
-	                    output +=  value + ((j < elements.length-2) ? "," : "");
-	            }
-	
-	            output += ")" + ((i < lines.length-1) ? ",\n" : "");
-	            //output += (i + ": " + lines[i] + "<br>");
-	    }
-	
-	
-	    $("#output").html(output);
+
 	
 	});
 
-
-
-
+	
 	$.blockUI.defaults.overlayCSS.cursor = 'auto';
 	$.blockUI.defaults.css.cursor = 'auto';
 

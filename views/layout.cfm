@@ -1,14 +1,9 @@
 <cfoutput><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
 <html>
 	<head>
-		#javaScriptIncludeTag("jquery.min")#
-		#javaScriptIncludeTag("codemirror")#
-		#javaScriptIncludeTag("mode/mysql/mysql")#		
-		#javaScriptIncludeTag("jquery.blockUI")#
-		#javaScriptIncludeTag("jquery.ba-bbq.min")#
-		#javaScriptIncludeTag("fiddle")#
-		#stylesheetLinkTag("codemirror")#
+		
 		#stylesheetLinkTag("fiddle")#
+		
 		<title>SQL Fiddle</title>
 
 
@@ -31,5 +26,7 @@
 	<body>
 		#includeContent()#
 	</body>
+
+	
 </html>
 </cfoutput>
