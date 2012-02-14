@@ -1,3 +1,5 @@
+
+
 function handleSchemaChange() {
 	if ($("#schema_ddl").data("ready"))
 	{
@@ -6,9 +8,11 @@ function handleSchemaChange() {
 	}
 }
 
+
 function displayDatabaseNotes() {
 	$("#database_notes").text($("#db_type_id :selected").data('note'));		
 }
+
 
 function updateSampleButtonStatus() {
 	if (! $("#db_type_id :selected").data('fragment'))
@@ -25,12 +29,13 @@ function updateSampleButtonStatus() {
 	}
 }
 
+
 $(function () {
 	
 	
 	$.getJSON("index.cfm/fiddles/db_types", function (resp) {
 			
-		var db_types = $("#db_type_id");
+		var db_types = $("#db_type_id ul.dropdown-menu");
 		var columnIdx = {};
 		for (var i = 0; i < resp["COLUMNS"].length; i++)
 		{
@@ -39,11 +44,18 @@ $(function () {
 		
 		for (var i = 0; i < resp["DATA"].length; i++)
 		{
-			var opt = $("<option>", {value : resp["DATA"][i][columnIdx["ID"]] })
-							.text(resp["DATA"][i][columnIdx["FULL_NAME"]])
+			var opt = $("<li>")
 							.data('note', resp["DATA"][i][columnIdx["NOTES"]])
 							.data('simple_name', resp["DATA"][i][columnIdx["SIMPLE_NAME"]])
-							.data('fragment', resp["DATA"][i][columnIdx["SAMPLE_FRAGMENT"]]);
+							.data('fragment', resp["DATA"][i][columnIdx["SAMPLE_FRAGMENT"]])
+							.data('db_type_id',  resp["DATA"][i][columnIdx["ID"]])
+							.append(
+									
+								$("<a>", {href : '#!' + resp["DATA"][i][columnIdx["ID"]] })
+									.text(resp["DATA"][i][columnIdx["FULL_NAME"]])
+									.prepend($('<i>').addClass('icon-tag'))
+									
+							);
 
 			db_types.append(opt);
 		
@@ -59,6 +71,8 @@ $(function () {
 
 	});
 	
+	
+	/*
 	$("#textToDDLModal").dialog({
 		title: "Transform Text to DDL",
 		autoOpen: false,
@@ -89,6 +103,8 @@ $(function () {
 			
 		}
 	});
+	*/
+	
 	
 	$("#textParse").click(function () {
 		$("#textToDDLModal").dialog('open');
@@ -299,18 +315,25 @@ $(function () {
 			});
 				
 		});
-
-		function setCodeMirrorWidth() {
-			$(".CodeMirror").width($(".field_groups").width() - 66);
-		}
-
-		setTimeout(setCodeMirrorWidth, 1);
-		$(window).resize(setCodeMirrorWidth);
-
-		if (!$.browser.msie)
-			$(".CodeMirror-scroll").css("height", "auto");
+		
+		
+	
+		
+		$("#parse").click(function () {
+		
+		    var raw = $("#raw").val();
+	
+		
+		});
 
 		
+		$(window).bind('resize', resizeLayout);		
+		setTimeout(resizeLayout, 1);
+
+/*
+		if (!$.browser.msie)
+			$(".CodeMirror-scroll").css("height", "auto");
+*/
 	      schema_ddl_editor = CodeMirror.fromTextArea(document.getElementById("schema_ddl"), {
 	        mode: "mysql",
 	        lineNumbers: true,
@@ -321,19 +344,39 @@ $(function () {
 	        mode: "mysql",
 	        lineNumbers: true
 	      });
-		
+	
 		
 	});
-
-	
-	$("#parse").click(function () {
-	
-	    var raw = $("#raw").val();
-
-	
-	});
-
 	
 	$.blockUI.defaults.overlayCSS.cursor = 'auto';
 	$.blockUI.defaults.css.cursor = 'auto';
 
+
+
+
+function resizeLayout(){
+
+	var wheight = $(window).height() - 100;
+	var container_width = $("#schema-output").width();
+	 
+	// if( parseInt( $('#content .panel').css('min-height').replace(/px/, ""), 10 ) < ( wheight / 2 ) ){
+	
+		$('#schema-output').height((wheight - 10)/2);
+		$('#output').height((wheight - 10)/2);
+
+		$('#schema_ddl').height( $('#fiddleFormDDL').height() - 2 - 8 );
+
+		$('#fiddleFormDDL .CodeMirror-scroll').css('height', ( $('#fiddleFormDDL').height() - 4 ) + "px" );
+		$('#fiddleFormDDL .CodeMirror-scroll .CodeMirror-gutter').css('height', ( $('#fiddleFormDDL').height() - 2 ) + "px" );
+		
+		// textarea sql
+		$('#sql').height( $('#schema-output').height() - 2 - 8 );
+		$('#fiddleFormSQL .CodeMirror-scroll').height( $('#schema-output').height() - 4 );
+		$('#fiddleFormSQL .CodeMirror-scroll .CodeMirror-gutter').height( $('#schema-output').height() - 2 );
+		
+	// }
+	
+	
+	$('#sql').width( $('#fiddleFormSQL').width() - 2 - 8 );
+	$('#schema_ddl').width( $('#fiddleFormDDL').width() - 2 - 8 );
+}
