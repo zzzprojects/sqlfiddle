@@ -42,18 +42,12 @@
 								Database Type <b class="caret"></b>
 							</a>
 							<ul class="dropdown-menu">
-<!--- 
-							<cfoutput query="db_types">								
-								<li>
-									<a href="##!#id#">
-										<i class="icon-tag"></i>#full_name#
-									</a>
-								</li>
-							</cfoutput>
- --->
 							</ul>
 						</li>
 						<li class="divider-vertical"></li>
+						<li class="">
+							<a id="sample" class="disabled" href="#"><i class="icon-list-alt"></i>View Sample</a>
+						</li>
 						<li class="">
 							<a id="ui-run" href="#!/run"><i class="icon-play"></i>Run</a>
 						</li>
@@ -82,7 +76,8 @@
 			</div>
 		</div>
 	</div>
-	
+	<input type="hidden" id="schema_short_code" value="">
+	<input type="hidden" id="query_id" value="">
 	<div class="container-fluid">
 		<div class="row-fluid">
 		
@@ -115,7 +110,7 @@ VALUES
 					
 					
 					<div class="span6 panel sql pull-right">
-						<form id="fiddleFormSQL" method="post" action="">
+						<form id="fiddleFormSQL" method="post" action="" class="schema_ready">
 							<label for="sql-ta" class="well">SQL</label>
 							<textarea id="sql">
 insert into supportContacts
@@ -161,6 +156,27 @@ select id, type, details from supportContacts
 	
 	<script src="javascripts/bootstrap-collapse.js" type="text/javascript"></script>
 	<script src="javascripts/bootstrap-dropdown.js" type="text/javascript"></script>
+
+	<script>
+
+	$(function () { // why isn't this stock functionality for dropdowns?
+
+		$(".dropdown-menu").on('click', 'li', function () {
+			var $theDropdown = $(this).parents(".dropdown"), $this = $(this);
+
+			$('li', $(this).parent()).removeClass("active");
+			$(this).addClass("active");
+
+			$(".dropdown-toggle", $theDropdown).html( $this.text()  + " <b class='caret'></b>");
+
+			$theDropdown.data("selected", $this);
+			$theDropdown.trigger("dropdownchange");
+
+		});
+
+	});
+	</script>
+	
 	<script src="javascripts/bootstrap-tab.js" type="text/javascript"></script>
 
 	<script src="javascripts/date.format.js" type="text/javascript"></script>
@@ -168,6 +184,5 @@ select id, type, details from supportContacts
 	<script src="javascripts/ddl_builder.js" type="text/javascript"></script>
 
 	<script src="javascripts/fiddle.js" type="text/javascript"></script>
-
   </body>
 </html>

@@ -14,18 +14,19 @@ function displayDatabaseNotes() {
 }
 
 
-function updateSampleButtonStatus() {
-	if (! $("#db_type_id :selected").data('fragment'))
+function updateSampleButtonStatus(fragment) {
+
+	if (!fragment || !fragment.length)
 	{
-		$("#sample")
-			.prop("disabled", true)
-			.attr("title", "This database type has no sample available.");
+		$("#sample").block({message: "N/A"});
 	}
 	else
 	{
 		$("#sample")
 		.prop("disabled", false)
-		.attr("title", "Click to see a sample database schema and query for this database type.");			
+		.attr("title", "Click to see a sample database schema and query for this database type.")
+		.attr("href", "#!" + fragment)
+		.unblock();			
 	}
 }
 
@@ -45,10 +46,10 @@ $(function () {
 		for (var i = 0; i < resp["DATA"].length; i++)
 		{
 			var opt = $("<li>")
-							.data('note', resp["DATA"][i][columnIdx["NOTES"]])
-							.data('simple_name', resp["DATA"][i][columnIdx["SIMPLE_NAME"]])
-							.data('fragment', resp["DATA"][i][columnIdx["SAMPLE_FRAGMENT"]])
-							.data('db_type_id',  resp["DATA"][i][columnIdx["ID"]])
+							.attr('note', resp["DATA"][i][columnIdx["NOTES"]])
+							.attr('simple_name', resp["DATA"][i][columnIdx["SIMPLE_NAME"]])
+							.attr('sample_fragment', resp["DATA"][i][columnIdx["SAMPLE_FRAGMENT"]])
+							.attr('db_type_id',  resp["DATA"][i][columnIdx["ID"]])
 							.append(
 									
 								$("<a>", {href : '#!' + resp["DATA"][i][columnIdx["ID"]] })
@@ -56,17 +57,16 @@ $(function () {
 									.prepend($('<i>').addClass('icon-tag'))
 									
 							);
-
 			db_types.append(opt);
 		
 		}
 
 		reloadContent();
 		
-		$('option:first', db_types).remove();
+		//$('option:first', db_types).remove();
 		
-		displayDatabaseNotes();
-		updateSampleButtonStatus();
+		//displayDatabaseNotes();
+		//updateSampleButtonStatus();
 
 
 	});
@@ -103,7 +103,6 @@ $(function () {
 			
 		}
 	});
-	*/
 	
 	
 	$("#textParse").click(function () {
@@ -122,12 +121,25 @@ $(function () {
 			$(this).val("");
 		
 	}
+
+	*/
 	
 	
-	$("#db_type_id").change(function () {
-		displayDatabaseNotes();
-		handleSchemaChange();
-		updateSampleButtonStatus();
+	$("#db_type_id").on('dropdownchange', function () {
+
+		//displayDatabaseNotes($(this).data("selected").attr("note"));
+		if ($("#sql").data("db_type_id") != $(this).data("selected").attr("db_type_id"))
+		{
+			$(".schema_ready").block({ message: "Please rebuild schema definition."});													
+		}
+		else
+		{
+			if ($("#schema_ddl").data("ready"))
+			{
+				$(".schema_ready").unblock();
+			}
+		}
+		updateSampleButtonStatus($(this).data("selected").attr("sample_fragment"));
 	});
 	
 	$("#buildSchema").data("originalValue", $("#buildSchema").val());
@@ -146,7 +158,7 @@ $(function () {
 		if (frag.length)
 		{
 			var fragArray = frag.split('/');
-
+			
 			if (
 				(fragArray.length > 1 && $("#schema_short_code").val() != fragArray[1]) ||
 				(fragArray.length > 2 && $("#query_id").val() != fragArray[2])
@@ -156,9 +168,7 @@ $(function () {
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
 					if (resp["db_type_id"])
 					{
-						$("#db_type_id").val(resp["db_type_id"]);
-						displayDatabaseNotes();
-						updateSampleButtonStatus();
+						$("#db_type_id .dropdown-menu li[db_type_id="+resp["db_type_id"]+"]").trigger('click');
 					}
 
 					if (resp["short_code"])
@@ -190,6 +200,13 @@ $(function () {
 				});
 
 				}
+				else if (fragArray.length > 0)
+				{
+					$("#db_type_id .dropdown-menu li[db_type_id="+fragArray[0].replace(/^\!/, '')+"]").trigger('click')
+				}
+				
+				
+				
 			}
 		}
 		
