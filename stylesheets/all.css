@@ -3476,7 +3476,7 @@ body {
 #fiddleFormDDL {
   position: relative;
 }
-#content .panel #fiddleFormDDL label {
+#content .panel form label {
   z-index: 250;
   /*	bottom: 5px;
 	top: auto;*/

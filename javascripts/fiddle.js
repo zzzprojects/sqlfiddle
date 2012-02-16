@@ -128,7 +128,7 @@ $(function () {
 	$("#db_type_id").on('dropdownchange', function () {
 
 		//displayDatabaseNotes($(this).data("selected").attr("note"));
-		if ($("#sql").data("db_type_id") != $(this).data("selected").attr("db_type_id"))
+		if ($("#sql").data("db_type_id") != $(".active", this).attr("db_type_id"))
 		{
 			$(".schema_ready").block({ message: "Please rebuild schema definition."});													
 		}
@@ -139,7 +139,7 @@ $(function () {
 				$(".schema_ready").unblock();
 			}
 		}
-		updateSampleButtonStatus($(this).data("selected").attr("sample_fragment"));
+		updateSampleButtonStatus($(".active", this).attr("sample_fragment"));
 	});
 	
 	$("#buildSchema").data("originalValue", $("#buildSchema").val());
@@ -302,8 +302,8 @@ $(function () {
 				
 		}
 		
-		$("#runQuery").click(function () {
-
+		$(".runQuery").click(function (e) {
+			e.preventDefault();
 			$("#results_fieldset").block();
 			
 			$.ajax({
@@ -311,14 +311,14 @@ $(function () {
 				type: "POST",
 				url: "index.cfm/fiddles/runQuery",
 				data: {
-					db_type_id: $("#db_type_id").val(),
+					db_type_id: $("#db_type_id .active").attr("db_type_id"),
 					schema_short_code: $("#schema_short_code").val(),
 					sql: sql_editor.getValue()
 				},
 				dataType: "json",
 				success: function (resp, textStatus, jqXHR) {
 					$("#query_id").val(resp["ID"]);
-					$.bbq.pushState("#!" + $("#db_type_id").val() + '/' + $("#schema_short_code").val() + '/' + resp["ID"]);
+					$.bbq.pushState("#!" + $("#db_type_id .active").attr("db_type_id") + '/' + $("#schema_short_code").val() + '/' + resp["ID"]);
 					buildResultsTable(resp);
 					
 					$("#results_fieldset").unblock();
