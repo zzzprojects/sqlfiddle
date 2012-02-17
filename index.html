@@ -46,13 +46,13 @@
 						</li>
 						<li class="divider-vertical"></li>
 						<li class="">
-							<a id="sample" class="disabled" href="#"><i class="icon-list-alt"></i>View Sample Fiddle</a>
+							<a id="sample" href="#"><i class="icon-list-alt"></i>View Sample Fiddle</a>
 						</li>
 						<li class="">
 							<a class="runQuery" href="#"><i class="icon-play"></i>Run Query</a>
 						</li>
 						<li class="">
-							<a id="ui-clear" href="#!/clear"><i class="icon-refresh"></i>Clear</a>
+							<a id="clear" href="#!"><i class="icon-refresh"></i>Clear</a>
 						</li>
 					</ul>
 <!--- 
@@ -88,7 +88,7 @@
 
 								<form id="fiddleFormDDL" method="post" action="">
 									<label for="result-ddl" class="well" style="margin-right: 20px;">
-										<a href="#" id="ui-schema">Build Schema<i class="icon-download-alt"></i></a>
+										<a href="#" id="buildSchema">Build Schema<i class="icon-download-alt"></i></a>
 									</label>
 									<textarea id="schema_ddl"></textarea>
 								</form>
@@ -110,8 +110,8 @@
 				<div class="span12 panel" id="output">
 					<input type="hidden" name="query_id" id="query_id" value="">	
 					<table id="results" class="table table-bordered table-striped"></table>
-					<div id="messages" class="alert alert-success">
-						<i class="icon-ok"></i>
+					<div id="messages" class="alert alert-success hide">
+						
 					</div>
 				</div> <!-- end output -->
 				

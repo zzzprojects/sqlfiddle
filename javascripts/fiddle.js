@@ -142,14 +142,12 @@ $(function () {
 		updateSampleButtonStatus($(".active", this).attr("sample_fragment"));
 	});
 	
-	$("#buildSchema").data("originalValue", $("#buildSchema").val());
+	$("#buildSchema").data("originalValue", $("#buildSchema").html());
 	
 	$("#schema_ddl").data("ready", false);
 	
 	$("#sample").click(function () {
-		
-		$.bbq.pushState("#!" + $("#db_type_id :selected").data('fragment'));
-		
+		$.bbq.pushState("#!" + $("#db_type_id .active").attr('sample_fragment'));
 	});
 	
 	function reloadContent()
@@ -183,6 +181,7 @@ $(function () {
 						if (typeof resp["sql"] !== "undefined")
 						{
 							sql_editor.setValue(resp["sql"]);
+							$("#sql").data("db_type_id", resp["db_type_id"]);
 							buildResultsTable(resp);
 						}
 						else
@@ -195,7 +194,7 @@ $(function () {
 					else
 					{
 						$("#schema_ddl").data("ready", false);
-						$(".schema_ready").block({ message: "Please build schema."});						
+						$(".schema_ready").block({ message: "Please build schema."});		
 					}
 				});
 
@@ -205,8 +204,13 @@ $(function () {
 					$("#db_type_id .dropdown-menu li[db_type_id="+fragArray[0].replace(/^\!/, '')+"]").trigger('click')
 				}
 				
-				
-				
+			}
+			else
+			{
+				schema_ddl_editor.setValue("");
+				sql_editor.setValue("");
+				$("#results").html("");
+				$("#messages").addClass("hide");						
 			}
 		}
 		
@@ -215,43 +219,53 @@ $(function () {
 		if (! $("#schema_ddl").data("ready")) 
 			$(".schema_ready").block({ message: "Please build schema."});
 	
-		$("#buildSchema").click(function () {
-				
+		$("#clear").click(function (e) {
+			e.preventDefault();
+			$.bbq.removeState();
+		});
+	
+		$("#buildSchema").click(function (e) {
 			var $button = $(this);
+
+			if ($button.prop('disabled')) return false;
 			
-			$button.prop('disabled', true).val('Building Schema...');
+			e.preventDefault();
+			
+			$button.prop('disabled', true).text('Building Schema...');
 			
 			$.ajax({
 				
 				type: "POST",
 				url: "index.cfm/fiddles/createSchema",
 				data: {
-					db_type_id: $("#db_type_id").val(),
+					db_type_id: $("#db_type_id .active").attr("db_type_id"),
 					schema_ddl: schema_ddl_editor.getValue()
 				},
 				dataType: "json",
 				success: function (data, textStatus, jqXHR) {
 					if (data["short_code"])
 					{
+						$("#sql").data("db_type_id", $("#db_type_id .active").attr("db_type_id"));					
 						$("#schema_ddl").data("ready", true);
 						$("#schema_short_code").val($.trim(data["short_code"]));
-						$.bbq.pushState("#!" + $("#db_type_id").val() + '/' + $.trim(data["short_code"]));
+						$.bbq.pushState("#!" + $("#db_type_id .active").attr("db_type_id") + '/' + $.trim(data["short_code"]));
 						$(".schema_ready").unblock();
-						$("#schema_notices").html("");	
+						$("#messages").removeClass("alert-error hide").addClass("alert-success").html("");
+						
 					}
 					else
 					{
-						$("#schema_notices").html(data["error"]);	
+						$("#messages").removeClass("alert-success hide").addClass("alert-error").text(data["error"]);	
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown)
 				{
 					$("#schema_ddl").data("ready", false);
-					$("#schema_notices").html(errorThrown);	
+					$("#messages").removeClass("alert-success hide").addClass("alert-error").text(errorThrown);	
 				},
 				complete: function (jqXHR, textStatus)
 				{
-					$button.prop('disabled', false).val($button.data("originalValue"));									
+					$button.prop('disabled', false).html($button.data("originalValue"));									
 				}
 			});
 			
@@ -265,6 +279,7 @@ $(function () {
 			if (resp["SUCCEEDED"])
 			{
 				$("#results").html("");	
+			
 				
 				for (var i = 0; i < resp["RESULTS"]["COLUMNS"].length; i++)
 				{
@@ -286,25 +301,28 @@ $(function () {
 					}
 					$("#results").append(tmp_html);
 				}
+				
 				if (typeof resp["EXECUTIONTIME"] === "undefined")
 					resp["EXECUTIONTIME"] = 0;
-				$("#results_notices").text("Record Count: " + j + "; Execution Time: " + resp["EXECUTIONTIME"] + "ms");
+					
+				$("#messages").removeClass("alert-error hide").addClass("alert-success").text("Record Count: " + j + "; Execution Time: " + resp["EXECUTIONTIME"] + "ms");
+
 				if (j == 0)
 				{
-					$("#results_notices").html($("#results_notices").text() + "<br><i style='font-size:9pt'>Note: you must include a SELECT as the final statement to see records returned.  All changes to the schema will be immediately rolled back.</i>");
+					$("#messages").html($("#messages").text() + "<br><i style='font-size:9pt'>Note: you must include a SELECT as the final statement to see records returned.  All changes to the schema will be immediately rolled back.</i>");
 				}
 			}
 			else
 			{
 				$("#results").html("<tr><td>---</td></tr>");	
-				$("#results_notices").text(resp["ERRORMESSAGE"]);
+				$("#messages").removeClass("alert-success hide").addClass("alert-error").text(resp["ERRORMESSAGE"]);
 			}
 				
 		}
 		
 		$(".runQuery").click(function (e) {
 			e.preventDefault();
-			$("#results_fieldset").block();
+			$("#output").block();
 			
 			$.ajax({
 				
@@ -321,13 +339,13 @@ $(function () {
 					$.bbq.pushState("#!" + $("#db_type_id .active").attr("db_type_id") + '/' + $("#schema_short_code").val() + '/' + resp["ID"]);
 					buildResultsTable(resp);
 					
-					$("#results_fieldset").unblock();
+					$("#output").unblock();
 				},
 				error: function (jqXHR, textStatus, errorThrown)
 				{
-					$("#results_fieldset").unblock();
+					$("#output").unblock();
 					$("#results").html("<tr><td>---</td></tr>");	
-					$("#results_notices").text(errorThrown);	
+					$("#messages").removeClass("alert-success hide").addClass("alert-error").text(errorThrown);
 				}
 			});
 				
