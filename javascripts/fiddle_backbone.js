@@ -61,6 +61,8 @@ $(function () {
 					"executionTime": resp["EXECUTIONTIME"],
 					"errorMessage": resp["ERRORMESSAGE"] 
 				});
+				window.query.trigger("reloaded");
+				
 			});
 
 		
@@ -208,6 +210,8 @@ $(function () {
 		
 		execute: function () {
 			
+			var thisModel = this;
+			
 			if (! this.has("schemaDef") || 
 				! this.get("schemaDef").has("dbType") || 
 				! this.get("schemaDef").get("ready") )
@@ -225,13 +229,13 @@ $(function () {
 				dataType: "json",
 				success: function (resp, textStatus, jqXHR) {
 				
-					this.set({
+					thisModel.set({
 						"id": resp["ID"]
 					});
 
 					if (resp["SUCCEEDED"])
 					{
-						this.set({
+						thisModel.set({
 							"results": resp["RESULTS"],
 							"executionTime": resp["EXECUTIONTIME"],
 							"errorMessage": ""
@@ -239,7 +243,7 @@ $(function () {
 					}
 					else
 					{
-						this.set({
+						thisModel.set({
 							"results": [],
 							"executionTime": 0,
 							"errorMessage": resp["ERRORMESSAGE"]
@@ -249,7 +253,7 @@ $(function () {
 				},
 				error: function (jqXHR, textStatus, errorThrown)
 				{
-					this.set({
+					thisModel.set({
 						"results": [],
 						"executionTime": 0,
 						"errorMessage": errorThrown
@@ -258,7 +262,7 @@ $(function () {
 				},
 				complete: function (jqXHR, textStatus)
 				{
-					this.throw("executed");
+					thisModel.trigger("executed");
 				}
 			});
 			
@@ -312,10 +316,14 @@ $(function () {
 		handleSchemaChange: function () {
 			
 			var thisView = window.schemaDefView; // kludge to handle the context limitations on CodeMirror change events
-			thisView.model.set({
-				"ddl":thisView.editor.getValue(),
-				"ready": false
-			});
+			
+			if (thisView.model.get("ddl") != thisView.editor.getValue()) 
+			{
+				thisView.model.set({
+					"ddl":thisView.editor.getValue(),
+					"ready": false
+				});
+			}
 		},
 		render: function () {
 			this.editor.setValue(this.model.get("ddl"));
@@ -329,11 +337,19 @@ $(function () {
 		
 			this.editor = CodeMirror.fromTextArea(document.getElementById(this.id), {
 		        mode: "mysql",
-		        lineNumbers: true
+		        lineNumbers: true,
+		        onChange: this.handleQueryChange
 		      });
 		      
 		    this.compiledOutputTemplate = Handlebars.compile(this.options.outputTemplate.html()); 
 		      
+		},
+		handleQueryChange: function () {
+			
+			var thisView = window.queryView; // kludge to handle the context limitations on CodeMirror change events
+			thisView.model.set({
+				"sql":thisView.editor.getValue()
+			});
 		},
 		render: function () {
 			this.editor.setValue(this.model.get("sql"));
@@ -391,9 +407,16 @@ $(function () {
 		window.schemaDefView.render();
 	});
 
-	window.query.on("change:sql", function () {
+	window.query.on("reloaded", function () {
 		window.queryView.render();
 	});
+	
+	
+	$(".runQuery").click(function (e) {
+		e.preventDefault();
+		window.query.execute();
+	});
+	
 	
 	/* Data loading */
 	window.dbTypes.on("reset", function () {
@@ -421,6 +444,7 @@ $(function () {
 	
 	window.query.on("executed", function () {
 		var schemaDef = this.get("schemaDef");
+		window.queryView.render();
 		window.router.navigate(
 			"!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id 
 		);
