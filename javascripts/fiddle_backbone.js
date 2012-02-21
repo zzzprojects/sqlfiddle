@@ -1,25 +1,67 @@
 $(function () {
 
+
+	/***************
+		ROUTER
+	 ***************/
+	 
 	var Router = Backbone.Router.extend({	
 	
 		routes: {
 			"!:db_type_id":						"DBType", 		// #!1
 			"!:db_type_id/:short_code":			"SchemaDef", 	// #!1/abc12
-			"!:db_type_id/:short_code:query_id":"Query"			// #!1/abc12/1
+			"!:db_type_id/:short_code/:query_id":"Query"			// #!1/abc12/1
 		},
 		
 		DBType: function (db_type_id) {
 			// update currently-selected dbtype
-			window.dbTypes.setSelectedType(db_type_id);
+			window.dbTypes.setSelectedType(db_type_id, true);
 		},
 		
 		SchemaDef: function (db_type_id, short_code) {
-			this.DBType(db_type_id);
 
+			var frag = "!" + db_type_id + "/" + short_code;
+		
+			this.DBType(db_type_id);
+			
+			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
+				window.schemaDef.set({
+					"short_code": resp["short_code"],
+					"ddl": resp["ddl"],
+					"ready": true,
+					"valid": true,
+					"errorMessage": ""
+				},
+				{"silent": true});
+				window.schemaDef.trigger("reloaded");
+				
+			});
+			
 		},
 		
 		Query: function (db_type_id, short_code, query_id) {
+			var frag = "!" + db_type_id + "/" + short_code + "/" + query_id;
+		
 			this.DBType(db_type_id);
+			
+			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
+				window.schemaDef.set({
+					"short_code": resp["short_code"],
+					"ddl": resp["ddl"],
+					"ready": true,
+					"valid": true,
+					"errorMessage": ""
+				});
+				window.schemaDef.trigger("reloaded");
+				
+				window.query.set({
+					"id": query_id,
+					"sql": resp["sql"],
+					"results": resp["RESULTS"],
+					"executionTime": resp["EXECUTIONTIME"],
+					"errorMessage": resp["ERRORMESSAGE"] 
+				});
+			});
 
 		
 		}
@@ -49,11 +91,15 @@ $(function () {
 			else
 				return false;
 		},
-		setSelectedType: function (db_type_id) {
+		setSelectedType: function (db_type_id, silentSelected) {
 			this.each(function (dbType) {
 				dbType.set({"selected": (dbType.id == db_type_id)}, {silent: true});
 			});
 			this.trigger("change:selected");
+			if (! silentSelected)
+			{
+				this.trigger("selected");
+			}
 		},
 		parse: function (resp) {
 			var result = [];
@@ -81,6 +127,11 @@ $(function () {
 		}
 	});
 	
+	/***************
+		MODELS
+	 ***************/
+	
+	
 	var SchemaDef = Backbone.Model.extend({
 	
 		defaults: {
@@ -94,9 +145,13 @@ $(function () {
 		},
 		
 		build: function () {
-		
-			if (! this.has("dbType"))
+			var selectedDBType = window.dbTypes.getSelectedType();
+			
+			if (!selectedDBType)
 				return false;
+		
+			if (!this.has("dbType") || this.get("dbType").id != selectedDBType.id)
+				this.set("dbType", selectedDBType);
 
 			$.ajax({
 				type: "POST",
@@ -115,6 +170,7 @@ $(function () {
 							"valid": true,
 							"errorMessage": ""
 						});
+						this.trigger("built");
 					}
 					else
 					{
@@ -199,13 +255,100 @@ $(function () {
 						"errorMessage": errorThrown
 					});				
 
+				},
+				complete: function (jqXHR, textStatus)
+				{
+					this.throw("executed");
 				}
 			});
 			
 		}
 	
 	});
+
+	/***************
+		VIEWS
+	 ***************/
+
+	var DBTypesListView = Backbone.View.extend({
+		initialize: function () {
+			this.compiledTemplate = Handlebars.compile(this.options.template.html()); 
+		},
+		events: {
+			"click ul.dropdown-menu li": "clickDBType"
+		},
+		clickDBType: function (e) {
+			e.preventDefault();
+			this.collection.setSelectedType($(e.currentTarget).attr("db_type_id"));
+		},
+		render: function () {
+			var selectedDBType = this.collection.getSelectedType();
+
+			$(this.el).html(
+				this.compiledTemplate({
+					dbTypes: this.collection.map(function (dbType) {
+						var json = dbType.toJSON();
+						json.class = (json.selected ? "active" : "");
+						return json;
+					}),
+					selectedFullName: selectedDBType.get("full_name")
+				})
+			);
+			return this;
+		}
+	}); 
 	
+	var SchemaDefView = Backbone.View.extend({
+	
+		initialize: function () {
+		
+			this.editor = CodeMirror.fromTextArea(document.getElementById(this.id), {
+		        mode: "mysql",
+		        lineNumbers: true,
+		        onChange: this.handleSchemaChange
+		      });
+
+		},
+		handleSchemaChange: function () {
+			
+			var thisView = window.schemaDefView; // kludge to handle the context limitations on CodeMirror change events
+			thisView.model.set({
+				"ddl":thisView.editor.getValue(),
+				"ready": false
+			});
+		},
+		render: function () {
+			this.editor.setValue(this.model.get("ddl"));
+		}
+	
+	});
+
+	var QueryView = Backbone.View.extend({
+	
+		initialize: function () {
+		
+			this.editor = CodeMirror.fromTextArea(document.getElementById(this.id), {
+		        mode: "mysql",
+		        lineNumbers: true
+		      });
+		      
+		    this.compiledOutputTemplate = Handlebars.compile(this.options.outputTemplate.html()); 
+		      
+		},
+		render: function () {
+			this.editor.setValue(this.model.get("sql"));
+			
+			this.options.output_el.html(
+				this.compiledOutputTemplate(this.model.toJSON())
+			);
+		}
+	
+	});
+
+
+	/***************
+	OBJECT INSTANTIATION
+	 ***************/
 	
 	window.dbTypes = new DBTypesList();
 	window.schemaDef = new SchemaDef();
@@ -214,6 +357,45 @@ $(function () {
 		"schemaDef": window.schemaDef
 	});
 	
+	window.dbTypesListView = new DBTypesListView({
+		el: $("#db_type_id")[0],
+		collection:  window.dbTypes,
+		template: $("#db_type_id-template")
+	});
+	
+	window.schemaDefView = new SchemaDefView({
+		id: "schema_ddl",
+		model: window.schemaDef
+	});
+
+	window.queryView = new QueryView({
+		id: "sql",
+		model: window.query,
+		outputTemplate: $("#output-template"),
+		output_el: $("#output")
+	});
+
+
+
+	/***************
+	  EVENT BINDING
+	 ***************/
+	
+	
+	/* UI Changes */
+	window.dbTypes.on("change:selected", function () {
+		window.dbTypesListView.render();
+	});
+	
+	window.schemaDef.on("reloaded", function () {
+		window.schemaDefView.render();
+	});
+
+	window.query.on("change:sql", function () {
+		window.queryView.render();
+	});
+	
+	/* Data loading */
 	window.dbTypes.on("reset", function () {
 		window.router = new Router();	
 		Backbone.history.start({pushState: false});
@@ -228,24 +410,20 @@ $(function () {
 		}		
 	});
 	
-	window.dbTypes.on("change:selected", function () {
+	/* Routing events */
+	window.dbTypes.on("selected", function () {
 		window.router.navigate("!" + this.getSelectedType().id);		
 	});
 	
-	window.schemaDef.on("change:short_code", function () {
+	window.schemaDef.on("built", function () {
 		window.router.navigate("!" + this.get("dbType").id + "/" + this.get("short_code"));
 	});
 	
-	window.query.on("change:id", function () {
+	window.query.on("executed", function () {
 		var schemaDef = this.get("schemaDef");
 		window.router.navigate(
 			"!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id 
 		);
 	});
-
-
-
-	$(window).trigger("modelsLoaded");
-
 
 });

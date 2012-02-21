@@ -7,15 +7,6 @@ $(function () {
 		$(window).bind('resize', resizeLayout);		
 		setTimeout(resizeLayout, 1);
 
-	      schema_ddl_editor = CodeMirror.fromTextArea(document.getElementById("schema_ddl"), {
-	        mode: "mysql",
-	        lineNumbers: true
-	      });
-
-	      sql_editor = CodeMirror.fromTextArea(document.getElementById("sql"), {
-	        mode: "mysql",
-	        lineNumbers: true
-	      });
 	
 });
 
