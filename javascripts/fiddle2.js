@@ -3,11 +3,8 @@
 	$.blockUI.defaults.css.cursor = 'auto';
 
 $(function () {
-		
 		$(window).bind('resize', resizeLayout);		
 		setTimeout(resizeLayout, 1);
-
-	
 });
 
 

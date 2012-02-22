@@ -8,9 +8,9 @@ $(function () {
 	var Router = Backbone.Router.extend({	
 	
 		routes: {
-			"!:db_type_id":						"DBType", 		// #!1
-			"!:db_type_id/:short_code":			"SchemaDef", 	// #!1/abc12
-			"!:db_type_id/:short_code/:query_id":"Query"			// #!1/abc12/1
+			"!:db_type_id":	"DBType", // #!1
+			"!:db_type_id/:short_code":"SchemaDef", // #!1/abc12
+			"!:db_type_id/:short_code/:query_id":"Query" // #!1/abc12/1
 		},
 		
 		DBType: function (db_type_id) {
@@ -31,10 +31,10 @@ $(function () {
 					"ready": true,
 					"valid": true,
 					"errorMessage": ""
-				},
-				{"silent": true});
+				});
 				window.schemaDef.trigger("reloaded");
-				
+				window.query.reset();
+				window.query.trigger("reloaded");				
 			});
 			
 		},
@@ -145,10 +145,13 @@ $(function () {
 			"errorMessage": "",
 			"ready": false
 		},
-		
+		reset: function () {
+			this.set(this.defaults);
+			this.trigger("reloaded");
+		},
 		build: function () {
 			var selectedDBType = window.dbTypes.getSelectedType();
-			
+			var thisModel = this;
 			if (!selectedDBType)
 				return false;
 		
@@ -166,17 +169,17 @@ $(function () {
 				success: function (data, textStatus, jqXHR) {
 					if (data["short_code"])
 					{
-						this.set({
+						thisModel.set({
 							"short_code": $.trim(data["short_code"]),
 							"ready": true,
 							"valid": true,
 							"errorMessage": ""
 						});
-						this.trigger("built");
+						thisModel.trigger("built");
 					}
 					else
 					{
-						this.set({
+						thisModel.set({
 							"short_code": "",
 							"ready": false,
 							"valid": false,
@@ -186,7 +189,7 @@ $(function () {
 				},
 				error: function (jqXHR, textStatus, errorThrown)
 				{
-					this.set({
+					thisModel.set({
 						"short_code": "",
 						"ready": false,
 						"valid": false,
@@ -202,12 +205,16 @@ $(function () {
 	var Query = Backbone.Model.extend({
 	
 		defaults: {
+			"id": 0,
 			"sql": "",
 			"results": [],
 			"executionTime": 0,
 			"errorMessage": ""
 		},
-		
+		reset: function () {
+			this.set(this.defaults);
+			this.trigger("reloaded");
+		},		
 		execute: function () {
 			
 			var thisModel = this;
@@ -401,20 +408,67 @@ $(function () {
 	/* UI Changes */
 	window.dbTypes.on("change:selected", function () {
 		window.dbTypesListView.render();
+		if (window.schemaDef.has("dbType"))
+		{
+			window.schemaDef.set("ready", (window.schemaDef.get("dbType").id == this.getSelectedType().id));
+		}
 	});
 	
 	window.schemaDef.on("reloaded", function () {
 		window.schemaDefView.render();
 	});
 
+	window.schemaDef.on("change", function () {
+		if (this.hasChanged("ready") || !this.get("short_code"))
+		{
+			if (this.get("ready"))
+			{
+				$(".needsReadySchema").unblock();
+			}
+			else
+			{
+				$(".needsReadySchema").block({ message: "Please build schema." });
+			}
+		}
+	});
+	window.schemaDef.trigger("change");
+	
 	window.query.on("reloaded", function () {
 		window.queryView.render();
 	});
+
+
+	window.schemaDef.on("built", function () {
+		$("#buildSchema").prop('disabled', false);
+		$("#buildSchema").text($("#buildSchema").data("originalValue"));
+	});
 	
+	window.query.on("executed", function () {
+		window.queryView.render();
+	});
+
+	$("#buildSchema").click(function (e) {
+		var $button = $(this);
+		e.preventDefault();
+
+		if ($button.prop('disabled')) return false;
+		
+		$button.data("originalValue", $button.text());
+		$button.prop('disabled', true).text('Building Schema...');
+		
+		window.schemaDef.build();
+	});	
 	
 	$(".runQuery").click(function (e) {
 		e.preventDefault();
 		window.query.execute();
+	});
+	
+	$("#clear").click(function (e) {
+		e.preventDefault()
+		window.schemaDef.reset();
+		window.query.reset();
+		window.router.navigate("!" + window.dbTypes.getSelectedType().id);	
 	});
 	
 	
@@ -427,9 +481,9 @@ $(function () {
 		{
 			this.setSelectedType(this.first().id);
 		}
-		if (!schemaDef.has('dbType'))
+		if (!window.schemaDef.has('dbType'))
 		{
-			schemaDef.set({ dbType: this.getSelectedType() });
+			window.schemaDef.set({ "dbType": this.getSelectedType() });
 		}		
 	});
 	
@@ -444,7 +498,6 @@ $(function () {
 	
 	window.query.on("executed", function () {
 		var schemaDef = this.get("schemaDef");
-		window.queryView.render();
 		window.router.navigate(
 			"!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id 
 		);

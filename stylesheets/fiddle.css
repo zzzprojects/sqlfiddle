@@ -1,146 +1,121 @@
-	
-.CodeMirror {
-	border: 1px solid #eee;
-	width: 450px;
-
+/*//*/
+body {
+  padding-top: 60px;
 }
+.sqlfiddle-icon {
+  float: left;
+  margin: 0 5px 0 0;
+  padding: 3px 0;
+}
+.navbar .nav > li > a i {
+  margin-right: 5px;
+}
+.navbar .brand {
+  color: #000000;
+}
+.dropdown-menu a i {
+  margin-right: 5px;
+}
+.dropdown-toggle b.caret {
+  color: #999999;
+  opacity: .5;
+}
+#sidebar .well {
+  padding: 8px 0;
+}
+.navbar, #content {
+  min-width: 550px !important;
+}
+#content {
+  height: 100%;
+}
+#content .panel {
+  margin: 0;
+}
+#content .panel {
+  min-height: 125px;
+  height: 100%;
+  position: relative;
+}
+#content .panel form {
+  height: 100%;
+}
+#content .panel form label {
+  height: auto;
+  margin: 0;
+  padding: 8px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  opacity: .5;
+}
+#content .panel form textarea {
+  display: block;
+  /*	height: 97%;
+	width: 98%;*/
+
+  margin: 0;
+  padding: 4px;
+  resize: none;
+}
+#output .panel {
+  margin: 0;
+}
+#content .panel.schema {
+  margin: 0;
+}
+#output {
+  margin: 0;
+  height: 50%;
+  padding-top: 5px;
+}
+#content #output form label {
+  top: 10px;
+}
+#schema-output {
+  margin: 0;
+  height: 50%;
+  padding-bottom: 5px;
+  
+}
+#content form {
+  margin: 0;
+}
+.tab-content .tab-pane {
+  height: 100%;
+}
+#content .CodeMirror {
+  border: 1px solid #cccccc;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
 .CodeMirror-scroll {
-	min-height: 300px;
+	height: 200px;
+	
     overflow-y: scroll;
     overflow-x: auto;
 }
-	
-#textToDDLModal {	
-	display: none;
-}	
-#textToDDLModal hr {
-	padding: 0;
-}
-#textToDDLModal * {
-	font-family: courier;
-	font-size:9pt;
-	width: 440px;	
-	padding: 10px;
-	width: 460px;	
-}
-#parseResults {
-	border: solid thin black;
-	height: 100px;
-	overflow: auto;
-	background-color: white;
-} 
-
-.disabledText {
-	
-	font-style: italic;
-	color: gray;
-	
-}
-
-#database_notes {
-	font-family: sans-serif;
-	font-size: 8pt;
-	padding: 10px 0;
-	display: block;
-}
-	
-#fiddleForm {
-	width: 100%;
-	min-width: 1024px;
-}	
-fieldset {
-	width: 90%;
-	min-width: 450px;
-}
-.field_groups {
-	float: left;
-	width: 45%;
-	min-width: 512px;
-}
-#db_type_fieldset select {
-	float: left;
-}
-
-#db_type_fieldset input {
-	float: right;
-}
-
-#schema_fieldset input {
-	margin-top: 10px;
-	float: right;
-}
-
-#results {
-        border-top: solid 1px black;
-        border-right: solid 1px black;
-
-}
-#results * {
-	margin: 0;
-	padding: 3px;
-	border-left: solid 1px black;
-        border-bottom: solid 1px black;
-
-}
-
-#meta, #hosting {
-	
-	
-	float: left;
-	display: block;
-}
-
-#meta {
-	width: 85px;
-	padding: 20px;
-	font-family: sans-serif;
-	font-size: 8pt;
-}
-#hosting {
-	width: 360px;
-}
-
-#hostingPartners {
-	padding: 0px;
-	list-style-type: none;
-	width: 350px;
-}
-
-#hostingPartners li {
-	margin: 20px 0;
-	font-family: sans-serif;
-	font-size: 8pt;
-	height: 50px;
-}
-
-#hostingPartners a {
-	display: inline-block;
-	width: 200px;
-	float: left;
-}
-#hostingPartners img {
-	height: 50px;
-	margin: 0 auto;
-	text-align: center;
-	display: block;
-	border: none;
-}
-
-#hostingPartners span {
-	float: left;
-	display: block;
-	width: 150px;
-}
 
 
-p {
-	width: 600px;
-	margin-left: 20px;
+#messages i {
+  margin-right: 5px;
+  opacity: .5;
 }
-#use_cases {
-	width: 500px;
+#fiddleFormDDL {
+  position: relative;
+}
+#content .panel form label {
+  z-index: 250;
+  /*	bottom: 5px;
+	top: auto;*/
+
+}
+#fiddleFormDDL label a i {
+  margin: 1px;
 }
 
-#use_cases li {
-	margin-bottom: 10px;
+.outOfSync {
+	border: solid thin red;
 }
