@@ -485,6 +485,7 @@ $(function () {
 		}
 
 		window.dbTypesListView.render();
+		window.queryView.render();
 	});
 
 
