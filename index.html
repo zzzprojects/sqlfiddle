@@ -47,9 +47,9 @@
 			{{/if}}
 		</table>
 		{{#if errorMessage}}
-		<div id="messages" class="alert alert-error">{{errorMessage}}</div>	
+		<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{errorMessage}}</div>	
 		{{else}}
-		<div id="messages" class="alert alert-success">Record Count: {{results.DATA.length}}; Execution Time: {{executionTime}}ms</div>	
+		<div id="messages" class="alert alert-success"><i class="icon-ok"></i>Record Count: {{results.DATA.length}}; Execution Time: {{executionTime}}ms</div>	
 		{{/if}}
 	{{/if}}
 	</script>	
