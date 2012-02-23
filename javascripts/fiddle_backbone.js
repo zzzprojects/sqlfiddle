@@ -43,7 +43,7 @@ $(function () {
 			var frag = "!" + db_type_id + "/" + short_code + "/" + query_id;
 		
 			this.DBType(db_type_id);
-			
+
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
 				window.schemaDef.set({
 					"short_code": resp["short_code"],
@@ -97,11 +97,8 @@ $(function () {
 			this.each(function (dbType) {
 				dbType.set({"selected": (dbType.id == db_type_id)}, {silent: true});
 			});
-			this.trigger("change:selected");
 			if (! silentSelected)
-			{
-				this.trigger("selected");
-			}
+				this.trigger("change");
 		},
 		parse: function (resp) {
 			var result = [];
@@ -406,7 +403,7 @@ $(function () {
 	
 	
 	/* UI Changes */
-	window.dbTypes.on("change:selected", function () {
+	window.dbTypes.on("change", function () {
 		window.dbTypesListView.render();
 		if (window.schemaDef.has("dbType"))
 		{
@@ -415,6 +412,7 @@ $(function () {
 	});
 	
 	window.schemaDef.on("reloaded", function () {
+		this.set("dbType", window.dbTypes.getSelectedType());
 		window.schemaDefView.render();
 	});
 
@@ -468,9 +466,13 @@ $(function () {
 		e.preventDefault()
 		window.schemaDef.reset();
 		window.query.reset();
-		window.router.navigate("!" + window.dbTypes.getSelectedType().id);	
+		window.router.navigate("!" + window.dbTypes.getSelectedType().id, {trigger: true});	
 	});
 	
+	$("#sample").click(function (e) {
+		e.preventDefault();
+		window.router.navigate("!" + window.dbTypes.getSelectedType().get("sample_fragment"), {trigger: true});
+	});
 	
 	/* Data loading */
 	window.dbTypes.on("reset", function () {
@@ -479,19 +481,32 @@ $(function () {
 		
 		if (this.length && !this.getSelectedType())
 		{
-			this.setSelectedType(this.first().id);
+			this.setSelectedType(this.first().id, true);
 		}
-		if (!window.schemaDef.has('dbType'))
-		{
-			window.schemaDef.set({ "dbType": this.getSelectedType() });
-		}		
+
+		window.dbTypesListView.render();
 	});
+
+
 	
-	/* Routing events */
-	window.dbTypes.on("selected", function () {
-		window.router.navigate("!" + this.getSelectedType().id);		
+	/* Routing events */	
+	window.dbTypes.on("change", function () {
+		window.dbTypesListView.render();
+		if (
+				window.query.id &&
+				window.schemaDef.get("short_code").length &&
+				window.schemaDef.get("dbType").id == this.getSelectedType().id
+			)
+			window.router.navigate("!" + this.getSelectedType().id + "/" + window.schemaDef.get("short_code") + "/" + window.query.id);
+		else if (
+				window.schemaDef.get("short_code").length &&
+				window.schemaDef.get("dbType").id == this.getSelectedType().id		
+			)
+			window.router.navigate("!" + this.getSelectedType().id + "/" + window.schemaDef.get("short_code"));
+		else
+			window.router.navigate("!" + this.getSelectedType().id);	
 	});
-	
+
 	window.schemaDef.on("built", function () {
 		window.router.navigate("!" + this.get("dbType").id + "/" + this.get("short_code"));
 	});
