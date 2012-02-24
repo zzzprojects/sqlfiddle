@@ -296,7 +296,7 @@ $(function () {
 				this.compiledTemplate({
 					dbTypes: this.collection.map(function (dbType) {
 						var json = dbType.toJSON();
-						json.class = (json.selected ? "active" : "");
+						json.className = (json.selected ? "active" : "");
 						return json;
 					}),
 					selectedFullName: selectedDBType.get("full_name")

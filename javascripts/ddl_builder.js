@@ -81,20 +81,20 @@ VALUES\n\
 			case 'SQL Server':
 				this.setup({ 
 								fieldPrefix: '[',
-								fieldSuffix: ']', 
+								fieldSuffix: ']'
 							});	
 			break;
 /*
 			case 'MySQL':
 				this.setup({ 
 								fieldPrefix: '`',
-								fieldSuffix: '`', 
+								fieldSuffix: '`'
 							});	
 			break;
 			case 'PostgreSQL':
 				this.setup({ 
 								fieldPrefix: '"',
-								fieldSuffix: '"', 
+								fieldSuffix: '"'
 							});	
 			break;
 */
