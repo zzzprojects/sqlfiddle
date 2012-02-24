@@ -16,8 +16,8 @@ function resizeLayout(){
 	var container_width = $("#schema-output").width();
 	 
 	
-	$('#schema-output').height((wheight - 10)/2);
-	$('#output').height((wheight - 10)/2);
+	$('#schema-output').height((wheight - 10)*0.7);
+	$('#output').height((wheight - 10)*0.3);
 
 	$('#schema_ddl').height( $('#fiddleFormDDL').height() - 2 - 8 );
 
