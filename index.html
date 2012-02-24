@@ -101,7 +101,7 @@
 						</li>
 --->
 						<li>
-							<a href="about/"><i class="icon-info-sign"></i>About</a>
+							<a href="about"><i class="icon-info-sign"></i>About</a>
 						</li>
 <!--						<li class="dropdown">
 							<a href="#" class="dropdown-toggle"data-toggle="dropdown">
@@ -132,9 +132,11 @@
 					<div class="span6 panel schema pull-left">
 
 								<form id="fiddleFormDDL" method="post" action="">
+									<a href="#" id="buildSchema">
 									<label for="result-ddl" class="well" style="margin-right: 20px;">
-										<a href="#" id="buildSchema">Build Schema<i class="icon-download-alt"></i></a>
+										Build Schema <i class="icon-download-alt"></i>
 									</label>
+									</a>
 									<textarea id="schema_ddl"></textarea>
 								</form>
 
@@ -143,9 +145,11 @@
 					
 					<div class="span6 panel sql pull-right needsReadySchema">
 						<form id="fiddleFormSQL" method="post" action="" class="schema_ready">
+							<a href="#" class="runQuery">
 							<label for="sql-ta" class="well" style="margin-right: 20px;">
-								<a href="#" class="runQuery">SQL<i class="icon-play"></i></a>
+								SQL <i class="icon-play"></i>
 							</label>
+							</a>
 							<textarea id="sql"></textarea>
 						</form>
 					</div><!-- end sql div -->
