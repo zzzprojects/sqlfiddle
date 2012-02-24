@@ -17,7 +17,7 @@ function resizeLayout(){
 	 
 	
 	$('#schema-output').height((wheight - 10)*0.7);
-	$('#output').height((wheight - 10)*0.3);
+	$('#output').css("min-height", ((wheight - 10)*0.3) + "px");
 
 	$('#schema_ddl').height( $('#fiddleFormDDL').height() - 2 - 8 );
 
@@ -33,4 +33,7 @@ function resizeLayout(){
 	
 	$('#sql').width( $('#fiddleFormSQL').width() - 2 - 8 );
 	$('#schema_ddl').width( $('#fiddleFormDDL').width() - 2 - 8 );
+	
+	window.schemaDefView.refresh();
+	window.queryView.refresh();
 }

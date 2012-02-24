@@ -24,7 +24,15 @@
 			{{/each}}
 		</ul>
 	</script>
-	<script id="output-template" type="text/x-handlebars-template">
+	<script id="schema-output-template" type="text/x-handlebars-template">
+		{{#if errorMessage}}
+		<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{errorMessage}}</div>	
+		{{else}}
+		<div id="messages" class="alert alert-success"><i class="icon-ok"></i>Schema Ready</div>	
+		{{/if}}
+	
+	</script>
+	<script id="query-output-template" type="text/x-handlebars-template">
 	{{#if id}}
 		<table id="results" class="table table-bordered table-striped">
 			{{#if results.DATA.length}}
@@ -76,17 +84,22 @@
 						</li>
 						<li class="divider-vertical"></li>
 						<li class="">
-							<a id="sample" href="#"><i class="icon-list-alt"></i>View Sample Fiddle</a>
+							<a id="sample" href="#viewSample"><i class="icon-list-alt"></i>View Sample Fiddle</a>
 						</li>
 						<li class="">
-							<a class="runQuery" href="#"><i class="icon-play"></i>Run Query</a>
+							<a class="runQuery" href="#runQuery"><i class="icon-play"></i>Run Query</a>
 						</li>
 						<li class="">
-							<a id="clear" href="#"><i class="icon-refresh"></i>Clear</a>
+							<a id="clear" href="#clear"><i class="icon-refresh"></i>Clear</a>
 						</li>
 					</ul>
 
 					<ul class="nav pull-right">
+<!---
+						<li>
+							<a href="#help"><i class="icon-question-sign"></i>Help</a>
+						</li>
+--->
 						<li>
 							<a href="about/"><i class="icon-info-sign"></i>About</a>
 						</li>
@@ -168,8 +181,8 @@
 	
 	<script src="javascripts/bootstrap-dropdown.js" type="text/javascript"></script>
 
-	<script src="javascripts/fiddle2.js" type="text/javascript"></script>
 	<script src="javascripts/fiddle_backbone.js" type="text/javascript"></script>
+	<script src="javascripts/fiddle2.js" type="text/javascript"></script>
 
 	<script src="javascripts/date.format.js" type="text/javascript"></script>
 	<script src="javascripts/ddl_builder.js" type="text/javascript"></script>
