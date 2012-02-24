@@ -10,6 +10,10 @@ body {
 .navbar .nav > li > a i {
   margin-right: 5px;
 }
+a label {
+	color: #08C;
+}
+
 .navbar .brand {
   color: #000000;
 }
