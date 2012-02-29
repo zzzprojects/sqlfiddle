@@ -55,9 +55,12 @@
 		<cfelse>
 			<cfset ddl_list = arguments.ddl>
 		</cfif>
+		<cfset ddl_list = REReplace(ddl_list, ";(\r?\n|$)", "#chr(7)#", "all")>
 
         <cfloop list="#ddl_list#" index="statement" delimiters="#chr(7)#">
-			<cfquery datasource="#this.db_type_id#_#arguments.datasourceName#">#PreserveSingleQuotes(statement)#</cfquery>
+			<cfif Len(trim(statement))>
+				<cfquery datasource="#this.db_type_id#_#arguments.datasourceName#">#PreserveSingleQuotes(statement)#</cfquery>
+			</cfif>
 		</cfloop>
 
 		<cfscript>
