@@ -59,9 +59,7 @@ $(function () {
 				window.query.set({
 					"id": query_id,
 					"sql": resp["sql"],
-					"results": resp["RESULTS"],
-					"executionTime": resp["EXECUTIONTIME"],
-					"errorMessage": resp["ERRORMESSAGE"] 
+					"sets": resp["sets"]
 				});
 				window.query.trigger("reloaded");
 				
@@ -208,9 +206,7 @@ $(function () {
 		defaults: {
 			"id": 0,
 			"sql": "",
-			"results": [],
-			"executionTime": 0,
-			"errorMessage": ""
+			"sets": []
 		},
 		reset: function () {
 			this.set(this.defaults);
@@ -238,33 +234,14 @@ $(function () {
 				success: function (resp, textStatus, jqXHR) {
 				
 					thisModel.set({
-						"id": resp["ID"]
+						"id": resp["ID"],
+						"sets": resp["sets"]
 					});
-
-					if (resp["SUCCEEDED"])
-					{
-						thisModel.set({
-							"results": resp["RESULTS"],
-							"executionTime": resp["EXECUTIONTIME"],
-							"errorMessage": ""
-						});				
-					}
-					else
-					{
-						thisModel.set({
-							"results": [],
-							"executionTime": 0,
-							"errorMessage": resp["ERRORMESSAGE"]
-						});				
-					}
-					
 				},
 				error: function (jqXHR, textStatus, errorThrown)
 				{
 					thisModel.set({
-						"results": [],
-						"executionTime": 0,
-						"errorMessage": errorThrown
+						"sets": []
 					});				
 
 				},

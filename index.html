@@ -36,27 +36,29 @@
 	</script>
 	<script id="query-output-template" type="text/x-handlebars-template">
 	{{#if id}}
-		<table id="results" class="table table-bordered table-striped">
-			{{#if results.DATA.length}}
-				<tr>
-				{{#each results.COLUMNS}}
-				<th>{{this}}</th>
-				{{/each}}
-				</tr>
-				{{#each results.DATA}}
-				<tr>
-					{{#each this}}
-					<td>{{this}}</td>
+		{{#each sets}}
+			{{#if this.RESULTS.DATA.length}}
+				<table id="results" class="table table-bordered table-striped">
+					<tr>
+					{{#each this.RESULTS.COLUMNS}}
+					<th>{{this}}</th>
 					{{/each}}
-				</tr>
-				{{/each}}
+					</tr>
+					{{#each this.RESULTS.DATA}}
+					<tr>
+						{{#each this}}
+						<td>{{this}}</td>
+						{{/each}}
+					</tr>
+					{{/each}}
+				</table>
 			{{/if}}
-		</table>
-		{{#if errorMessage}}
-		<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{errorMessage}}</div>	
-		{{else}}
-		<div id="messages" class="alert alert-success"><i class="icon-ok"></i>Record Count: {{results.DATA.length}}; Execution Time: {{executionTime}}ms</div>	
-		{{/if}}
+			{{#if this.SUCCEEDED}}
+			<div id="messages" class="alert alert-success"><i class="icon-ok"></i>Record Count: {{this.RESULTS.DATA.length}}; Execution Time: {{this.EXECUTIONTIME}}ms</div>	
+			{{else}}
+			<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
+			{{/if}}
+		{{/each}}
 	{{/if}}
 	</script>	
 </head>

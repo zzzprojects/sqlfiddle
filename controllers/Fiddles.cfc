@@ -166,6 +166,7 @@ component extends="Controller" {
 					myQuery = model("Query").findOne(where="id=#parts[3]# AND schema_def_id=#schema_def.id#", cache="true");
 					if (IsObject(myQuery))
 					{
+						returnVal["id"] = myQuery.id;	
 						returnVal["sql"] = myQuery.sql;	
 						StructAppend(returnVal, myQuery.executeSQL());						
 					}				

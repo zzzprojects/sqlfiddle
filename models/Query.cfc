@@ -18,48 +18,55 @@
 			<cfset this.schema_def = model("Schema_Def").findByKey(key=this.schema_def_id, include="DB_Type")>
 		</cfif>
 		
-		<cftransaction>
+		<cfset returnVal["sets"] = []>
 		
+		<cftransaction>
+	
+			<cfif Len(this.schema_def.db_type.batch_separator)>
+				<cfset sqlBatchList = REReplace(this.sql, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+			<cfelse>
+				<cfset sqlBatchList = this.sql>
+			</cfif>
+
+			<cfset sqlBatchList = REReplace(sqlBatchList, ";(\r?\n|$)", "#chr(7)#", "all")>
+			
 			<cftry>
-				<cfif Len(this.schema_def.db_type.batch_separator)>
-					<cfset sqlBatchList = REReplace(this.sql, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
-				<cfelse>
-					<cfset sqlBatchList = this.sql>
-				</cfif>
 
-				<cfset sqlBatchList = REReplace(sqlBatchList, ";(\r?\n|$)", "#chr(7)#", "all")>
+              	<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
+					<cfif Len(trim(statement))>
 
-                		<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
-							<cfif Len(trim(statement))>
-								<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
-							</cfif>
-                		</cfloop>
+						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
 				
-				<cfif IsDefined("ret")>
-					<cfset returnVal.succeeded = true>
-					<cfset returnVal.results = ret>
-					<cfif IsDefined("resultInfo.ExecutionTime")>
-						<cfset returnVal.ExecutionTime = resultInfo.ExecutionTime>
+						<cfif IsDefined("ret")>
+							<cfset ArrayAppend(returnVal["sets"], {
+								succeeded = true,
+								results = Duplicate(ret),
+								ExecutionTime = (IsDefined("resultInfo.ExecutionTime") ? resultInfo.ExecutionTime : 0)
+								})>
+						<cfelse>
+							<cfset ArrayAppend(returnVal["sets"], {
+								succeeded = true,
+								results = {"DATA" = []},
+								ExecutionTime = (IsDefined("resultInfo.ExecutionTime") ? resultInfo.ExecutionTime : 0)
+								})>
+						</cfif>
+
 					</cfif>
-				<cfelse>
-					<cfset returnVal.succeeded = false>
-					<cfset returnVal.errorMessage = "Query returned no results.  Include SELECT query as final portion of your SQL to view how your query modifies the schema (use semi-colons to separate different queries within your SQL).">
-				</cfif>
+              	</cfloop>
 				
 				<cfcatch type="database">
-					<cfset returnVal.succeeded = false>
-					
-					<cfif IsDefined("cfcatch.queryError")>
-						<cfset returnVal.errorMessage = cfcatch.message & ": " & cfcatch.queryError>
-					<cfelse>
-						<cfset returnVal.errorMessage = cfcatch.message>
-					</cfif>
-					
+					<cfset ArrayAppend(returnVal["sets"], {
+						succeeded = false,
+						errorMessage = (IsDefined("cfcatch.queryError") ? (cfcatch.message & ": " & cfcatch.queryError) : cfcatch.message)
+						})>
 				</cfcatch>
 				<cffinally>		
 					<cftransaction action="rollback" />
 				</cffinally>
+				
 			</cftry>
+
+
 		</cftransaction>
 
 		
