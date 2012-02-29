@@ -28,7 +28,7 @@ a label {
   padding: 8px 0;
 }
 .navbar, #content {
-  min-width: 800px !important;
+  min-width: 820px !important;
 }
 #content {
   height: 100%;

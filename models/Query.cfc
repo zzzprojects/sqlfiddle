@@ -27,8 +27,12 @@
 					<cfset sqlBatchList = this.sql>
 				</cfif>
 
+				<cfset sqlBatchList = REReplace(sqlBatchList, ";(\r?\n|$)", "#chr(7)#", "all")>
+
                 		<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
-							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
+							<cfif Len(trim(statement))>
+								<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
+							</cfif>
                 		</cfloop>
 				
 				<cfif IsDefined("ret")>
