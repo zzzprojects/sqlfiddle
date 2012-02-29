@@ -52,6 +52,7 @@
 						</cfif>
 
 					</cfif>
+					<cfset StructDelete(local, "ret")>
               	</cfloop>
 				
 				<cfcatch type="database">
