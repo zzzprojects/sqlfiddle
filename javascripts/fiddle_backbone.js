@@ -472,8 +472,8 @@ $(function () {
 
 	window.schemaDef.on("built failed", function () {
 	// see also the router function defined below that also binds to this event 
-		$("#buildSchema").prop('disabled', false);
-		$("#buildSchema").text($("#buildSchema").data("originalValue"));
+		$("#buildSchema label").prop('disabled', false);
+		$("#buildSchema label").text($("#buildSchema label").data("originalValue"));
 		window.schemaDefView.renderOutput();
 	});
 	
@@ -484,7 +484,7 @@ $(function () {
 
 	/* Non-view object event binding */
 	$("#buildSchema").click(function (e) {
-		var $button = $(this);
+		var $button = $("label", this);
 		e.preventDefault();
 
 		if ($button.prop('disabled')) return false;
