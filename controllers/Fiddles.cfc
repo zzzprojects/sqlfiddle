@@ -9,11 +9,6 @@ component extends="Controller" {
 		renderText(SerializeJSON(db_types));
 	}
 
-	function bootstrap() {
-		db_types = model("DB_Type").findAll(order="full_name", cache="true");
-		renderPage(layout="/layout_bootstrap");			
-	}
-
 	function createSchema () {
 
 		try 

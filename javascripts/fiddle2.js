@@ -3,6 +3,9 @@
 	$.blockUI.defaults.css.cursor = 'auto';
 
 $(function () {
+
+		$('#textToDDLModal').modal({show: false});
+
 		$(window).bind('resize', resizeLayout);		
 		setTimeout(resizeLayout, 1);
 });

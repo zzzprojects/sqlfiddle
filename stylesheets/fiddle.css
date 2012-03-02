@@ -161,3 +161,10 @@ a label {
 	width: 150px;
 }
 
+#textToDDLModal {
+	display: none;
+}
+
+#raw, #parseResults { 
+	width: 520px;
+}

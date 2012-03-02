@@ -472,10 +472,16 @@ $(function () {
 		window.schemaDef.build();
 	});	
 	
-	$(".runQuery").click(function (e) {
+	var handleRunQuery = function (e) {
 		e.preventDefault();
 		window.queryView.checkForSelectedText();
 		window.query.execute();
+	};
+	
+	$(".runQuery").click(handleRunQuery);
+	$(document).keyup(function (e) {
+		if (e.keyCode == 116) // F5
+			handleRunQuery(e);
 	});
 	
 	$("#clear").click(function (e) {
