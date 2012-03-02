@@ -6,6 +6,28 @@ $(function () {
 
 		$('#textToDDLModal').modal({show: false});
 
+		
+
+		$("#textToDDLModal .btn").click(function (e){
+			e.preventDefault();
+
+			var builder = new ddl_builder({
+					tableName: $("#tableName").val()
+				})
+				.setupForDBType(window.dbTypes.getSelectedType().get("simple_name"));
+			
+			var ddl = builder.parse($("#raw").val());
+			
+			$("#parseResults").text(ddl);
+			
+			if ($(this).attr('id') == 'appendDDL')
+			{
+				window.schemaDef.set("ddl", window.schemaDef.get("ddl") + "\n\n" + ddl);
+				window.schemaDef.trigger("reloaded");
+				$('#textToDDLModal').modal('hide');
+			}
+		});
+
 		$(window).bind('resize', resizeLayout);		
 		setTimeout(resizeLayout, 1);
 });
