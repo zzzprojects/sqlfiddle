@@ -2,8 +2,6 @@
 <html>
 	<head>
 		
-		#stylesheetLinkTag("fiddle")#
-		
 		<title>SQL Fiddle</title>
 
 
