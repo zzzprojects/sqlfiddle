@@ -69,7 +69,11 @@ $(function () {
 		}
 	
 	});
-
+	
+	/***************
+		MODELS
+	 ***************/
+	
 	
 	var DBType = Backbone.Model.extend({
 		defaults: {
@@ -125,11 +129,6 @@ $(function () {
 			this.fetch();
 		}
 	});
-	
-	/***************
-		MODELS
-	 ***************/
-	
 	
 	var SchemaDef = Backbone.Model.extend({
 	

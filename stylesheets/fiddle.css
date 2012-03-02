@@ -28,7 +28,7 @@ a label {
   padding: 8px 0;
 }
 .navbar, #content {
-  min-width: 820px !important;
+  min-width: 920px !important;
 }
 #content {
   height: 100%;
@@ -166,5 +166,10 @@ a label {
 }
 
 #raw, #parseResults { 
-	width: 520px;
+	width: 500px;
+}
+
+#parseResults {
+	height: 60px;
+	overflow: auto;	
 }
