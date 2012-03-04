@@ -3,9 +3,6 @@
 	$.blockUI.defaults.css.cursor = 'auto';
 
 $(function () {
-
-		$('#textToDDLModal').modal({show: false});
-
 		
 
 		$("#textToDDLModal .btn").click(function (e){
@@ -27,6 +24,7 @@ $(function () {
 				$('#textToDDLModal').modal('hide');
 			}
 		});
+		
 
 		$(window).bind('resize', resizeLayout);		
 		setTimeout(resizeLayout, 1);

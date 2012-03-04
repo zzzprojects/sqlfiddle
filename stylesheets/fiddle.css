@@ -161,7 +161,7 @@ a label {
 	width: 150px;
 }
 
-#textToDDLModal {
+.modal {
 	display: none;
 }
 
