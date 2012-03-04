@@ -164,11 +164,8 @@ a label {
 .modal {
 	display: none;
 }
-#historyModal table {
-	width: 500px;	
-}
 #raw, #parseResults { 
-	width: 500px;
+	width: 100%;
 }
 
 #parseResults {
