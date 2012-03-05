@@ -11,6 +11,7 @@
 		<cfset var returnVal = {}>
 		<cfset var resultInfo = {}>
 		<cfset var ret = QueryNew("")>
+		<cfset var executionPlan = QueryNew("")>
 		<cfset var statement = "">
 		<cfset var sqlBatchList = "">
 
@@ -37,50 +38,47 @@
 
 						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
 
-<!---
-EXECUTION PLANS:
+						<cfif 	Len(this.schema_def.db_type.execution_plan_prefix) OR
+								Len(this.schema_def.db_type.execution_plan_suffix)
+							>
+							
+							<cfset local.executionPlanSQL = this.schema_def.db_type.execution_plan_prefix & statement & this.schema_def.db_type.execution_plan_suffix> 
+							<cfset local.executionPlanSQL = Replace(local.executionPlanSQL, "##schema_short_code##", this.schema_def.short_code, "ALL")>
+							<cfset local.executionPlanSQL = Replace(local.executionPlanSQL, "##query_id##", this.id, "ALL")>
 
-Postgres:
+							<cfif Len(this.schema_def.db_type.batch_separator)>
+								<cfset local.executionPlanBatchList = REReplace(local.executionPlanSQL, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+							<cfelse>
+								<cfset local.executionPlanBatchList = local.executionPlanSQL>
+							</cfif>
+							
+							<cfloop list="#local.executionPlanBatchList#" index="executionPlanStatement">
+								<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="executionPlan">#PreserveSingleQuotes(executionPlanStatement)#</cfquery>								
+							</cfloop>
+							
+						</cfif>
 
-	CALL: EXPLAIN #PreserveSingleQuotes(statement)#
-	RESULT: Single column "QUERY PLAN"
-
-MySQL:
-	CALL: EXPLAIN #PreserveSingleQuotes(statement)#
-	RESULT: Query with multiple columns: | id | select_type | table | type | possible_keys | key  | key_len | ref  | rows | Extra          |
-
-SQL Server:
-
-	CALL:
-		
-		SET SHOWPLAN_XML ON;
-		GO
-		
-		#PreserveSingleQuotes(statement)#
-		
-		SET SHOWPLAN_XML OFF;
-		GO
-
-	RESULT: Single column "Microsoft SQL Server 2005 XML Showplan"
-		
---->
-
-				
 						<cfif IsDefined("ret")>
 							<cfset ArrayAppend(returnVal["sets"], {
 								succeeded = true,
 								results = Duplicate(ret),
-								ExecutionTime = (IsDefined("resultInfo.ExecutionTime") ? resultInfo.ExecutionTime : 0)
+								ExecutionTime = (IsDefined("resultInfo.ExecutionTime") ? resultInfo.ExecutionTime : 0),
+								ExecutionPlan = ((IsDefined("local.executionPlan") AND IsQuery(local.executionPlan) AND local.executionPlan.recordCount) ? Duplicate(local.executionPlan) : [])
 								})>
 						<cfelse>
 							<cfset ArrayAppend(returnVal["sets"], {
 								succeeded = true,
 								results = {"DATA" = []},
-								ExecutionTime = (IsDefined("resultInfo.ExecutionTime") ? resultInfo.ExecutionTime : 0)
+								ExecutionTime = (IsDefined("resultInfo.ExecutionTime") ? resultInfo.ExecutionTime : 0),
+								ExecutionPlan = ((IsDefined("local.executionPlan") AND IsQuery(local.executionPlan) AND local.executionPlan.recordCount) ? Duplicate(local.executionPlan) : [])
 								})>
 						</cfif>
+						
+						
 
 					</cfif>
+					
+					<cfset StructDelete(local, "executionPlan")>
 					<cfset StructDelete(local, "ret")>
               	</cfloop>
 				
