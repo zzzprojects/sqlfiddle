@@ -36,6 +36,35 @@
 					<cfif Len(trim(statement))>
 
 						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
+
+<!---
+EXECUTION PLANS:
+
+Postgres:
+
+	CALL: EXPLAIN #PreserveSingleQuotes(statement)#
+	RESULT: Single column "QUERY PLAN"
+
+MySQL:
+	CALL: EXPLAIN #PreserveSingleQuotes(statement)#
+	RESULT: Query with multiple columns: | id | select_type | table | type | possible_keys | key  | key_len | ref  | rows | Extra          |
+
+SQL Server:
+
+	CALL:
+		
+		SET SHOWPLAN_XML ON;
+		GO
+		
+		#PreserveSingleQuotes(statement)#
+		
+		SET SHOWPLAN_XML OFF;
+		GO
+
+	RESULT: Single column "Microsoft SQL Server 2005 XML Showplan"
+		
+--->
+
 				
 						<cfif IsDefined("ret")>
 							<cfset ArrayAppend(returnVal["sets"], {
