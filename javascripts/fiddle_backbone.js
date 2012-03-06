@@ -472,8 +472,7 @@ $(function () {
 		    this.compiledOutputTemplate = Handlebars.compile(this.options.outputTemplate.html()); 
 		      
 		},
-		handleQueryChange: function () {
-			
+		handleQueryChange: function () {			
 			var thisView = window.queryView; // kludge to handle the context limitations on CodeMirror change events
 			thisView.model.set({
 				"sql":thisView.editor.getValue()
@@ -488,6 +487,13 @@ $(function () {
 			this.options.output_el.html(
 				this.compiledOutputTemplate(this.model.toJSON())
 			);		
+			
+			this.options.output_el.find("a.executionPlanLink").click(function (e) {
+				e.preventDefault();
+				$("i", this).toggleClass("icon-minus icon-plus");
+				$(this).closest(".set").find(".executionPlan").toggle();
+			});
+			
 		},
 		refresh: function () {
 			this.editor.refresh();

@@ -73,6 +73,7 @@
 	<script id="query-output-template" type="text/x-handlebars-template">
 	{{#if id}}
 		{{#each sets}}
+		<div class="set">
 			{{#if this.RESULTS.DATA.length}}
 				<table class="results table table-bordered table-striped">
 					<tr>
@@ -90,10 +91,33 @@
 				</table>
 			{{/if}}
 			{{#if this.SUCCEEDED}}
-			<div id="messages" class="alert alert-success"><i class="icon-ok"></i>Record Count: {{this.RESULTS.DATA.length}}; Execution Time: {{this.EXECUTIONTIME}}ms</div>	
+			<div id="messages" class="alert alert-success">
+				<i class="icon-ok"></i>
+				Record Count: {{this.RESULTS.DATA.length}}; Execution Time: {{this.EXECUTIONTIME}}ms
+				<a href="#executionPlan" class="executionPlanLink"><i class="icon-plus"></i>View Execution Plan</a>
+			</div>	
+			
+			{{#if this.EXECUTIONPLAN.DATA.length}}
+				<table class="executionPlan table table-bordered">
+					<tr>
+					{{#each this.EXECUTIONPLAN.COLUMNS}}
+					<th>{{this}}</th>
+					{{/each}}
+					</tr>
+					{{#each this.EXECUTIONPLAN.DATA}}
+					<tr>
+						{{#each this}}
+						<td>{{this}}</td>
+						{{/each}}
+					</tr>
+					{{/each}}
+				</table>
+			{{/if}}
+			
 			{{else}}
 			<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
 			{{/if}}
+		</div>
 		{{/each}}
 	{{/if}}
 	</script>	
