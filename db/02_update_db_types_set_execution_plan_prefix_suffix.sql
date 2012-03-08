@@ -19,7 +19,7 @@ update db_types set
 ',
 	execution_plan_suffix = '
 
-/	
+/
 
 select to_clob(dbms_xplan.build_plan_xml(statement_id => ''#schema_short_code#/#query_id#'')) AS XPLAN FROM dual
 '
