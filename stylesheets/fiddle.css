@@ -172,3 +172,13 @@ a label {
 	height: 60px;
 	overflow: auto;	
 }
+
+.executionPlan {
+	width: 90%;
+	margin-left: 10%;	
+	display: none;
+}
+
+.executionPlanLink {
+	margin-left: 20px;	
+}

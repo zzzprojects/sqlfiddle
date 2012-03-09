@@ -26,24 +26,26 @@ $(function () {
 			this.DBType(db_type_id);
 			$("body").block({ message: "Loading..."});
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
-				window.schemaDef.set({
-					"short_code": resp["short_code"],
-					"ddl": resp["ddl"],
-					"ready": true,
-					"valid": true,
-					"errorMessage": ""
-				});
-				window.schemaDef.trigger("reloaded");
-				window.schemaDef.trigger("built");				
-				window.query.reset();
-				window.query.trigger("reloaded");		
-				
-				window.myFiddleHistory.insert(new UsedFiddle({
-					"fragment": frag,
-					"full_name": window.dbTypes.getSelectedType().get("full_name"),
-					"ddl": resp["ddl"] 
-				}));
-				
+				if (resp["short_code"])
+				{
+					window.schemaDef.set({
+						"short_code": resp["short_code"],
+						"ddl": resp["ddl"],
+						"ready": true,
+						"valid": true,
+						"errorMessage": ""
+					});
+					window.schemaDef.trigger("reloaded");
+					window.schemaDef.trigger("built");				
+					window.query.reset();
+					window.schemaDef.trigger("reloaded");
+					
+					window.myFiddleHistory.insert(new UsedFiddle({
+						"fragment": frag,
+						"full_name": window.dbTypes.getSelectedType().get("full_name"),
+						"ddl": resp["ddl"] 
+					}));
+				}
 				$("body").unblock();
 						
 			});
@@ -57,31 +59,37 @@ $(function () {
 
 			$("body").block({ message: "Loading..."});
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
-				window.schemaDef.set({
-					"short_code": resp["short_code"],
-					"ddl": resp["ddl"],
-					"ready": true,
-					"valid": true,
-					"errorMessage": ""
-				});
-				window.schemaDef.trigger("reloaded");
-				
-				window.query.set({
-					"id": query_id,
-					"sql": resp["sql"],
-					"sets": resp["sets"]
-				});
-				window.query.trigger("reloaded");
 
-				window.myFiddleHistory.insert(new UsedFiddle({
-					"fragment": frag,
-					"full_name": window.dbTypes.getSelectedType().get("full_name"),
-					"ddl": resp["ddl"],
-					"sql": resp["sql"] 
-				}));
-						
+				if (resp["short_code"])
+				{
+
+					window.schemaDef.set({
+						"short_code": resp["short_code"],
+						"ddl": resp["ddl"],
+						"ready": true,
+						"valid": true,
+						"errorMessage": ""
+					});
+					window.schemaDef.trigger("reloaded");
+					
+					if (resp["sql"])
+					{
+						window.query.set({
+							"id": query_id,
+							"sql": resp["sql"],
+							"sets": resp["sets"]
+						});
+						window.query.trigger("reloaded");
+		
+						window.myFiddleHistory.insert(new UsedFiddle({
+							"fragment": frag,
+							"full_name": window.dbTypes.getSelectedType().get("full_name"),
+							"ddl": resp["ddl"],
+							"sql": resp["sql"] 
+						}));
+					}							
 				
-				
+				}
 				$("body").unblock();
 			});
 
@@ -477,8 +485,7 @@ $(function () {
 		    this.compiledOutputTemplate = Handlebars.compile(this.options.outputTemplate.html()); 
 		      
 		},
-		handleQueryChange: function () {
-			
+		handleQueryChange: function () {			
 			var thisView = window.queryView; // kludge to handle the context limitations on CodeMirror change events
 			thisView.model.set({
 				"sql":thisView.editor.getValue()
@@ -493,6 +500,13 @@ $(function () {
 			this.options.output_el.html(
 				this.compiledOutputTemplate(this.model.toJSON())
 			);		
+			
+			this.options.output_el.find("a.executionPlanLink").click(function (e) {
+				e.preventDefault();
+				$("i", this).toggleClass("icon-minus icon-plus");
+				$(this).closest(".set").find(".executionPlan").toggle();
+			});
+			
 		},
 		refresh: function () {
 			this.editor.refresh();
