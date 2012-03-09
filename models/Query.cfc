@@ -30,10 +30,13 @@
 			</cfif>
 
 			<cfset sqlBatchList = REReplace(sqlBatchList, ";(\r?\n|$)", "#chr(7)#", "all")>
-			
+
 			<cftry>
 
               	<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
+			<cfset local.ret = QueryNew("")>
+			<cfset local.executionPlan = QueryNew("")>
+
 					<cfif Len(trim(statement))>
 
 						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
@@ -51,14 +54,14 @@
 							<cfelse>
 								<cfset local.executionPlanBatchList = local.executionPlanSQL>
 							</cfif>
-							
-							<cfloop list="#local.executionPlanBatchList#" index="executionPlanStatement">
+
+							<cfloop list="#local.executionPlanBatchList#" index="executionPlanStatement" delimiters="#chr(7)#">
 								<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="executionPlan">#PreserveSingleQuotes(executionPlanStatement)#</cfquery>								
 							</cfloop>
 							
 						</cfif>
 
-						<cfif IsDefined("ret")>
+						<cfif IsDefined("local.ret")>
 							<cfset ArrayAppend(returnVal["sets"], {
 								succeeded = true,
 								results = Duplicate(ret),
