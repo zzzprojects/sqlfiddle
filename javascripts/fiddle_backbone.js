@@ -24,25 +24,29 @@ $(function () {
 			var frag = "!" + db_type_id + "/" + short_code;
 		
 			this.DBType(db_type_id);
-			
+			$("body").block({ message: "Loading..."});
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
-				window.schemaDef.set({
-					"short_code": resp["short_code"],
-					"ddl": resp["ddl"],
-					"ready": true,
-					"valid": true,
-					"errorMessage": ""
-				});
-				window.schemaDef.trigger("reloaded");
-				window.schemaDef.trigger("built");				
-				window.query.reset();
-				window.query.trigger("reloaded");		
-				
-				window.myFiddleHistory.insert(new UsedFiddle({
-					"fragment": frag,
-					"full_name": window.dbTypes.getSelectedType().get("full_name"),
-					"ddl": resp["ddl"] 
-				}));
+				if (resp["short_code"])
+				{
+					window.schemaDef.set({
+						"short_code": resp["short_code"],
+						"ddl": resp["ddl"],
+						"ready": true,
+						"valid": true,
+						"errorMessage": ""
+					});
+					window.schemaDef.trigger("reloaded");
+					window.schemaDef.trigger("built");				
+					window.query.reset();
+					window.schemaDef.trigger("reloaded");
+					
+					window.myFiddleHistory.insert(new UsedFiddle({
+						"fragment": frag,
+						"full_name": window.dbTypes.getSelectedType().get("full_name"),
+						"ddl": resp["ddl"] 
+					}));
+				}
+				$("body").unblock();
 						
 			});
 			
@@ -53,31 +57,40 @@ $(function () {
 		
 			this.DBType(db_type_id);
 
+			$("body").block({ message: "Loading..."});
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
-				window.schemaDef.set({
-					"short_code": resp["short_code"],
-					"ddl": resp["ddl"],
-					"ready": true,
-					"valid": true,
-					"errorMessage": ""
-				});
-				window.schemaDef.trigger("reloaded");
-				
-				window.query.set({
-					"id": query_id,
-					"sql": resp["sql"],
-					"sets": resp["sets"]
-				});
-				window.query.trigger("reloaded");
 
-				window.myFiddleHistory.insert(new UsedFiddle({
-					"fragment": frag,
-					"full_name": window.dbTypes.getSelectedType().get("full_name"),
-					"ddl": resp["ddl"],
-					"sql": resp["sql"] 
-				}));
-						
+				if (resp["short_code"])
+				{
+
+					window.schemaDef.set({
+						"short_code": resp["short_code"],
+						"ddl": resp["ddl"],
+						"ready": true,
+						"valid": true,
+						"errorMessage": ""
+					});
+					window.schemaDef.trigger("reloaded");
+					
+					if (resp["sql"])
+					{
+						window.query.set({
+							"id": query_id,
+							"sql": resp["sql"],
+							"sets": resp["sets"]
+						});
+						window.query.trigger("reloaded");
+		
+						window.myFiddleHistory.insert(new UsedFiddle({
+							"fragment": frag,
+							"full_name": window.dbTypes.getSelectedType().get("full_name"),
+							"ddl": resp["ddl"],
+							"sql": resp["sql"] 
+						}));
+					}							
 				
+				}
+				$("body").unblock();
 			});
 
 		
@@ -591,6 +604,9 @@ $(function () {
 	
 	window.query.on("executed", function () {
 	// see also the router function defined below that also binds to this event 
+		var $button = $(".runQuery label");
+		$button.prop('disabled', false);
+		$button.text($button.data("originalValue"));
 		window.queryView.renderOutput();
 	});
 
@@ -608,7 +624,13 @@ $(function () {
 	});	
 	
 	var handleRunQuery = function (e) {
+		var $button = $(".runQuery label");
 		e.preventDefault();
+		
+		if ($button.prop('disabled')) return false;
+		$button.data("originalValue", $button.text());
+		$button.prop('disabled', true).text('Executing SQL...');
+		
 		window.queryView.checkForSelectedText();
 		window.query.execute();
 	};
