@@ -41,8 +41,18 @@
 
 						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
 
-						<cfif 	Len(this.schema_def.db_type.execution_plan_prefix) OR
-								Len(this.schema_def.db_type.execution_plan_suffix)
+						<cfif 		(
+									Len(this.schema_def.db_type.execution_plan_prefix) OR
+									Len(this.schema_def.db_type.execution_plan_suffix)
+								) 
+							AND
+								(
+									this.schema_def.db_type.simple_name != 'MySQL' OR
+									(
+										IsDefined("local.ret") AND
+										local.ret.recordCount
+									)
+								)
 							>
 							
 							<cfset local.executionPlanSQL = this.schema_def.db_type.execution_plan_prefix & statement & this.schema_def.db_type.execution_plan_suffix> 

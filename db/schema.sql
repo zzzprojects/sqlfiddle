@@ -42,7 +42,9 @@ CREATE TABLE db_types (
     custom_jdbc_attributes character varying(100),
     batch_separator character varying(5),
     notes character varying(250),
-    sample_fragment character varying(50)
+    sample_fragment character varying(50),
+    execution_plan_prefix character varying(500),
+    execution_plan_suffix character varying(500)
 );
 
 

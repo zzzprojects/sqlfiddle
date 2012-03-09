@@ -21,7 +21,7 @@ update db_types set
 
 /
 
-select to_clob(dbms_xplan.build_plan_xml(statement_id => ''#schema_short_code#/#query_id#'')) AS XPLAN FROM dual
+select dbms_xplan.build_plan_xml(statement_id => ''#schema_short_code#/#query_id#'').getclobval() AS XPLAN FROM dual
 '
 where
 	simple_name = 'Oracle';
