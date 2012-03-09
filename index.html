@@ -107,7 +107,7 @@
 					{{#each this.EXECUTIONPLAN.DATA}}
 					<tr>
 						{{#each this}}
-						<td>{{this}}</td>
+						<td>{{xmlPretty}}</td>
 						{{/each}}
 					</tr>
 					{{/each}}
@@ -266,7 +266,6 @@
 	
 			
 	<div id="historyModal" class="modal"></div>	
-	
 
 	<script src="javascripts/jquery.min.js" type="text/javascript"></script>
 	<script src="javascripts/jquery.blockUI.js" type="text/javascript"></script>
@@ -287,6 +286,8 @@
 
 	<script src="javascripts/date.format.js" type="text/javascript"></script>
 	<script src="javascripts/ddl_builder.js" type="text/javascript"></script>
+	
+	<script src="javascripts/vkbeautify.0.96.00.beta.js" type="text/javascript"></script>
 
   </body>
 </html>
