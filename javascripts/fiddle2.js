@@ -22,9 +22,6 @@ $(function () {
 	});
 	
 	
-	QP.drawLines();
-	
-
 	$(window).bind('resize', resizeLayout);		
 	setTimeout(resizeLayout, 1);
 });
