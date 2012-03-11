@@ -16,6 +16,8 @@
 	<link href="stylesheets/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
 	<link href="stylesheets/fiddle.css" media="all" rel="stylesheet" type="text/css" />
 
+	<link href="stylesheets/qp.css" media="all" rel="stylesheet" type="text/css" />
+
 	<script id="historyLog-template" type="text/x-handlebars-template">
 		<div class="modal-header">
 			<a class="close" data-dismiss="modal">x</a>
@@ -109,7 +111,7 @@
 					{{#each this.EXECUTIONPLAN.DATA}}
 					<tr>
 						{{#each this}}
-						<td>{{xmlPretty}}</td>
+						<td>{{{this}}}</td>
 						{{/each}}
 					</tr>
 					{{/each}}
@@ -284,12 +286,14 @@
 	<script src="javascripts/bootstrap-modal.js" type="text/javascript"></script>
 
 	<script src="javascripts/fiddle_backbone.js" type="text/javascript"></script>
-	<script src="javascripts/fiddle2.js" type="text/javascript"></script>
 
 	<script src="javascripts/date.format.js" type="text/javascript"></script>
 	<script src="javascripts/ddl_builder.js" type="text/javascript"></script>
 	
 	<script src="javascripts/vkbeautify.0.96.00.beta.js" type="text/javascript"></script>
+	<script src="javascripts/qp.js" type="text/javascript"></script>
+
+	<script src="javascripts/fiddle2.js" type="text/javascript"></script>
 
   </body>
 </html>

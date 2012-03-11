@@ -69,6 +69,23 @@
 								<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="executionPlan">#PreserveSingleQuotes(executionPlanStatement)#</cfquery>								
 							</cfloop>
 							
+
+							<cfif 	Len(this.schema_def.db_type.execution_plan_xslt) AND
+								IsDefined("local.executionPlan") AND 
+								IsQuery(local.executionPlan) AND 
+								local.executionPlan.recordCount AND
+								IsXML(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])>
+								<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] = 
+									XMLTransform(
+										local.executionPlan[ListFirst(local.executionPlan.columnList)][1],
+										this.schema_def.db_type.execution_plan_xslt
+									)>								
+							<cfelseif IsXML(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])>
+                                                                <cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] =
+                                                                        "<pre>#XMLFormat(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])#</pre>">
+							</cfif>
+
+
 						</cfif>
 
 						<cfif IsDefined("local.ret")>
