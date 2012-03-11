@@ -1,0 +1,1 @@
+alter table db_types add execution_plan_xslt text;
