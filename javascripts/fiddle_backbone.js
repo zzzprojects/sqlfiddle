@@ -497,17 +497,23 @@ $(function () {
 				this.renderOutput();
 		},
 		renderOutput: function() {
+			var thisModel = this.model;
+
 			this.options.output_el.html(
 				this.compiledOutputTemplate(this.model.toJSON())
 			);		
-
-			if (this.model.get("schemaDef").get("dbType").get("simple_name") == 'SQL Server')
-				QP.drawLines();
-		
+			
 			this.options.output_el.find("a.executionPlanLink").click(function (e) {
 				e.preventDefault();
 				$("i", this).toggleClass("icon-minus icon-plus");
 				$(this).closest(".set").find(".executionPlan").toggle();
+				
+	                        if (	$("i", this).hasClass("icon-minus") && 
+					thisModel.get("schemaDef").get("dbType").get("simple_name") == 'SQL Server'
+				   )
+                                	QP.drawLines($(this).closest(".set").find(".executionPlan td"));
+
+
 			});
 			
 		},
