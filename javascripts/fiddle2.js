@@ -30,19 +30,6 @@ $.blockUI.defaults.overlayCSS.cursor = 'auto';
 $.blockUI.defaults.css.cursor = 'auto';
 
 
-Handlebars.registerHelper("xmlPretty", function() {
-	try {
-		$.parseXML(this);
-		return new Handlebars.SafeString("<pre>" + vkbeautify.xml(this).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</pre>");
-	}
-	catch (e) {
-		return new Handlebars.SafeString(this);
-	}
-});		
-
-
-
-
 function resizeLayout(){
 
 	var wheight = $(window).height() - 100;
