@@ -47,7 +47,7 @@
 								) 
 							AND
 								(
-									this.schema_def.db_type.simple_name != 'MySQL' OR
+									this.schema_def.db_type.simple_name IS NOT 'MySQL' OR
 									(
 										IsDefined("local.ret") AND
 										local.ret.recordCount
