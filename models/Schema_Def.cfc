@@ -11,16 +11,20 @@
 	{
 			
 		var db_type = model("DB_Type").findByKey(key=this.db_type_id, cache="true");
-		var available_host_id = db_type.findAvailableHost().id;
-		var host = model("Host").findByKey(key=available_host_id, include="DB_Type", cache="true");	
-		
-		this.current_host_id = host.id;				
+
 		this.last_used = now();			
 
-		host.initializeDatabase(this.short_code);
-		host.initializeDSN(this.short_code);
-		host.initializeSchema(this.short_code, this.ddl);
+		if (db_type.context IS "host") // if the context for this schema is anything other than "host", we don't do much on this end
+		{		
+			var available_host_id = db_type.findAvailableHost().id;
+			var host = model("Host").findByKey(key=available_host_id, include="DB_Type", cache="true");	
+
+			this.current_host_id = host.id;				
 	
+			host.initializeDatabase(this.short_code);
+			host.initializeDSN(this.short_code);
+			host.initializeSchema(this.short_code, this.ddl);
+		}
 		this.save();					
 		
 		
