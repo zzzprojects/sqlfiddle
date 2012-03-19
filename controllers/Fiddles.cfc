@@ -5,7 +5,7 @@ component extends="Controller" {
 	}
 
 	function db_types() {
-		db_types = model("DB_Type").findAll(select="id,full_name,sample_fragment,simple_name,notes", order="full_name", cache="true");			
+		db_types = model("DB_Type").findAll(select="id,full_name,sample_fragment,simple_name,notes,context,jdbc_class_name", order="full_name", cache="true");			
 		renderText(SerializeJSON(db_types));
 	}
 

@@ -28,23 +28,62 @@ $(function () {
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
 				if (resp["short_code"])
 				{
-					window.schemaDef.set({
-						"short_code": resp["short_code"],
-						"ddl": resp["ddl"],
-						"ready": true,
-						"valid": true,
-						"errorMessage": ""
-					});
-					window.schemaDef.trigger("reloaded");
-					window.schemaDef.trigger("built");				
-					window.query.reset();
-					window.schemaDef.trigger("reloaded");
-					
-					window.myFiddleHistory.insert(new UsedFiddle({
-						"fragment": frag,
-						"full_name": window.dbTypes.getSelectedType().get("full_name"),
-						"ddl": resp["ddl"] 
-					}));
+					var selectedDBType = window.dbTypes.getSelectedType();
+
+					if (selectedDBType.get("context") == "browser")
+					{
+						window.browserEngines[selectedDBType.get("className")].buildSchema({
+							
+							short_code: $.trim(resp["short_code"]),
+							ddl: resp["ddl"],
+							success: function () {
+								window.schemaDef.set({
+									"short_code": resp["short_code"],
+									"ddl": resp["ddl"],
+									"ready": true,
+									"valid": true,
+									"errorMessage": ""
+								});
+								window.schemaDef.trigger("reloaded");
+								window.schemaDef.trigger("built");
+								window.query.reset();
+								window.query.trigger("reloaded");								
+							},
+							error: function (message) {
+								window.schemaDef.set({
+									"short_code": resp["short_code"],
+									"ddl": resp["ddl"],
+									"ready": false,
+									"valid": false,
+									"errorMessage": message
+								});
+								window.schemaDef.trigger("failed");
+								window.query.reset();
+								window.query.trigger("reloaded");
+							}
+							
+						});
+					}
+					else // context not "browser"
+					{	
+						window.schemaDef.set({
+							"short_code": resp["short_code"],
+							"ddl": resp["ddl"],
+							"ready": true,
+							"valid": true,
+							"errorMessage": ""
+						});
+						window.schemaDef.trigger("reloaded");
+						window.schemaDef.trigger("built");				
+						window.query.reset();
+						window.query.trigger("reloaded");
+						
+						window.myFiddleHistory.insert(new UsedFiddle({
+							"fragment": frag,
+							"full_name": window.dbTypes.getSelectedType().get("full_name"),
+							"ddl": resp["ddl"] 
+						}));
+					}
 				}
 				$("body").unblock();
 						
@@ -62,35 +101,107 @@ $(function () {
 
 				if (resp["short_code"])
 				{
-
-					window.schemaDef.set({
-						"short_code": resp["short_code"],
-						"ddl": resp["ddl"],
-						"ready": true,
-						"valid": true,
-						"errorMessage": ""
-					});
-					window.schemaDef.trigger("reloaded");
 					
-					if (resp["sql"])
+					var selectedDBType = window.dbTypes.getSelectedType();
+
+					if (selectedDBType.get("context") == "browser")
 					{
-						window.query.set({
-							"id": query_id,
-							"sql": resp["sql"],
-							"sets": resp["sets"]
+						window.browserEngines[selectedDBType.get("className")].buildSchema({
+							
+							short_code: $.trim(resp["short_code"]),
+							ddl: resp["ddl"],
+							success: function () {
+								window.schemaDef.set({
+									"short_code": resp["short_code"],
+									"ddl": resp["ddl"],
+									"ready": true,
+									"valid": true,
+									"errorMessage": ""
+								});
+								window.schemaDef.trigger("reloaded");
+								window.schemaDef.trigger("built");
+
+								window.browserEngines[selectedDBType.get("className")].executeQuery({
+									sql: resp["sql"],
+									success: function (sets) {
+										window.query.set({
+											"id": query_id,
+											"sql":  resp["sql"],
+											"sets": sets
+										});
+										window.query.trigger("reloaded");
+										window.query.trigger("executed");
+
+										$("body").unblock();
+									},
+									error: function (e) {
+										window.query.set({
+											"id": query_id,
+											"sql":  resp["sql"],
+											"sets": []
+										});				
+										window.query.trigger("reloaded");
+										window.query.trigger("executed");
+
+										$("body").unblock();
+									}
+								});
+							},
+							error: function (message) {
+								window.schemaDef.set({
+									"short_code": resp["short_code"],
+									"ddl": resp["ddl"],
+									"ready": false,
+									"valid": false,
+									"errorMessage": message
+								});
+								window.schemaDef.trigger("failed");
+								window.query.reset();
+								window.query.trigger("reloaded");
+								$("body").unblock();
+								
+							}
+							
 						});
-						window.query.trigger("reloaded");
-		
-						window.myFiddleHistory.insert(new UsedFiddle({
-							"fragment": frag,
-							"full_name": window.dbTypes.getSelectedType().get("full_name"),
+					}
+					else // context not "browser"
+					{	
+							
+						window.schemaDef.set({
+							"short_code": resp["short_code"],
 							"ddl": resp["ddl"],
-							"sql": resp["sql"] 
-						}));
-					}							
+							"ready": true,
+							"valid": true,
+							"errorMessage": ""
+						});
+						window.schemaDef.trigger("reloaded");
+						
+						if (resp["sql"])
+						{
+							window.query.set({
+								"id": query_id,
+								"sql": resp["sql"],
+								"sets": resp["sets"]
+							});
+							window.query.trigger("reloaded");
+			
+							window.myFiddleHistory.insert(new UsedFiddle({
+								"fragment": frag,
+								"full_name": window.dbTypes.getSelectedType().get("full_name"),
+								"ddl": resp["ddl"],
+								"sql": resp["sql"] 
+							}));
+						}
+													
+						$("body").unblock();
+				
+					}
 				
 				}
-				$("body").unblock();
+				else
+				{
+					$("body").unblock();
+				}
 			});
 
 		
@@ -162,7 +273,9 @@ $(function () {
 			"notes":"",
 			"simple_name": "",
 			"full_name": "",
-			"selected": false
+			"selected": false,
+			"context": "host",
+			"className": ""
 		}
 	});
 	
@@ -200,7 +313,9 @@ $(function () {
 					"sample_fragment" : resp["DATA"][i][columnIdx["SAMPLE_FRAGMENT"]],
 					"notes": resp["DATA"][i][columnIdx["NOTES"]],
 					"simple_name": resp["DATA"][i][columnIdx["SIMPLE_NAME"]],
-					"full_name": resp["DATA"][i][columnIdx["FULL_NAME"]]
+					"full_name": resp["DATA"][i][columnIdx["FULL_NAME"]],
+					"context": resp["DATA"][i][columnIdx["CONTEXT"]],
+					"className": resp["DATA"][i][columnIdx["JDBC_CLASS_NAME"]]
 				});
 			}
 
@@ -246,13 +361,46 @@ $(function () {
 				success: function (data, textStatus, jqXHR) {
 					if (data["short_code"])
 					{
-						thisModel.set({
-							"short_code": $.trim(data["short_code"]),
-							"ready": true,
-							"valid": true,
-							"errorMessage": ""
-						});
-						thisModel.trigger("built");
+						if (selectedDBType.get("context") == "browser")
+						{
+							window.browserEngines[selectedDBType.get("className")].buildSchema({
+								
+								short_code: $.trim(data["short_code"]),
+								ddl: thisModel.get('ddl'),
+								success: function () {
+									thisModel.set({
+										"short_code": $.trim(data["short_code"]),
+										"ready": true,
+										"valid": true,
+										"errorMessage": ""
+									});
+									
+									thisModel.trigger("built");
+								},
+								error: function (message) {
+									thisModel.set({
+										"short_code": $.trim(data["short_code"]),
+										"ready": false,
+										"valid": false,
+										"errorMessage": message
+									});
+									thisModel.trigger("failed");
+								}
+								
+							});
+						}
+						else
+						{
+							thisModel.set({
+								"short_code": $.trim(data["short_code"]),
+								"ready": true,
+								"valid": true,
+								"errorMessage": ""
+							});
+							
+							thisModel.trigger("built");
+						}
+						
 					}
 					else
 					{
@@ -312,18 +460,38 @@ $(function () {
 				},
 				dataType: "json",
 				success: function (resp, textStatus, jqXHR) {
-				
-					thisModel.set({
-						"id": resp["ID"],
-						"sets": resp["sets"]
-					});
+					if (thisModel.get("schemaDef").get("dbType").get("context") == "browser")
+					{
+						window.browserEngines[thisModel.get("schemaDef").get("dbType").get("className")].executeQuery({
+							sql: thisModel.get("sql"),
+							success: function (sets) {
+								thisModel.set({
+									"id": resp["ID"],
+									"sets": sets
+								});
+								thisModel.trigger("executed");
+							},
+							error: function (e) {
+								thisModel.set({
+									"sets": []
+								});				
+								thisModel.trigger("executed");
+							}
+						});
+					}
+					else
+					{
+						thisModel.set({
+							"id": resp["ID"],
+							"sets": resp["sets"]
+						});
+					}
 				},
 				error: function (jqXHR, textStatus, errorThrown)
 				{
 					thisModel.set({
 						"sets": []
 					});				
-
 				},
 				complete: function (jqXHR, textStatus)
 				{
@@ -533,6 +701,11 @@ $(function () {
 	/***************
 	OBJECT INSTANTIATION
 	 ***************/
+	
+	window.browserEngines = {
+		websql: new WebSQL_driver(), // see websql_driver.js
+		sqljs: new SQLjs_driver() // see sqljs_driver.js
+	};
 	
 	window.myFiddleHistory = new MyFiddleHistory();
 	

@@ -2,14 +2,26 @@ insert into db_types
 (
 	full_name,
 	simple_name,
-	context	
+	context,
+	jdbc_class_name	
 )
+/*
 select
+	'SQLite (WebSQL)',
 	'SQLite',
-	'SQLite',
-	'browser'
+	'browser',
+	'websql'
 where
-	not exists (select 1 from db_types where simple_name = 'SQLite');
+	not exists (select 1 from db_types where full_name = 'SQLite (WebSQL)')
+UNION
+*/
+select
+	'SQLite (SQL.js)',
+	'SQLite',
+	'browser',
+	'sqljs'
+where
+	not exists (select 1 from db_types where full_name = 'SQLite (SQL.js)');
 	
 
 update
