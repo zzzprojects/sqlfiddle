@@ -120,6 +120,32 @@ SELECT * FROM dual";
 							});	
 			break;
 
+
+
+			case 'SQLite':	
+				var template = 
+"CREATE TABLE {{fieldPrefix}}{{tableName}}{{fieldSuffix}}\n\
+	({{#each_with_index columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}} {{db_type}}{{/each_with_index}});\n\n\
+{{#each_with_index data}}\
+INSERT INTO {{fieldPrefix}}{{../tableName}}{{fieldSuffix}}\n\
+	({{#each_with_index ../columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}}{{/each_with_index}})\n\
+VALUES\n\
+	({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}});\
+\n\
+{{/each_with_index}}\
+";
+
+												
+					this.setup({ 
+								ddlTemplate: template,
+								dateType: 'TEXT',
+								charType: 'TEXT',
+								intType: 'INTEGER',
+								floatType: 'REAL'
+							});	
+			break;
+
+
 		}
 		return this;
 	}
