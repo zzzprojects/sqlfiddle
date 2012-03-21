@@ -671,6 +671,16 @@ $(function () {
 				this.compiledOutputTemplate(this.model.toJSON())
 			);		
 			
+			$(".oracle_xplan").each(function () {
+				var xplan_box_dom = $(this)[0];
+				var ifrm = (xplan_box_dom.contentWindow) ? xplan_box_dom.contentWindow : (xplan_box_dom.contentDocument.document) ? xplan_box_dom.contentDocument.document : xplan_box_dom.contentDocument;
+		
+				ifrm.document.open();
+				ifrm.document.write($(this).text());
+				ifrm.document.close();
+			});
+			
+			
 			this.options.output_el.find("a.executionPlanLink").click(function (e) {
 				e.preventDefault();
 				$("i", this).toggleClass("icon-minus icon-plus");
@@ -679,7 +689,9 @@ $(function () {
 				if ($("i", this).hasClass("icon-minus") && 
 					thisModel.get("schemaDef").get("dbType").get("simple_name") == 'SQL Server'
 				   )
+				{
 					QP.drawLines($(this).closest(".set").find(".executionPlan td"));
+				}
 
 
 			});
