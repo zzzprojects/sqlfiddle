@@ -671,13 +671,12 @@ $(function () {
 				this.compiledOutputTemplate(this.model.toJSON())
 			);		
 			
-			$(".oracle_xplan").each(function () {
-				var xplan_box_dom = $(this)[0];
-				var ifrm = (xplan_box_dom.contentWindow) ? xplan_box_dom.contentWindow : (xplan_box_dom.contentDocument.document) ? xplan_box_dom.contentDocument.document : xplan_box_dom.contentDocument;
-		
-				ifrm.document.open();
-				ifrm.document.write($(this).text());
-				ifrm.document.close();
+			$("script.oracle_xplan_xml").each(function () {
+
+				$(this).siblings("div.oracle_xplan")
+					.html(
+						loadswf($(this).text())
+						);
 			});
 			
 			

@@ -183,9 +183,11 @@ a label {
 	margin-left: 20px;	
 }
 
-	.oracle_xplan {
-		
-		width: 800px;
-		height: 600px;
-		
-	}	
+.oracle_xplan {
+	margin: 0px; 
+	overflow:hidden;
+	width: 800px;
+	height: 600px;
+	border: solid thin black;
+	display: inline-block;
+}	
