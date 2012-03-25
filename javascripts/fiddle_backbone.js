@@ -831,7 +831,10 @@ $(function () {
 	$(".runQuery").click(handleRunQuery);
 	$(document).keyup(function (e) {
 		if (e.keyCode == 116) // F5
+		{	
+			e.preventDefault();
 			handleRunQuery(e);
+		}
 	});
 	
 	$("#clear").click(function (e) {
