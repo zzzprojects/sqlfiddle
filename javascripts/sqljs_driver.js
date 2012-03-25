@@ -74,8 +74,6 @@ window.SQLjs_driver = function () {
 				try {
 					setArray = db.exec(statement);
 	
-					exectionPlanArray = db.exec("EXPLAIN QUERY PLAN " + statement);
-	
 					var thisSet = {
 						"SUCCEEDED": true,
 						"EXECUTIONTIME": (new Date()) - startTime,
@@ -105,20 +103,29 @@ window.SQLjs_driver = function () {
 						});
 					}
 
-					
-					if (exectionPlanArray.length)
-					{
-						$.each(exectionPlanArray, function (rowNumber, row) {
-							var rowVals = [];
-							$.each(row, function (columnNumber, col) {
-								if (rowNumber == 0)
-								{
-									thisSet["EXECUTIONPLAN"]["COLUMNS"].push(col.column);	
-								}
-								rowVals.push(col.value);
+					try {
+						
+						exectionPlanArray = db.exec("EXPLAIN QUERY PLAN " + statement);
+						
+						if (exectionPlanArray.length)
+						{
+							$.each(exectionPlanArray, function (rowNumber, row) {
+								var rowVals = [];
+								$.each(row, function (columnNumber, col) {
+									if (rowNumber == 0)
+									{
+										thisSet["EXECUTIONPLAN"]["COLUMNS"].push(col.column);	
+									}
+									rowVals.push(col.value);
+								});
+								thisSet["EXECUTIONPLAN"]["DATA"].push(rowVals);
 							});
-							thisSet["EXECUTIONPLAN"]["DATA"].push(rowVals);
-						});
+						}
+						
+					}
+					catch (e)
+					{
+						// if we get an error with the execution plan, just ignore and move on.
 					}
 
 					returnSets.push(thisSet);
