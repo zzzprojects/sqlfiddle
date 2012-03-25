@@ -5,7 +5,6 @@ insert into db_types
 	context,
 	jdbc_class_name	
 )
-/*
 select
 	'SQLite (WebSQL)',
 	'SQLite',
@@ -14,7 +13,6 @@ select
 where
 	not exists (select 1 from db_types where full_name = 'SQLite (WebSQL)')
 UNION
-*/
 select
 	'SQLite (SQL.js)',
 	'SQLite',
