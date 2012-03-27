@@ -31,7 +31,7 @@
 					<cfset sqlBatchList = this.sql>
 				</cfif>
 	
-				<cfset sqlBatchList = REReplace(sqlBatchList, ";(\r?\n|$)", "#chr(7)#", "all")>
+				<cfset sqlBatchList = REReplace(sqlBatchList, ";\s*(\r?\n|$)", "#chr(7)#", "all")>
 	
 				<cftry>
 	

@@ -55,7 +55,7 @@
 		<cfelse>
 			<cfset ddl_list = arguments.ddl>
 		</cfif>
-		<cfset ddl_list = REReplace(ddl_list, ";(\r?\n|$)", "#chr(7)#", "all")>
+		<cfset ddl_list = REReplace(ddl_list, ";\s*(\r?\n|$)", "#chr(7)#", "all")>
 
         <cfloop list="#ddl_list#" index="statement" delimiters="#chr(7)#">
 			<cfif Len(trim(statement))>
