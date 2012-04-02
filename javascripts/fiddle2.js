@@ -57,3 +57,14 @@ function resizeLayout(){
 	window.schemaDefView.refresh();
 	window.queryView.refresh();
 }
+
+
+
+    
+	Handlebars.registerHelper("result_display", function() {
+		if ($.isPlainObject(this))
+			return JSON.stringify(this);
+		else
+			return this;
+	});
+
