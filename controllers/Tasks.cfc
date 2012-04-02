@@ -7,7 +7,10 @@
 		var i = 0;
 		for (i = 1; i<= ArrayLen(stale_schemas); i++)
 		{
-			stale_schemas[i].purgeDatabase(1);
+			lock name="#stale_schemas[i].db_type_id#_#stale_schemas[i].short_code#" type="exclusive" timeout="60"
+                        {
+				stale_schemas[i].purgeDatabase(1);
+			}
 		}
 
 		
