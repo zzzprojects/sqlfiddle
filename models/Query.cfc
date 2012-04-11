@@ -67,15 +67,15 @@
 									<cfset local.executionPlanBatchList = local.executionPlanSQL>
 								</cfif>
 
-								<cftry>	
 								<cfloop list="#local.executionPlanBatchList#" index="executionPlanStatement" delimiters="#chr(7)#">
+								<cftry>	
 									<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="executionPlan">#PreserveSingleQuotes(executionPlanStatement)#</cfquery>								
-								</cfloop>
 									<cfcatch type="database">
 									<!--- execution plan failed! Oh well, carry on.... --->
 									<cfset local.executionPlan = QueryNew("")>
 									</cfcatch>
 								</cftry>								
+								</cfloop>
 	
 								<cfif 	
 									IsDefined("local.executionPlan") AND 
@@ -128,6 +128,10 @@
 							succeeded = false,
 							errorMessage = (IsDefined("cfcatch.queryError") ? (cfcatch.message & ": " & cfcatch.queryError) : cfcatch.message)
 							})>
+<!---
+						<cfdump var="#statement#">
+						<cfrethrow>
+--->
 					</cfcatch>
 					<cffinally>		
 						<cftransaction action="rollback" />
