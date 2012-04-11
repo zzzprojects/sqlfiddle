@@ -66,25 +66,34 @@
 								<cfelse>
 									<cfset local.executionPlanBatchList = local.executionPlanSQL>
 								</cfif>
-	
+
+								<cftry>	
 								<cfloop list="#local.executionPlanBatchList#" index="executionPlanStatement" delimiters="#chr(7)#">
 									<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="executionPlan">#PreserveSingleQuotes(executionPlanStatement)#</cfquery>								
 								</cfloop>
-								
+									<cfcatch type="database">
+									<!--- execution plan failed! Oh well, carry on.... --->
+									<cfset local.executionPlan = QueryNew("")>
+									</cfcatch>
+								</cftry>								
 	
-								<cfif 	Len(this.schema_def.db_type.execution_plan_xslt) AND
+								<cfif 	
 									IsDefined("local.executionPlan") AND 
 									IsQuery(local.executionPlan) AND 
 									local.executionPlan.recordCount AND
 									IsXML(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])>
-									<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] = 
-										XMLTransform(
-											local.executionPlan[ListFirst(local.executionPlan.columnList)][1],
-											this.schema_def.db_type.execution_plan_xslt
-										)>								
-								<cfelseif IsXML(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])>
-	                                                                <cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] =
-	                                                                        "<pre>#XMLFormat(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])#</pre>">
+
+									<cfif Len(this.schema_def.db_type.execution_plan_xslt)>
+										<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] = 
+											XMLTransform(
+												local.executionPlan[ListFirst(local.executionPlan.columnList)][1],
+												this.schema_def.db_type.execution_plan_xslt
+											)>								
+									<cfelse>
+	                                                                	<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] =
+	                                                                        	"<pre>#XMLFormat(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])#</pre>">
+									</cfif>
+
 								</cfif>
 	
 	
