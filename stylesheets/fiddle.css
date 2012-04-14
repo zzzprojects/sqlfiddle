@@ -1,7 +1,14 @@
 /*//*/
-body {
-  padding-top: 60px;
+
+@media (min-width:768px)
+{
+	
+	body {
+	  padding-top: 60px;
+	}
+	
 }
+
 .sqlfiddle-icon {
   float: left;
   margin: 0 5px 0 0;
@@ -27,9 +34,11 @@ a label {
 #sidebar .well {
   padding: 8px 0;
 }
+/*
 .navbar, #content {
   min-width: 920px !important;
 }
+*/
 #content {
   height: 100%;
 }
@@ -61,9 +70,6 @@ a label {
   margin: 0;
   padding: 4px;
   resize: none;
-}
-#output .panel {
-  margin: 0;
 }
 #content .panel.schema {
   margin: 0;
@@ -124,7 +130,7 @@ a label {
 #hosting {
 	display: block;
 	margin: 20px auto;
-	width: 800px;
+	//width: 800px;
 }
 #hosting h4 {
 	text-align: center;
@@ -191,3 +197,4 @@ a label {
 	border: solid thin black;
 	display: inline-block;
 }	
+
