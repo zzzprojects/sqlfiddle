@@ -22,6 +22,11 @@ $(function () {
 	});
 	
 	
+	$(".nav-collapse").on('click', 'a', function () {
+		$(".nav-collapse").collapse('hide');
+	});
+	
+	
 	$(window).bind('resize', resizeLayout);		
 	setTimeout(resizeLayout, 1);
 });
