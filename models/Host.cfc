@@ -77,10 +77,10 @@
 			    allowed_insert=true,
 			    allowed_update=true,
 			    allowed_delete=true,
-			    allowed_alter=false,
-			    allowed_drop=false,
+			    allowed_alter=true,
+			    allowed_drop=true,
 			    allowed_revoke=false,
-			    allowed_create=false,
+			    allowed_create=true,
 			    allowed_grant=false,
 				pooling=false,
 				description = "Created on #DateFormat(Now(), 'mm/dd/yyyy')# #TimeFormat(Now(), 'hh:mm:ss tt')#"
