@@ -22,8 +22,8 @@ $(function () {
 	});
 	
 	
-	$(".nav-collapse").on('click', 'a', function () {
-		$(".nav-collapse").collapse('hide');
+	$(".nav").on('click', 'a', function (e) {
+		$(".nav-collapse.in").collapse('hide');
 	});
 	
 	
