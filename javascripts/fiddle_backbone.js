@@ -594,6 +594,7 @@ $(function () {
 		
 			this.editor = CodeMirror.fromTextArea(document.getElementById(this.id), {
 		        mode: "mysql",
+				extraKeys: {Tab: "indentMore"},
 		        lineNumbers: true,
 		        onChange: this.handleSchemaChange
 		      });
@@ -646,6 +647,7 @@ $(function () {
 		
 			this.editor = CodeMirror.fromTextArea(document.getElementById(this.id), {
 		        mode: "mysql",
+				extraKeys: {Tab: "indentMore"},
 		        lineNumbers: true,
 		        onChange: this.handleQueryChange
 		      });
