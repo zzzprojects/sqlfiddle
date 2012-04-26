@@ -1,12 +1,10 @@
 /*//*/
 
-@media (min-width:768px)
+@media (max-width:768px)
 {
-	
 	body {
-	  padding-top: 60px;
+	  padding-top: 0px !important;
 	}
-
 }
 
 @media (min-width:480px) and (max-width:768px)
@@ -15,11 +13,19 @@
 		display: inline !important;	
 	}	
 }
+
+	body {
+	  padding-top: 60px;
+	}
+
  
 	#db_type_label_collapsed {
 		display: none;	
 	}
-
+	
+.navbar .brand {
+	white-space: nowrap;
+}	
 .sqlfiddle-icon {
   float: left;
   margin: 0 5px 0 0;
