@@ -1,3 +1,14 @@
 a.executionPlanLink, .btn-navbar, .well, #hosting {
 	display: none;	
 }
+
+      .CodeMirror-scroll {
+        height: auto !important;
+        overflow-y: hidden;
+        overflow-x: auto;
+        width: 100%;
+      }
+	  
+	  #schema-output {
+	  	height: auto !important;	
+	  }
