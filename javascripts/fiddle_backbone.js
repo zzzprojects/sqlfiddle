@@ -584,6 +584,9 @@ $(function () {
 					selectedFullName: selectedDBType.get("full_name")
 				})
 			);
+			
+			$("#db_type_label_collapsed .navbar-text").text(selectedDBType.get("full_name"));
+			
 			return this;
 		}
 	}); 

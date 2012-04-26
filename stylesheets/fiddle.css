@@ -6,8 +6,19 @@
 	body {
 	  padding-top: 60px;
 	}
-	
+
 }
+
+@media (min-width:480px) and (max-width:768px)
+{
+	#db_type_label_collapsed {
+		display: inline !important;	
+	}	
+}
+ 
+	#db_type_label_collapsed {
+		display: none;	
+	}
 
 .sqlfiddle-icon {
   float: left;
