@@ -19,6 +19,9 @@
 
 	<link href="stylesheets/qp.css" media="all" rel="stylesheet" type="text/css" />
 
+	<link href="stylesheets/print.css" media="print" rel="stylesheet" type="text/css" />
+
+
 	<script id="historyLog-template" type="text/x-handlebars-template">
 		<div class="modal-header">
 			<a class="close" data-dismiss="modal">x</a>
@@ -144,6 +147,13 @@
 				</a>
  --->
 				<a class="brand" href="">SQL Fiddle<img src="images/fiddle_transparent_small.png" style="height: 20px;"> </a>
+
+					<ul class="nav" id="db_type_label_collapsed">
+						<li class="">
+						<p class="navbar-text"></p>
+						</li>
+					</ul>
+
 				<div class="nav-collapse">
 					<ul class="nav">
 						<li class="dropdown" id="db_type_id">
@@ -151,7 +161,9 @@
 								Loading... <b class="caret"></b>
 							</a>
 						</li>
+
 						<li class="divider-vertical"></li>
+
 						<li class="">
 							<a id="sample" href="#viewSample"><i class="icon-list-alt"></i>View Sample Fiddle</a>
 						</li>
