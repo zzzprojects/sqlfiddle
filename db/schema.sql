@@ -22,6 +22,20 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
+--
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
+
+
 SET search_path = public, pg_catalog;
 
 SET default_tablespace = '';
@@ -44,11 +58,27 @@ CREATE TABLE db_types (
     notes character varying(250),
     sample_fragment character varying(50),
     execution_plan_prefix character varying(500),
-    execution_plan_suffix character varying(500)
+    execution_plan_suffix character varying(500),
+    execution_plan_xslt text,
+    context character varying(10)
 );
 
 
 ALTER TABLE public.db_types OWNER TO postgres;
+
+--
+-- Name: db_types2_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE db_types2_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.db_types2_id_seq OWNER TO postgres;
 
 --
 -- Name: db_types_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -78,7 +108,7 @@ ALTER SEQUENCE db_types_id_seq OWNED BY db_types.id;
 CREATE TABLE hosts (
     id integer NOT NULL,
     db_type_id integer NOT NULL,
-    jdbc_url_template character varying(100),
+    jdbc_url_template character varying(150),
     cf_dsn character varying(50)
 );
 
@@ -162,21 +192,21 @@ ALTER SEQUENCE schema_defs_id_seq OWNED BY schema_defs.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE db_types ALTER COLUMN id SET DEFAULT nextval('db_types_id_seq'::regclass);
+ALTER TABLE ONLY db_types ALTER COLUMN id SET DEFAULT nextval('db_types_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE hosts ALTER COLUMN id SET DEFAULT nextval('hosts_id_seq'::regclass);
+ALTER TABLE ONLY hosts ALTER COLUMN id SET DEFAULT nextval('hosts_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE schema_defs ALTER COLUMN id SET DEFAULT nextval('schema_defs_id_seq'::regclass);
+ALTER TABLE ONLY schema_defs ALTER COLUMN id SET DEFAULT nextval('schema_defs_id_seq'::regclass);
 
 
 --
