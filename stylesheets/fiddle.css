@@ -26,6 +26,11 @@
 .navbar .brand {
 	white-space: nowrap;
 }	
+
+#db_type_label_collapsed li {
+	display: inline-block;
+}	
+
 .sqlfiddle-icon {
   float: left;
   margin: 0 5px 0 0;
