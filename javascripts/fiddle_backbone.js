@@ -252,22 +252,17 @@ $(function () {
 			this.trigger("change");
 		},
 		initialize: function () {
-			try
+			
+			if (localStorage)
 			{
-				if (localStorage)
+				var historyJSON = localStorage.getItem("fiddleHistory");
+				if (historyJSON && historyJSON.length)
 				{
-					var historyJSON = localStorage.getItem("fiddleHistory");
-					if (historyJSON && historyJSON.length)
-					{
-						this.add($.parseJSON(historyJSON));
-					}
-					
+					this.add($.parseJSON(historyJSON));
 				}
+				
 			}
-			catch (e)
-			{
-				// I guess localStorage isn't available
-			}
+			
 		}
 	});
 	
