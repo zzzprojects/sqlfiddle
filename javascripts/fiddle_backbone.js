@@ -335,12 +335,10 @@ $(function () {
 	
 		defaults: {
 			"ddl":"",
-			"short_code":"",
-			"simple_name": "",
-			"full_name": "",
+			"short_code":"d41d8",
 			"valid": true,
 			"errorMessage": "",
-			"ready": false
+			"ready": true
 		},
 		reset: function () {
 			this.set(this.defaults);
@@ -731,7 +729,9 @@ $(function () {
 	window.myFiddleHistory = new MyFiddleHistory();
 	
 	window.dbTypes = new DBTypesList();
-	window.schemaDef = new SchemaDef();
+	window.schemaDef = new SchemaDef({
+		"dbType": window.dbTypes.getSelectedType()
+	});
 	
 	window.query = new Query({
 		"schemaDef": window.schemaDef
@@ -775,9 +775,13 @@ $(function () {
 	window.dbTypes.on("change", function () {
 	// see also the router function defined below that also binds to this event 
 		window.dbTypesListView.render();
-		if (window.schemaDef.has("dbType"))
+		if (window.schemaDef.has("dbType") && window.schemaDef.get("ddl").length)
 		{
 			window.schemaDef.set("ready", (window.schemaDef.get("dbType").id == this.getSelectedType().id));
+		}
+		else if (!window.schemaDef.get("ddl").length)
+		{
+			window.router.navigate("!" + this.getSelectedType().id + "/" + window.schemaDef.get("short_code"), {trigger: true});
 		}
 	});
 
