@@ -314,7 +314,6 @@ $(function () {
 			for (var i = 0; i < resp["DATA"].length; i++)
 			{
 				result.push({
-					"selected": i == 0,
 					"id": resp["DATA"][i][columnIdx["ID"]],				
 					"sample_fragment" : resp["DATA"][i][columnIdx["SAMPLE_FRAGMENT"]],
 					"notes": resp["DATA"][i][columnIdx["NOTES"]],
@@ -336,10 +335,12 @@ $(function () {
 	
 		defaults: {
 			"ddl":"",
-			"short_code":"d41d8",
+			"short_code":"",
+			"simple_name": "",
+			"full_name": "",
 			"valid": true,
 			"errorMessage": "",
-			"ready": true
+			"ready": false
 		},
 		reset: function () {
 			this.set(this.defaults);
@@ -730,9 +731,7 @@ $(function () {
 	window.myFiddleHistory = new MyFiddleHistory();
 	
 	window.dbTypes = new DBTypesList();
-	window.schemaDef = new SchemaDef({
-		"dbType": window.dbTypes.getSelectedType()
-	});
+	window.schemaDef = new SchemaDef();
 	
 	window.query = new Query({
 		"schemaDef": window.schemaDef
@@ -776,13 +775,9 @@ $(function () {
 	window.dbTypes.on("change", function () {
 	// see also the router function defined below that also binds to this event 
 		window.dbTypesListView.render();
-		if (window.schemaDef.has("dbType") && window.schemaDef.get("ddl").length)
+		if (window.schemaDef.has("dbType"))
 		{
 			window.schemaDef.set("ready", (window.schemaDef.get("dbType").id == this.getSelectedType().id));
-		}
-		else if (!window.schemaDef.get("ddl").length)
-		{
-			window.router.navigate("!" + this.getSelectedType().id + "/" + window.schemaDef.get("short_code"), {trigger: true});
 		}
 	});
 
