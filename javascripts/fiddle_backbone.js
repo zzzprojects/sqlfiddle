@@ -314,6 +314,7 @@ $(function () {
 			for (var i = 0; i < resp["DATA"].length; i++)
 			{
 				result.push({
+					"selected": i == 0,
 					"id": resp["DATA"][i][columnIdx["ID"]],				
 					"sample_fragment" : resp["DATA"][i][columnIdx["SAMPLE_FRAGMENT"]],
 					"notes": resp["DATA"][i][columnIdx["NOTES"]],
