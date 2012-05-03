@@ -219,6 +219,7 @@
 
 .navbar-inner {
   background-color: #d6d6d6;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#999999', GradientType=0);
   background-image: -moz-linear-gradient(top, #ffffff, #999999);
   background-image: -ms-linear-gradient(top, #ffffff, #999999);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#999999));
