@@ -46,12 +46,13 @@ function resizeLayout(){
 
 	$('#schema_ddl').height( $('#fiddleFormDDL').height() - 2 - 8 );
 
-	$('#fiddleFormDDL .CodeMirror-scroll').css('height', ( $('#fiddleFormDDL').height() - 4 ) + "px" );
-	$('#fiddleFormDDL .CodeMirror-scroll .CodeMirror-gutter').css('height', ( $('#fiddleFormDDL').height() - 2 ) + "px" );
+	$('#fiddleFormDDL .CodeMirror-scroll').css('height', ( $('#fiddleFormDDL').height() - (5+$('#fiddleFormDDL .action_buttons').height()) ) + "px" );
+	$('#fiddleFormDDL .CodeMirror-scroll .CodeMirror-gutter').css('height', ( $('#fiddleFormDDL').height() - (2+$('#buildSchema').height()) ) + "px" );
 	
 	// textarea sql
-	$('#sql').height( $('#schema-output').height() - 2 - 8 );
-	$('#fiddleFormSQL .CodeMirror-scroll').height( $('#schema-output').height() - 4 );
+	$('#sql').height( $('#fiddleFormSQL').height() - 2 - 8 );
+	
+	$('#fiddleFormSQL .CodeMirror-scroll').css('height', ( $('#fiddleFormSQL').height() - (5+$('#fiddleFormSQL .action_buttons').height()) ) + "px" );
 	$('#fiddleFormSQL .CodeMirror-scroll .CodeMirror-gutter').height( $('#schema-output').height() - 2 );
 	
 	

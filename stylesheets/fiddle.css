@@ -22,75 +22,26 @@
 	#db_type_label_collapsed {
 		display: none;	
 	}
-	
-.navbar .brand {
-	white-space: nowrap;
-}	
 
 #db_type_label_collapsed li {
 	display: inline-block;
 }	
 
-.sqlfiddle-icon {
-  float: left;
-  margin: 0 5px 0 0;
-  padding: 3px 0;
-}
-.navbar .nav > li > a i {
-  margin-right: 5px;
-}
-a label {
-	color: #08C;
+.action_buttons {
+  margin: 5px 0;
+  padding: 0 10px;
 }
 
-.navbar .brand {
-  color: #000000;
-}
-.dropdown-menu a i {
-  margin-right: 5px;
-}
-.dropdown-toggle b.caret {
-  color: #999999;
-  opacity: .5;
-}
-#sidebar .well {
-  padding: 8px 0;
-}
-/*
-.navbar, #content {
-  min-width: 920px !important;
-}
-*/
-#content {
-  height: 100%;
-}
-#content .panel {
-  margin: 0;
-}
-#content .panel {
-  min-height: 125px;
-  height: 100%;
-  position: relative;
-}
-#content .panel form {
-  height: 100%;
-}
-#content .panel form label {
-  height: auto;
-  margin: 0;
-  padding: 8px;
-  position: absolute;
-  right: 5px;
-  top: 5px;
-  opacity: .5;
-}
+.action_buttons a, .action_buttons label {
+	margin-bottom: 3px;	
+}	
+
 #content .panel form textarea {
   display: block;
   /*	height: 97%;
 	width: 98%;*/
 
   margin: 0;
-  padding: 4px;
   resize: none;
 }
 #content .panel.schema {
@@ -116,6 +67,7 @@ a label {
 .tab-content .tab-pane {
   height: 100%;
 }
+
 #content .CodeMirror {
   border: 1px solid #cccccc;
   -webkit-border-radius: 3px;
@@ -219,4 +171,121 @@ a label {
 	border: solid thin black;
 	display: inline-block;
 }	
+
+
+
+/* Bootstrap overrides */
+
+	
+.pull-right {
+	float: right !important;	
+}
+.navbar .btn-navbar {
+  background-color: #d6d6d6;
+  background-image: -moz-linear-gradient(top, #ffffff, #999999);
+  background-image: -ms-linear-gradient(top, #ffffff, #999999);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#999999));
+  background-image: -webkit-linear-gradient(top, #ffffff, #999999);
+  background-image: -o-linear-gradient(top, #ffffff, #999999);
+  background-image: linear-gradient(top, #ffffff, #999999);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#999999', GradientType=0);
+  border-color: #999999 #999999 #737373;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.075);
+  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.075);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.075);
+}
+
+.btn-navbar:hover,
+.btn-navbar:active,
+.btn-navbar.active,
+.btn-navbar.disabled,
+.btn-navbar[disabled] {
+  background-color: #999999;
+}
+.btn-navbar:active, .btn-navbar.active {
+  background-color: #808080 \9;
+}
+
+.navbar .brand {
+	white-space: nowrap;
+}	
+
+.navbar {
+	color: black;	
+}	
+
+.navbar-inner {
+  background-color: #d6d6d6;
+  background-image: -moz-linear-gradient(top, #ffffff, #999999);
+  background-image: -ms-linear-gradient(top, #ffffff, #999999);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#999999));
+  background-image: -webkit-linear-gradient(top, #ffffff, #999999);
+  background-image: -o-linear-gradient(top, #ffffff, #999999);
+  background-image: linear-gradient(top, #ffffff, #999999);
+	 
+}
+.navbar .nav > li > a {
+	color: #333333;
+	text-shadow: none;
+}
+
+.navbar .divider-vertical {
+	background-color: #999;
+	border-right: 1px solid white;	
+}	
+.navbar .nav .active > a, .navbar .nav .active > a:hover {
+  color: #999999;
+  text-decoration: none;
+  background-color: #999999;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.navbar .nav .active > a {
+  color: #eeeeee;
+}
+.navbar .nav .active > a:hover {
+  color: #eeeeee;
+}
+
+
+
+
+.navbar .nav > li > a i {
+  margin-right: 5px;
+}
+.navbar .brand {
+  color: #000000;
+}
+
+.dropdown-menu a i {
+  margin-right: 5px;
+}
+.dropdown-toggle b.caret {
+  color: #999999;
+  opacity: .5;
+}
+#sidebar .well {
+  padding: 8px 0;
+}
+/*
+.navbar, #content {
+  min-width: 920px !important;
+}
+*/
+#content {
+  height: 100%;
+}
+#content .panel {
+  margin: 0;
+}
+#content .panel {
+  min-height: 125px;
+  height: 100%;
+  position: relative;
+}
+#content .panel form {
+  height: 100%;
+}
 

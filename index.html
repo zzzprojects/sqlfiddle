@@ -141,12 +141,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</a>
-<!--- 
-				<a class="sqlfiddle-icon" href=".">
-					<img src="images/fiddle_transparent.png">
-				</a>
- --->
-				<a class="brand" href="">SQL Fiddle<img src="images/fiddle_transparent_small.png" style="height: 20px;"> </a>
+				<a class="brand" href="">SQL Fiddle<img src="images/fiddle_transparent_small.png" style="height: 20px;margin-top: -10px;"> </a>
 
 					<ul class="nav" id="db_type_label_collapsed">
 						<li class="">
@@ -178,7 +173,7 @@
 
 					<ul class="nav pull-right">
 						<li>
-							<a href="#textToDDLModal" data-toggle="modal"><i class="icon-info-sign"></i>Text to DDL</a>
+							<a href="#textToDDLModal" data-toggle="modal"><i class="icon-wrench"></i>Text to DDL</a>
 						</li>
 
 						<li>
@@ -201,12 +196,22 @@
 					<div class="span6 panel schema pull-left">
 
 								<form id="fiddleFormDDL" method="post" action="">
+									<textarea id="schema_ddl"></textarea>
+
+									<div class="action_buttons">
+										
 									<a href="#" id="buildSchema">
-									<label for="result-ddl" class="well" style="margin-right: 20px;">
+									<label for="result-ddl" class="btn btn-primary">
 										Build Schema <i class="icon-download-alt"></i>
 									</label>
 									</a>
-									<textarea id="schema_ddl"></textarea>
+
+									<a href="#" id="schemaFullscreen" class="btn btn-info">
+										Edit Fullscreen <i class="icon-resize-full"></i>
+									</a>
+									
+									</div>
+
 								</form>
 
 					</div><!-- end ddl div -->
@@ -214,12 +219,27 @@
 					
 					<div class="span6 panel sql pull-right needsReadySchema">
 						<form id="fiddleFormSQL" method="post" action="" class="schema_ready">
-							<a href="#" class="runQuery">
-							<label for="sql-ta" class="well" style="margin-right: 20px;">
-								Run SQL <i class="icon-play"></i>
-							</label>
-							</a>
 							<textarea id="sql"></textarea>
+
+							<div class="action_buttons">
+
+								<a href="#" class="runQuery">
+								<label for="sql-ta" class="btn btn-primary">
+									Run SQL <i class="icon-play"></i>
+								</label>
+								</a>
+
+								<a href="#" id="queryFullscreen" class="btn btn-info">
+									Edit Fullscreen <i class="icon-resize-full"></i>
+								</a>
+
+								<a href="#" id="queryPrettify" class="btn btn-info">
+									Format Code <i class="icon-filter"></i>
+								</a>
+
+	
+							</div>
+
 						</form>
 					</div><!-- end sql div -->
 					

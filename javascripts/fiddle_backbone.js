@@ -801,7 +801,7 @@ $(function () {
 	window.schemaDef.on("built failed", function () {
 	// see also the router function defined below that also binds to this event 
 		$("#buildSchema label").prop('disabled', false);
-		$("#buildSchema label").text($("#buildSchema label").data("originalValue"));
+		$("#buildSchema label").html($("#buildSchema label").data("originalValue"));
 		window.schemaDefView.renderOutput();
 	});
 	
@@ -809,7 +809,7 @@ $(function () {
 	// see also the router function defined below that also binds to this event 
 		var $button = $(".runQuery label");
 		$button.prop('disabled', false);
-		$button.text($button.data("originalValue"));
+		$button.html($button.data("originalValue"));
 		window.queryView.renderOutput();
 	});
 
@@ -820,7 +820,7 @@ $(function () {
 
 		if ($button.prop('disabled')) return false;
 		
-		$button.data("originalValue", $button.text());
+		$button.data("originalValue", $button.html());
 		$button.prop('disabled', true).text('Building Schema...');
 		
 		window.schemaDef.build();
@@ -831,7 +831,7 @@ $(function () {
 		e.preventDefault();
 		
 		if ($button.prop('disabled')) return false;
-		$button.data("originalValue", $button.text());
+		$button.data("originalValue", $button.html());
 		$button.prop('disabled', true).text('Executing SQL...');
 		
 		window.queryView.checkForSelectedText();
