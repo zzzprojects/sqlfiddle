@@ -1,6 +1,7 @@
 window.WebSQL_driver = function () {
 	
 	var db = null;
+	var ddl = [];
 	
 	var nativeSQLite = (window.openDatabase !== undefined);
 
@@ -17,12 +18,43 @@ window.WebSQL_driver = function () {
 				db = openDatabase(args["short_code"], '1.0', args["short_code"], args["ddl"].length * 1024);
 
 				db.transaction(function(tx){
-					$.each(splitStatement(args["ddl"]), function (i, statement) {
-							tx.executeSql(statement);
-					});
+					
+					var statements = splitStatement(args["ddl"]);
+					ddl = statements;
+					
+					// $.each(splitStatement(args["ddl"]), function (i, stmt) { statements.push(stmt); });
+
+					var currentStatement = 0;
+					var statement = statements[currentStatement];
+					
+					var sequentiallyExecute = function(tx2, result){
+						if (currentStatement < statements.length-1)
+						{
+							currentStatement++;						
+							statement = statements[currentStatement];
+							
+							tx.executeSql(statement, [], sequentiallyExecute, handleFailure);
+							
+						}
+						else
+						{
+							tx.executeSql("intentional failure used to rollback transaction");
+							args["success"]();
+						}
+					};
+					
+					var handleFailure = function (tx2, result) {
+						args["error"](result.message);
+							
+					};
+					
+					tx.executeSql(statement, [], 
+						sequentiallyExecute, 
+						handleFailure
+					);
+					
 				});
 				
-				args["success"]();
 			}
 			else
 			{
@@ -111,7 +143,8 @@ window.WebSQL_driver = function () {
 							thisSet["EXECUTIONPLAN"]["DATA"].push(rowVals);
 						}
 					
-						returnSets.push(thisSet);						
+						if (currentStatement > ddl.length-1)
+							returnSets.push(thisSet);						
 						
 						// executeSQL runs asynchronously, so we have to make recursive calls to handle subsequent queries in order.
 						if (currentStatement < (statements.length - 1)) 
@@ -128,8 +161,29 @@ window.WebSQL_driver = function () {
 						}
 
 						
-					}
-					);
+					},
+					function(tx3, executionPlanResult){
+						// if the explain failed, then just append the base set to the result and move on....
+
+						if (currentStatement > ddl.length-1)
+							returnSets.push(thisSet);						
+
+						// executeSQL runs asynchronously, so we have to make recursive calls to handle subsequent queries in order.
+						if (currentStatement < (statements.length - 1)) 
+						{
+							currentStatement++;						
+							statement = statements[currentStatement];
+							
+							tx.executeSql(statement, [], sequentiallyExecute, handleFailure);
+						}
+						else
+						{
+							tx.executeSql("intentional failure used to rollback transaction");
+							args["success"](returnSets);
+						}
+
+						
+					});
 					
 				}
 				
@@ -145,7 +199,13 @@ window.WebSQL_driver = function () {
 				}
 				
 				var setArray = [], k, stop = false;
-				var statements = splitStatement(args["sql"]);
+
+				// $.each(splitStatement(args["ddl"]), function (i, stmt) { statements.push(stmt); });
+				
+				var statements = ddl.slice(0);
+
+				$.each(splitStatement(args["sql"]), function (i, stmt) { statements.push(stmt); });
+
 				var currentStatement = 0;
 				var statement = statements[currentStatement];
 				
