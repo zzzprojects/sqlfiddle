@@ -98,12 +98,12 @@ function resizeLayout(){
 		if (!$(window.schemaDefView.editor.getScrollerElement()).hasClass('CodeMirror-fullscreen')) {
 		
 			$('#fiddleFormDDL .CodeMirror-scroll').css('height', ($('#fiddleFormDDL').height() - (5 + $('#fiddleFormDDL .action_buttons').height())) + "px");
-			$('#fiddleFormDDL .CodeMirror-scroll .CodeMirror-gutter').css('height', ($('#fiddleFormDDL').height() - (2 + $('#buildSchema').height())) + "px");
+			$('#fiddleFormDDL .CodeMirror-scroll .CodeMirror-gutter').height($('#fiddleFormDDL .CodeMirror-scroll') - 2);
 		}
 		else {
 		
 			$('#fiddleFormDDL .CodeMirror-scroll').css('height', $(window).height() + "px");
-			$('#fiddleFormDDL .CodeMirror-scroll .CodeMirror-gutter').css('height', $(window).height() + "px");
+			$('#fiddleFormDDL .CodeMirror-scroll .CodeMirror-gutter').height('height', $(window).height() + "px");
 			
 		}
 		
@@ -112,7 +112,7 @@ function resizeLayout(){
 		
 		if (!$(window.queryView.editor.getScrollerElement()).hasClass('CodeMirror-fullscreen')) {
 			$('#fiddleFormSQL .CodeMirror-scroll').css('height', ($('#fiddleFormSQL').height() - (5 + $('#fiddleFormSQL .action_buttons').height())) + "px");
-			$('#fiddleFormSQL .CodeMirror-scroll .CodeMirror-gutter').height($('#schema-output').height() - 2);
+			$('#fiddleFormSQL .CodeMirror-scroll .CodeMirror-gutter').height($('#fiddleFormSQL .CodeMirror-scroll').height() - 2);
 		}
 		else {
 		
