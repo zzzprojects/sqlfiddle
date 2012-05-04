@@ -45,7 +45,7 @@ window.WebSQL_driver = function () {
 					
 					var handleFailure = function (tx2, result) {
 						args["error"](result.message);
-							
+						return true; // roll back transaction
 					};
 					
 					tx.executeSql(statement, [], 
@@ -195,7 +195,9 @@ window.WebSQL_driver = function () {
 						"ERRORMESSAGE": result.message
 					};
 					returnSets.push(thisSet);
-					args["success"](returnSets); // 'success' - slightly confusing here, but in this context a failed query is still a valid result from the database 
+					args["success"](returnSets); // 'success' - slightly confusing here, but in this context a failed query is still a valid result from the database
+					
+					return true; // roll back transaction 
 				}
 				
 				var setArray = [], k, stop = false;
