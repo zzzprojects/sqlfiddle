@@ -1,5 +1,13 @@
 /*//*/
 
+@media (max-width:440px)
+{
+	#exit_fullscreen span {
+		display: none;	
+	}
+}
+
+
 @media (max-width:768px)
 {
 	body {
@@ -19,13 +27,15 @@
 	}
 
  
-	#db_type_label_collapsed {
+	#db_type_label_collapsed, #exit_fullscreen {
 		display: none;	
 	}
 
 #db_type_label_collapsed li {
 	display: inline-block;
 }	
+
+
 
 .action_buttons {
   margin: 5px 0;
@@ -81,6 +91,23 @@
     overflow-y: scroll;
     overflow-x: auto;
 }
+
+
+.CodeMirror-fullscreen {
+    display: block;
+    position: fixed;
+    top: 42px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    margin: 0;
+    padding: 0;
+    border: 0px solid #BBBBBB;
+    opacity: 1;
+	background-color: white;
+}
+
 
 
 #messages i {
@@ -177,9 +204,16 @@
 /* Bootstrap overrides */
 
 	
-.pull-right {
+.container-fluid .pull-right {
 	float: right !important;	
 }
+
+	
+.nav-collapse.in .pull-right {
+	float: left !important;	
+}
+
+
 .navbar .btn-navbar {
   background-color: #d6d6d6;
   background-image: -moz-linear-gradient(top, #ffffff, #999999);
