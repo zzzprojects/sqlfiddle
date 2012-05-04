@@ -86,49 +86,48 @@ $.blockUI.defaults.css.cursor = 'auto';
 function resizeLayout(){
 
 	var wheight = $(window).height() - 100;
-	var container_width = $("#schema-output").width();
-	 
-	
-	$('#schema-output').height((wheight - 10)*0.7);
-	$('#output').css("min-height", ((wheight - 10)*0.3) + "px");
-
-	$('#schema_ddl').height( $('#fiddleFormDDL').height() - 2 - 8 );
-
-	if (!$(window.schemaDefView.editor.getScrollerElement()).hasClass('CodeMirror-fullscreen')) {
-	
-		$('#fiddleFormDDL .CodeMirror-scroll').css('height', ($('#fiddleFormDDL').height() - (5 + $('#fiddleFormDDL .action_buttons').height())) + "px");
-		$('#fiddleFormDDL .CodeMirror-scroll .CodeMirror-gutter').css('height', ($('#fiddleFormDDL').height() - (2 + $('#buildSchema').height())) + "px");
+	if (wheight > 300) {
+		var container_width = $("#schema-output").width();
+		
+		
+		$('#schema-output').height((wheight - 10) * 0.7);
+		$('#output').css("min-height", ((wheight - 10) * 0.3) + "px");
+		
+		$('#schema_ddl').height($('#fiddleFormDDL').height() - 2 - 8);
+		
+		if (!$(window.schemaDefView.editor.getScrollerElement()).hasClass('CodeMirror-fullscreen')) {
+		
+			$('#fiddleFormDDL .CodeMirror-scroll').css('height', ($('#fiddleFormDDL').height() - (5 + $('#fiddleFormDDL .action_buttons').height())) + "px");
+			$('#fiddleFormDDL .CodeMirror-scroll .CodeMirror-gutter').css('height', ($('#fiddleFormDDL').height() - (2 + $('#buildSchema').height())) + "px");
+		}
+		else {
+		
+			$('#fiddleFormDDL .CodeMirror-scroll').css('height', $(window).height() + "px");
+			$('#fiddleFormDDL .CodeMirror-scroll .CodeMirror-gutter').css('height', $(window).height() + "px");
+			
+		}
+		
+		// textarea sql
+		$('#sql').height($('#fiddleFormSQL').height() - 2 - 8);
+		
+		if (!$(window.queryView.editor.getScrollerElement()).hasClass('CodeMirror-fullscreen')) {
+			$('#fiddleFormSQL .CodeMirror-scroll').css('height', ($('#fiddleFormSQL').height() - (5 + $('#fiddleFormSQL .action_buttons').height())) + "px");
+			$('#fiddleFormSQL .CodeMirror-scroll .CodeMirror-gutter').height($('#schema-output').height() - 2);
+		}
+		else {
+		
+			$('#fiddleFormSQL .CodeMirror-scroll').css('height', $(window).height() + "px");
+			$('#fiddleFormSQL .CodeMirror-scroll .CodeMirror-gutter').css('height', $(window).height() + "px");
+			
+		}
+		
+		
+		$('#sql').width($('#fiddleFormSQL').width() - 2 - 8);
+		$('#schema_ddl').width($('#fiddleFormDDL').width() - 2 - 8);
+		
+		window.schemaDefView.refresh();
+		window.queryView.refresh();
 	}
-	else
-	{
-		
-		$('#fiddleFormDDL .CodeMirror-scroll').css('height', $(window).height() + "px");
-		$('#fiddleFormDDL .CodeMirror-scroll .CodeMirror-gutter').css('height', $(window).height() + "px");
-		
-	}
-	
-	// textarea sql
-	$('#sql').height( $('#fiddleFormSQL').height() - 2 - 8 );
-	
-	if (!$(window.queryView.editor.getScrollerElement()).hasClass('CodeMirror-fullscreen')) {
-		$('#fiddleFormSQL .CodeMirror-scroll').css('height', ($('#fiddleFormSQL').height() - (5 + $('#fiddleFormSQL .action_buttons').height())) + "px");
-		$('#fiddleFormSQL .CodeMirror-scroll .CodeMirror-gutter').height($('#schema-output').height() - 2);
-	}	
-	else
-	{
-		
-		$('#fiddleFormSQL .CodeMirror-scroll').css('height', $(window).height() + "px");
-		$('#fiddleFormSQL .CodeMirror-scroll .CodeMirror-gutter').css('height', $(window).height() + "px");
-		
-	}
-	
-	
-	$('#sql').width( $('#fiddleFormSQL').width() - 2 - 8 );
-	$('#schema_ddl').width( $('#fiddleFormDDL').width() - 2 - 8 );
-	
-	window.schemaDefView.refresh();
-	window.queryView.refresh();
-	
 }
 
 
