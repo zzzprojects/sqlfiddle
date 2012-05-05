@@ -7,7 +7,8 @@ window.WebSQL_driver = function () {
 
 	var splitStatement = function (statements)
 	{	
-		return statements ? statements.split(/;\s*\r?\n|$/) : []; 
+		var sArray = (statements ? statements.split(/;\s*\r?(\n|$)/) : []);
+		return sArray; 
 	}
 
 	this.buildSchema = function (args) {
@@ -30,10 +31,19 @@ window.WebSQL_driver = function () {
 					var sequentiallyExecute = function(tx2, result){
 						if (currentStatement < statements.length-1)
 						{
-							currentStatement++;						
-							statement = statements[currentStatement];
+							do {
+								currentStatement++;													
+								statement = statements[currentStatement];
+							} while (currentStatement < statements.length-1 && statement.match(/^\s*$/));
 							
-							tx.executeSql(statement, [], sequentiallyExecute, handleFailure);
+							if (!statement.match(/^\s*$/)) {
+								tx.executeSql(statement, [], sequentiallyExecute, handleFailure);
+							}
+							else
+							{
+								tx.executeSql("intentional failure used to rollback transaction");
+								args["success"]();
+							}
 							
 						}
 						else
@@ -44,7 +54,15 @@ window.WebSQL_driver = function () {
 					};
 					
 					var handleFailure = function (tx2, result) {
-						args["error"](result.message);
+						if (result.message != "not an error") // thank you safari, for this
+						{
+							args["error"](result.message);
+						}
+						else
+						{
+							args["success"]();
+						}
+						
 						return true; // roll back transaction
 					};
 					
@@ -81,7 +99,6 @@ window.WebSQL_driver = function () {
 			var returnSets = [];
 			
 			db.transaction(function(tx){
-
 
 				var sequentiallyExecute = function(tx2, result) {
 							
@@ -149,10 +166,19 @@ window.WebSQL_driver = function () {
 						// executeSQL runs asynchronously, so we have to make recursive calls to handle subsequent queries in order.
 						if (currentStatement < (statements.length - 1)) 
 						{
+							do {
 							currentStatement++;						
 							statement = statements[currentStatement];
+							} while (currentStatement < statements.length-1 && statement.match(/^\s*$/));
 							
-							tx.executeSql(statement, [], sequentiallyExecute, handleFailure);
+							if (! statement.match(/^\s*$/))
+								tx.executeSql(statement, [], sequentiallyExecute, handleFailure);
+							else
+							{
+								tx.executeSql("intentional failure used to rollback transaction");
+								args["success"](returnSets);
+							}
+							
 						}
 						else
 						{
@@ -171,10 +197,18 @@ window.WebSQL_driver = function () {
 						// executeSQL runs asynchronously, so we have to make recursive calls to handle subsequent queries in order.
 						if (currentStatement < (statements.length - 1)) 
 						{
+							do {
 							currentStatement++;						
 							statement = statements[currentStatement];
+							} while (currentStatement < statements.length-1 && statement.match(/^\s*$/));
 							
-							tx.executeSql(statement, [], sequentiallyExecute, handleFailure);
+							if (! statement.match(/^\s*$/))
+								tx.executeSql(statement, [], sequentiallyExecute, handleFailure);
+							else
+							{
+								tx.executeSql("intentional failure used to rollback transaction");
+								args["success"](returnSets);
+							}
 						}
 						else
 						{
@@ -188,15 +222,17 @@ window.WebSQL_driver = function () {
 				}
 				
 				var handleFailure = function (tx, result) {
+					if (result.message != "not an error") // thank you safari, for this
+					{
+						var thisSet = {
+							"SUCCEEDED": false,
+							"EXECUTIONTIME": (new Date()) - startTime,
+							"ERRORMESSAGE": result.message
+						};
+						returnSets.push(thisSet);
+					}
 					
-					var thisSet = {
-						"SUCCEEDED": false,
-						"EXECUTIONTIME": (new Date()) - startTime,
-						"ERRORMESSAGE": result.message
-					};
-					returnSets.push(thisSet);
 					args["success"](returnSets); // 'success' - slightly confusing here, but in this context a failed query is still a valid result from the database
-					
 					return true; // roll back transaction 
 				}
 				
