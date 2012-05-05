@@ -42,7 +42,8 @@ $(function () {
 									"ddl": resp["ddl"],
 									"ready": true,
 									"valid": true,
-									"errorMessage": ""
+									"errorMessage": "",
+									"dbType": window.dbTypes.getSelectedType()
 								});
 								window.schemaDef.trigger("reloaded");
 								window.schemaDef.trigger("built");
@@ -53,9 +54,10 @@ $(function () {
 								window.schemaDef.set({
 									"short_code": resp["short_code"],
 									"ddl": resp["ddl"],
-									"ready": false,
+									"ready": true,
 									"valid": false,
-									"errorMessage": message
+									"errorMessage": message,
+									"dbType": window.dbTypes.getSelectedType()
 								});
 								window.schemaDef.trigger("failed");
 								window.query.reset();
@@ -71,7 +73,8 @@ $(function () {
 							"ddl": resp["ddl"],
 							"ready": true,
 							"valid": true,
-							"errorMessage": ""
+							"errorMessage": "",
+							"dbType": window.dbTypes.getSelectedType()
 						});
 						window.schemaDef.trigger("reloaded");
 						window.schemaDef.trigger("built");				
@@ -116,7 +119,8 @@ $(function () {
 									"ddl": resp["ddl"],
 									"ready": true,
 									"valid": true,
-									"errorMessage": ""
+									"errorMessage": "",
+									"dbType": window.dbTypes.getSelectedType()
 								});
 								window.schemaDef.trigger("reloaded");
 								window.schemaDef.trigger("built");
@@ -148,16 +152,25 @@ $(function () {
 								});
 							},
 							error: function (message) {
+
+								window.query.set({
+									"id": query_id,
+									"sql":  resp["sql"]
+								});
+								window.query.trigger("reloaded");
+
+								
 								window.schemaDef.set({
 									"short_code": resp["short_code"],
 									"ddl": resp["ddl"],
-									"ready": false,
+									"ready": true,
 									"valid": false,
-									"errorMessage": message
+									"errorMessage": message,
+									"dbType": window.dbTypes.getSelectedType()
 								});
 								window.schemaDef.trigger("failed");
-								window.query.reset();
-								window.query.trigger("reloaded");
+								window.schemaDef.trigger("reloaded");
+
 								$("body").unblock();
 								
 							}
@@ -478,7 +491,10 @@ $(function () {
 							},
 							error: function (e) {
 								thisModel.set({
-									"sets": []
+									"sets": [{
+												"SUCCEEDED": false,
+												"ERRORMESSAGE": e
+											}]
 								});				
 								thisModel.trigger("executed");
 							}
@@ -635,7 +651,7 @@ $(function () {
 			this.editor.refresh();
 		},
 		updateDependents: function () {
-		
+
 			if (this.model.get("ready"))
 			{
 				$(".needsReadySchema").unblock();

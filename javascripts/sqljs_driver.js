@@ -31,7 +31,7 @@ window.SQLjs_driver = function () {
 				$.getScript("javascripts/sql.js", function (script, textStatus, jqXHR) {
 					jsBuildSchema();
 				}).fail(function(jqxhr, settings, exception){
-					args["error"]("Your browser does not work with SQL.js.  Try using a different browser (Chrome, Firefox, IE 10, etc...), or a newer version of your current one.");
+					args["error"]("Your browser does not work with SQL.js.  Try using a different browser (Chrome, Safari, Firefox, IE 10, etc...), or a newer version of your current one.");
 				});	
 			}
 			else

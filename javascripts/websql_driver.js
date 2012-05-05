@@ -92,8 +92,8 @@ window.WebSQL_driver = function () {
 		
 		try {
 			
-			if (!db) {
-				throw ("Database Schema not available!");
+			if (db == null ) {
+				throw("You need to build the schema before you can run a query.");
 			}
 			
 			var returnSets = [];
