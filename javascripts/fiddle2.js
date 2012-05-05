@@ -133,10 +133,14 @@ function resizeLayout(){
 
 
     
-	Handlebars.registerHelper("result_display", function() {
-		if ($.isPlainObject(this))
-			return JSON.stringify(this);
+	Handlebars.registerHelper("result_display", function(value) {
+		if ($.isPlainObject(value))
+			return JSON.stringify(value);
+		else if (value == null)
+			return "(null)";
+		else if (value === false)
+			return "false";
 		else
-			return this;
+			return value;
 	});
 
