@@ -36,8 +36,8 @@
 				<cftry>
 	
 	              	<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
-				<cfset local.ret = QueryNew("")>
-				<cfset local.executionPlan = QueryNew("")>
+						<cfset local.ret = QueryNew("")>
+						<cfset local.executionPlan = QueryNew("")>
 	
 						<cfif Len(trim(statement))>
 	
@@ -100,6 +100,20 @@
 							</cfif>
 	
 							<cfif IsDefined("local.ret")>
+								
+								<cfloop query="local.ret">
+									<cfloop list="#local.ret.columnList#" index="local.colName">
+										<cfset local.NullTest = local.ret.getString(local.colName)>
+										
+										<cfif not StructKeyExists(local.NullTest)>
+											<cfset QuerySetCell(local.ret, local.colName, "(null)", local.ret.currentRow)>
+										<cfelse>
+											<cfset structDelete(local, "NullTest")>
+										</cfif>
+									</cfloop>
+									
+								</cfloop>
+								
 								<cfset ArrayAppend(returnVal["sets"], {
 									succeeded = true,
 									results = Duplicate(ret),
