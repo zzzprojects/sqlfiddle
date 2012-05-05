@@ -105,7 +105,7 @@
 									<cfloop list="#local.ret.columnList#" index="local.colName">
 										<cfset local.NullTest = local.ret.getString(local.colName)>
 										
-										<cfif not StructKeyExists(local.NullTest)>
+										<cfif not StructKeyExists(local, "NullTest")>
 											<cfset QuerySetCell(local.ret, local.colName, "(null)", local.ret.currentRow)>
 										<cfelse>
 											<cfset structDelete(local, "NullTest")>
