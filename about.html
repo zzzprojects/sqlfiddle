@@ -1,6 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
 <html>
 	<head>
+	
+	<meta charset="utf-8">
 		
 	<link href="stylesheets/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
 	<link href="stylesheets/fiddle.css" media="all" rel="stylesheet" type="text/css" />
@@ -22,11 +24,16 @@
   })();
 
 </script>
-
+<style>
+	body {
+		padding-left: 20px;	
+		width: 800px;
+	}
+</style>
 	</head>
 	<body>
 		
-		<h1>About SQLFiddle.com</h1>
+		<img src="images/fiddle_transparent.png" title="A fiddle-head fern"><h1>About SQLFiddle.com</h1>
 		
 		<a name="whatToDo"></a><h2>What am I supposed to do here?</h2>
 		<p>
@@ -51,7 +58,7 @@
 				<li>
 					
 					You want to compare and contrast SQL statements in different database backends.  SQLFiddle easily lets
-					you switch which database provider (MySQL, PostgreSQL, MS SQL Server, and Oracle) your queries run
+					you switch which database provider (MySQL, PostgreSQL, MS SQL Server, Oracle, and SQLite) your queries run
 					against.  This will allow you to quickly evaluate query porting efforts, or language options available
 					in each environment.
 					
@@ -66,9 +73,16 @@
 				</li>
 				
 			</ul>
+			
+			Vince Pergolizzi wrote a great blog post about the site, providing an overview for how to use it when you ask SQL
+			questions at places like StackOverflow.  See it here: <a href="http://www.vincepergolizzi.com/2012/04/how-to-use-sql-fiddle-or-help-us-to-help-you/">http://www.vincepergolizzi.com/2012/04/how-to-use-sql-fiddle-or-help-us-to-help-you/</a>
+			
+			<br><br>
+			
+			Para falantes do português, <a href="https://twitter.com/#!/guediz">Dickson S. Guedes</a> fez um vídeo instrutivo: <a href="http://www.youtube.com/watch?v=ednxTEGyfV8">http://www.youtube.com/watch?v=ednxTEGyfV8</a> 
+			
 		</p>
-		
-		
+
 		<a name="howWorks"></a><h2>How does it work?</h2>
 		<p>
 			The Schema DDL that is provided is used to generate a private database on the fly.  If anything is changed in your
@@ -87,6 +101,34 @@
 			so far.  You will also be able to use your normal browser functions like 'back', 'forward', and 'reload', and you 
 			will see the various stages of your work, as you would expect.
 			
+		</p>
+
+		<a name="sqlite"></a><h2>Why are there two strange-looking options for SQLite?</h2>	
+		<p>
+			SQLite is something of a special case amongst the various database types I support.  I could have implemented it the same way as 
+			the others, with a backend host doing the query execution, but what fun is that?  SQLite's "lite" nature allowed for some 
+			interesting alternatives.
+			
+		</p>
+		<p>
+			First, I found the very neat project 
+			<a href="https://github.com/kripken/sql.js">SQL.js</a>, which is an implementation of the engine translated into javascript.
+			This means that instead of using my servers (and my limited memory), I could offload the work onto your browser!  Great for me, 
+			but unfortunately SQL.js does have a few drawbacks. One is that is taxes the browser a bit when it is first loaded into memory. The
+			other is that it doesn't work in all browsers (so far I've seen it fail in IE9 and mobile Safari). 
+		</p>
+		<p>
+			
+			The other option is "WebSQL."  This option makes use of the SQLite implementation that a few browsers come with built-in (I've seen it work in Chrome and Safari; supposedly Opera supports this too).  This feature
+			was considered part of the <a href="http://www.w3.org/TR/webdatabase/">W3C working draft for HTML5</a>, but they depricated it in 
+			favor of <a href="http://www.w3.org/TR/IndexedDB/">IndexedDB</a>.  Despite this, a few browsers (particularlly mobile browsers) still
+			have it available, so I figured that this would be a useful feature to grab onto.  The advantage over SQL.js is that it is quite a bit faster
+			to load the schema and run the queries.  The disadvantage is that it isn't widely supported, and likely not long for this world.
+			 
+		</p>
+		<p>
+			Together, these two options allow SQLite to run within any <i>decent</i> browser *cough*IE*cough*.  If someone links you to a SQLite fiddle
+			that your browser doesn't support, just switch over to the other option and build it using that one.
 		</p>
 		
 		<a name="contact"></a><h2>Who should I contact for help/feedback?</h2>
@@ -125,8 +167,15 @@
 			but I also found that there was nothing available that offered similar functionality for the SQL questions. So, that
 			was my inspiration to build this site.  Basically, I built this site as a tool for developers like me to be more
 			effective in assisting other developers.
+		
+		<br><br>
+		
+			<a href="https://twitter.com/#!/mrpollo">Ramon Roche</a> helped me to get the UI moved to Bootstrap, and just generally helping to make it look better.  
+			This has been my first time using Bootstrap, and without his assistance getting started I'm sure it would have been a lot rougher.  Thanks Ramon!
 			
 		</p>
+		
+		
 		
 		
 		<a name="platform"></a><h2>What platform is it running on?</h2>
@@ -135,7 +184,12 @@
 			
 			<ul>
 				<li><a href="http://www.codemirror.net">CodeMirror</a> - for browser-based SQL editing with text highlighting.</li>
-				<li><a href="http://jquery.com">jQuery</a> - AJAX, plus misc JS goodness. (Also jq plugins <a href="http://malsup.com/jquery/block/">Block UI</a> and <a href="http://benalman.com/projects/jquery-hashchange-plugin/">BBQ</a>).</li>
+				<li><a href="http://twitter.github.com/bootstrap/">Bootstrap</a> - Twitter's CSS framework.</li>
+				<li><a href="http://documentcloud.github.com/backbone/">Backbone.js</a> - MVC JavaScript framework.</li>
+				<li><a href="http://handlebarsjs.com/">Handlebars.js</a> - JavaScript templating engine.</li>
+				<li><a href="http://jquery.com">jQuery</a> - AJAX, plus misc JS goodness. (Also jq plugin <a href="http://malsup.com/jquery/block/">Block UI</a>).</li>
+				<li><a href="http://code.google.com/p/html-query-plan/">html-query-plan</a> - XSLT for building rich query plans for SQL Server</li>
+				<li><a href="http://blog.stevenlevithan.com/archives/date-time-format">Date.format.js</a> - date formatting JavaScript library</li>
 				<li><a href="http://cfwheels.org">ColdFusion on Wheels</a> - ColdFusion framework modeled after Ruby on Rails.</li>
 				<li><a href="http://www.getrailo.org">Railo</a> - Open Source CFML Application server.</li>
 				<li><a href="http://tomcat.apache.org">Tomcat</a> - Open Source Java Servlet Engine</li>

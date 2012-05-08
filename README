@@ -10,6 +10,9 @@ What am I supposed to do here?
 			
 			You do not have a particular database platform readily available, but you would like to see what a given query would look like in that environment.  Using SQL Fiddle, you don't need to bother spinning up a whole installation for your evaluation; just creating your database and queries here!
 		
+	Vince Pergolizzi wrote a great blog post about the site, providing an overview for how to use it when you ask SQL questions at places like StackOverflow. See it here: http://www.vincepergolizzi.com/2012/04/how-to-use-sql-fiddle-or-help-us-to-help-you/ 
+	
+	Para falantes do português, Dickson S. Guedes fez um vídeo instrutivo: http://www.youtube.com/watch?v=ednxTEGyfV8
 
 
 How does it work?
@@ -23,6 +26,16 @@ How does it work?
 	
 	As you create schemas and write queries, unique URLs that refer to your particular schema and query will be visible in your address bar.  You can share these with anyone, and they will be able to see what you've done so far.  You will also be able to use your normal browser functions like 'back', 'forward', and 'reload', and you will see the various stages of your work, as you would expect.
 	
+
+Why are there two strange-looking options for SQLite?
+	
+	SQLite is something of a special case amongst the various database types I support. I could have implemented it the same way as the others, with a backend host doing the query execution, but what fun is that? SQLite's "lite" nature allowed for some interesting alternatives.
+	
+	First, I found the very neat project SQL.js, which is an implementation of the engine translated into javascript. This means that instead of using my servers (and my limited memory), I could offload the work onto your browser! Great for me, but unfortunately SQL.js does have a few drawbacks. One is that is taxes the browser a bit when it is first loaded into memory. The other is that it doesn't work in all browsers (so far I've seen it fail in IE9 and mobile Safari).
+	
+	The other option is "WebSQL." This option makes use of the SQLite implementation that a few browsers come with built-in (I've seen it work in Chrome and Safari; supposedly Opera supports this too). This feature was considered part of the W3C working draft for HTML5, but they depricated it in favor of IndexedDB. Despite this, a few browsers (particularlly mobile browsers) still have it available, so I figured that this would be a useful feature to grab onto. The advantage over SQL.js is that it is quite a bit faster to load the schema and run the queries. The disadvantage is that it isn't widely supported, and likely not long for this world.
+	
+	Together, these two options allow SQLite to run within any decent browser *cough*IE*cough*. If someone links you to a SQLite fiddle that your browser doesn't support, just switch over to the other option and build it using that one.
 
 
 Who should I contact for help/feedback?
@@ -42,24 +55,30 @@ Who built this site, and why?
 
 	I found JS Fiddle to be a great tool for answering javascript / jQuery questions, but I also found that there was nothing available that offered similar functionality for the SQL questions. So, that was my inspiration to build this site.  Basically, I built this site as a tool for developers like me to be more effective in assisting other developers.
 	
-
+	Ramon Roche helped me to get the UI moved to Bootstrap, and just generally helping to make it look better. This has been my first time using Bootstrap, and without his assistance getting started I'm sure it would have been a lot rougher. Thanks Ramon!
 
 
 What platform is it running on?
-
-This site uses many different technologies.  The primary ones, in order from client to server are these:
 	
-CodeMirror - for browser-based SQL editing with text highlighting.
-jQuery - AJAX, plus misc JS goodness. (Also jq plugins Block UI and BBQ).
-ColdFusion on Wheels - ColdFusion framework modeled after Ruby on Rails.
-Railo - Open Source CFML Application server.
-Tomcat - Open Source Java Servlet Engine
-Apache HTTPD - Open Source HTTP Server
-PostgreSQL - Among others, of course, but PG is the central database host for this platform.
-CentOS - Free, stable Linux distribution.
-GeoNorth - Hosting and Consulting Company (who I work for), generously setting aside resources for this site.
-StrataScale - VPS Cloud Hosting Provider
-	
+	This site uses many different technologies.  The primary ones, in order from client to server are these:
+		
+	CodeMirror - for browser-based SQL editing with text highlighting.
+	Bootstrap - Twitter's CSS framework.
+	Backbone.js - MVC JavaScript framework.
+	Handlebars.js - JavaScript templating engine.
+	jQuery - AJAX, plus misc JS goodness. (Also jq plugin Block UI).
+	html-query-plan - XSLT for building rich query plans for SQL Server
+	Date.format.js - date formatting JavaScript library
+	jQuery - AJAX, plus misc JS goodness. (Also jq plugin Block UI).
+	ColdFusion on Wheels - ColdFusion framework modeled after Ruby on Rails.
+	Railo - Open Source CFML Application server.
+	Tomcat - Open Source Java Servlet Engine
+	Apache HTTPD - Open Source HTTP Server
+	PostgreSQL - Among others, of course, but PG is the central database host for this platform.
+	CentOS - Free, stable Linux distribution.
+	GeoNorth - Hosting and Consulting Company (who I work for), generously setting aside resources for this site.
+	StrataScale - VPS Cloud Hosting Provider
+		
 
 	
 	We also have a Windows 2008 VPS running SQL Server and Oracle.
