@@ -18,7 +18,7 @@
 	<div class="navbar navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container">
-				<a class="brand" href="">SQL Fiddle<img src="images/fiddle_transparent_small.png" style="height: 20px;margin-top: -10px;"> </a>
+				<a class="brand" href=".">SQL Fiddle<img src="images/fiddle_transparent_small.png" style="height: 20px;margin-top: -10px;"> </a>
 				<div class="nav-collapse">
 					<ul class="nav">
 						<li class="dropdown" id="db_type_id">
@@ -58,7 +58,7 @@
 					</ul>
 					<ul class="nav pull-right">
 						<li>
-							<a href="/"><i class="icon-info-sign"></i>Home</a>
+							<a href="."><i class="icon-info-sign"></i>Home</a>
 						</li>
 					</ul>
 				</div>
@@ -86,14 +86,25 @@
 							<h1 class="">About SQLFiddle.com</h1>
 						</div>
 						<p>
-							SQL Fiddle is a tool for database developers to test out their SQL queries.  If you do not know SQL or basic database
+							A tool for easy online testing and sharing of database problems and their solutions.
+						</p>
+						
+					</div>
+				</div>
+
+				<a name="whatToDo"></a>
+				<div class="span12 pull-left hr-bar">
+					<hr>
+				</div>
+				
+				<div class="span9 panel pull-left">
+					<h2>What am I supposed to do here?</h2>
+						<p>
+							If you do not know SQL or basic database
 							concepts, this site is not going to be very useful to you.  However, if you are a database developer, there are a few 
 							different use-cases of SQL Fiddle intended for you:
 						</p>
-					</div>
-				</div>
-				<div class="span9 panel pull-left">
-					<a name="whatToDo"></a><h2>What am I supposed to do here?</h2>
+
 					<p>
 						You want help with a tricky query, and you'd like to post a question to a Q/A site like 
 						<a href="http://stackoverflow.com" title="Awesome Q &amp; A site"><span class="label label-info">StackOverflow</span></a>.  Build a 
@@ -131,6 +142,9 @@
 						</div>
 					</div>
 				</div>
+				
+				<a name="howWorks"></a>
+
 				<div class="span12 pull-left hr-bar">
 					<hr>
 				</div>
@@ -138,7 +152,7 @@
 					<div class="thumbnail pull-left span3" style="margin-right: 30px; margin-left: 0pt;">
 						<div class="image">
 							<a href="http://www.vincepergolizzi.com/2012/04/how-to-use-sql-fiddle-or-help-us-to-help-you/" target="_blank">
-								<img src="/images/blog_sample.png">
+								<img src="images/blog_sample.png">
 							</a>
 						</div>
 						<div class="caption">
@@ -154,7 +168,7 @@
 							</p>
 						</div>
 					</div>
-					<a name="howWorks"></a><h2>How does it work?</h2>
+					<h2>How does it work?</h2>
 					<p>
 						The Schema DDL that is provided is used to generate a private database on the fly.  If anything is changed in your
 						DDL (even a single space!), then you will be prompted to generate a new schema and will be operating in a new database.
@@ -174,11 +188,14 @@
 
 					</p>
 				</div>
+
+				<a name="sqlite"></a>
+
 				<div class="span12 pull-left hr-bar">
 					<hr>
 				</div>
 				<div class="span12 panel">
-					<a name="sqlite"></a><h2>Why are there two strange-looking options for SQLite?</h2>	
+					<h2>Why are there two strange-looking options for SQLite?</h2>	
 					<p>
 						SQLite is something of a special case amongst the various database types I support.  I could have implemented it the same way as 
 						the others, with a backend host doing the query execution, but what fun is that?  SQLite's "lite" nature allowed for some 
@@ -203,14 +220,17 @@
 					</p>
 					<p>
 						Together, these two options allow SQLite to run within any <i>decent</i> browser *cough*IE*cough*.  If someone links you to a SQLite fiddle
-						that your browser doesn't support, just switch over to the other option and build it using that one.
+						that your browser doesn't support, just switch over to the other option and build it using that one. If neither works, then get a better browser.
 					</p>
 				</div>
+				
+				<a name="contact"></a>
+				
 				<div class="span12 pull-left hr-bar">
 					<hr>
 				</div>
 				<div class="span12 panel pull-right">
-					<a name="contact"></a><h2>Who should I contact for help/feedback?</h2>
+					<h2>Who should I contact for help/feedback?</h2>
 					<p>
 						There are two ways you can get in contact:
 					</p>
@@ -219,11 +239,13 @@
 						<li>Twitter: <a href="https://twitter.com/#!/sqlfiddle"><span class="label label-info">@sqlfiddle</span></a></li>
 					</ul>
 				</div>
+				
+				<a name="whoBuilt"></a>
 				<div class="span12 pull-left hr-bar">
 					<hr>
 				</div>
 				<div class="span12 panel pull-left">
-					<a name="whoBuilt"></a>
+					
 					<h2>Who built this site, and why?</h2>
 					<p>
 						SQLFiddle.com was built by me, <a href="http://stackoverflow.com/users/808921/jake-feasel"><span class="label">Jake Feasel</span></a>, 
@@ -247,15 +269,17 @@
 						effective in assisting other developers.
 					</p>
 					<p>
-						<a href="http://ramonroche.com/"><span class="label label-info">Ramon Roche</span></a> helped me to get the UI moved to Bootstrap, and just generally helping to make it look better.  
+						<a href="http://ramonroche.com/"><span class="label label-info">Ramon Roche</span></a> helped me to get the UI moved to Bootstrap, and just generally helped to make it look a lot better.  
 						This has been my first time using Bootstrap, and without his assistance getting started I'm sure it would have been a lot rougher.  Thanks Ramon!
 					</p>
 				</div>
+
+				<a name="source"></a>
+
 				<div class="span12 pull-left hr-bar">
 					<hr>
 				</div>
 				<div class="span12 panel pull-left">
-					<a name="source"></a>
 					<h2>Source Code</h2>
 					<p>
 						If you are interested in the fine details of the code behind SQL Fiddle, it is all available on <a href="https://github.com/jakefeasel/sqlfiddle"><span class="label label-info">github</span></a>
@@ -264,11 +288,12 @@
 						<iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=jakefeasel&repo=sqlfiddle&type=fork&size=large" allowtransparency="true" frameborder="0" scrolling="0" width="170px" height="30px"></iframe>
 					</div>
 				</div>
+				
+				<a name="platform"></a>
 				<div class="span12 pull-left hr-bar">
 					<hr>
 				</div>
 				<div class="span12 panel">
-					<a name="platform"></a>
 					<h2>What platform is it running on?</h2>
 					<p>
 						This site uses many different technologies.  The primary ones, in order from client to server are these:
@@ -315,6 +340,14 @@
 							</tr>
 							<tr>
 								<th>
+									<a href="http://blog.stevenlevithan.com/archives/date-time-format">Date.format.js</a> <span class="badge badge-important">plugin</span> 
+								</th>
+								<td>
+									date formatting JavaScript library
+								</td>
+							</tr>							
+							<tr>
+								<th>
 									<a href="http://jquery.com">jQuery</a> <span class="badge badge-success">js</span> 
 								</th>
 								<td>
@@ -327,14 +360,6 @@
 								</th>
 								<td>
 									XSLT for building rich query plans for SQL Server
-								</td>
-							</tr>
-							<tr>
-								<th>
-									<a href="http://blog.stevenlevithan.com/archives/date-time-format">Date.format.js</a> <span class="badge badge-important">plugin</span> 
-								</th>
-								<td>
-									date formatting JavaScript library
 								</td>
 							</tr>
 							<tr>

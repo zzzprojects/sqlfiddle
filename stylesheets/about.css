@@ -25,3 +25,7 @@ body{
 .hr-bar hr{
 	margin: 18px 0 0;
 }
+
+.panel {
+	margin-top: 70px;	
+}
