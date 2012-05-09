@@ -1,214 +1,422 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!doctype html>
 <html>
-	<head>
-	
+<head>	
 	<meta charset="utf-8">
-		
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>SQL Fiddle</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Application for testing and sharing SQL queries.">
+	<meta name="author" content="Jake Feasel">
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 	<link href="stylesheets/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
+	<link href="stylesheets/bootstrap-responsive.min.css" media="all" rel="stylesheet" type="text/css" />
 	<link href="stylesheets/fiddle.css" media="all" rel="stylesheet" type="text/css" />
-		
-		<title>SQL Fiddle</title>
-
-
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-28576776-1']);
-  _gaq.push(['_setDomainName', 'sqlfiddle.com']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
-<style>
-	body {
-		padding-left: 20px;	
-		width: 800px;
-	}
-</style>
-	</head>
-	<body>
-		
-		<img src="images/fiddle_transparent.png" title="A fiddle-head fern"><h1>About SQLFiddle.com</h1>
-		
-		<a name="whatToDo"></a><h2>What am I supposed to do here?</h2>
-		<p>
-			SQL Fiddle is a tool for database developers to test out their SQL queries.  If you do not know SQL or basic database
-			concepts, this site is not going to be very useful to you.  However, if you are a database developer, there are a few 
-			different use-cases of SQL Fiddle intended for you:
-			
-			<ul id="use_cases">
-				<li>
-					
-					You want help with a tricky query, and you'd like to post a question to a Q/A site like 
-					<a href="http://stackoverflow.com" title="Awesome Q &amp; A site">StackOverflow</a>.  Build a 
-					representative database (schema and data) and post a link to it in your question.  Unique 
-					URLs for each database (and each query) will be generated as you use the site; just copy and paste the 
-					URL that you want to share, and it will be available for anyone who wants to take a look.  They will 
-					then be able to use your DDL and your SQL as a starting point for answering your question.  When they
-					have something they'd like to share with you, they can then send you a link back to their query.
-				
-				
-				</li>
-				
-				<li>
-					
-					You want to compare and contrast SQL statements in different database backends.  SQLFiddle easily lets
-					you switch which database provider (MySQL, PostgreSQL, MS SQL Server, Oracle, and SQLite) your queries run
-					against.  This will allow you to quickly evaluate query porting efforts, or language options available
-					in each environment.
-					
-				</li>
-				
-				<li>
-				
-					You do not have a particular database platform readily available, but you would like to see what a given
-					query would look like in that environment.  Using SQL Fiddle, you don't need to bother spinning up a 
-					whole installation for your evaluation; just create your database and queries here!
-				
-				</li>
-				
-			</ul>
-			
-			Vince Pergolizzi wrote a great blog post about the site, providing an overview for how to use it when you ask SQL
-			questions at places like StackOverflow.  See it here: <a href="http://www.vincepergolizzi.com/2012/04/how-to-use-sql-fiddle-or-help-us-to-help-you/">http://www.vincepergolizzi.com/2012/04/how-to-use-sql-fiddle-or-help-us-to-help-you/</a>
-			
-			<br><br>
-			
-			Para falantes do português, <a href="https://twitter.com/#!/guediz">Dickson S. Guedes</a> fez um vídeo instrutivo: <a href="http://www.youtube.com/watch?v=ednxTEGyfV8">http://www.youtube.com/watch?v=ednxTEGyfV8</a> 
-			
-		</p>
-
-		<a name="howWorks"></a><h2>How does it work?</h2>
-		<p>
-			The Schema DDL that is provided is used to generate a private database on the fly.  If anything is changed in your
-			DDL (even a single space!), then you will be prompted to generate a new schema and will be operating in a new database.
-			
-		</p>
-		<p>	
-			All SQL queries are run within a transaction that gets immediately rolled-back after the SQL executes.  This is so
-			that the underlying database structure does not change from query to query, which makes it possible to share anonymously
-			online with any number of users (each of whom may be writing queries in the same shared database, potentially modifying 
-			the structure and thus -- if not for the rollback -- each other's results).
-		</p>
-		<p>	
-			As you create schemas and write queries, unique URLs that refer to your particular schema and query will be
-			visible in your address bar.  You can share these with anyone, and they will be able to see what you've done
-			so far.  You will also be able to use your normal browser functions like 'back', 'forward', and 'reload', and you 
-			will see the various stages of your work, as you would expect.
-			
-		</p>
-
-		<a name="sqlite"></a><h2>Why are there two strange-looking options for SQLite?</h2>	
-		<p>
-			SQLite is something of a special case amongst the various database types I support.  I could have implemented it the same way as 
-			the others, with a backend host doing the query execution, but what fun is that?  SQLite's "lite" nature allowed for some 
-			interesting alternatives.
-			
-		</p>
-		<p>
-			First, I found the very neat project 
-			<a href="https://github.com/kripken/sql.js">SQL.js</a>, which is an implementation of the engine translated into javascript.
-			This means that instead of using my servers (and my limited memory), I could offload the work onto your browser!  Great for me, 
-			but unfortunately SQL.js does have a few drawbacks. One is that it taxes the browser a bit when it is first loaded into memory. The
-			other is that it doesn't work in all browsers (so far I've seen it fail in IE9 and mobile Safari). 
-		</p>
-		<p>
-			
-			The other option is "WebSQL."  This option makes use of the SQLite implementation that a few browsers come with built-in (I've seen it work in Chrome and Safari; supposedly Opera supports this too).  This feature
-			was considered part of the <a href="http://www.w3.org/TR/webdatabase/">W3C working draft for HTML5</a>, but they depricated it in 
-			favor of <a href="http://www.w3.org/TR/IndexedDB/">IndexedDB</a>.  Despite this, a few browsers (particularlly mobile browsers) still
-			have it available, so I figured that this would be a useful feature to grab onto.  The advantage over SQL.js is that it is quite a bit faster
-			to load the schema and run the queries.  The disadvantage is that it isn't widely supported, and likely not long for this world.
-			 
-		</p>
-		<p>
-			Together, these two options allow SQLite to run within any <i>decent</i> browser *cough*IE*cough*.  If someone links you to a SQLite fiddle
-			that your browser doesn't support, just switch over to the other option and build it using that one.
-		</p>
-		
-		<a name="contact"></a><h2>Who should I contact for help/feedback?</h2>
-		<p>
-			There are two ways you can get in contact:
-				<ul>
-					<li>Email : admin&lt;at&gt;sqlfiddle&lt;dot&gt;com</li>
-					<li>Twitter: <a href="https://twitter.com/#!/sqlfiddle">@sqlfiddle</a></li>
+	<link href="stylesheets/about.css" media="all" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="">SQL Fiddle<img src="images/fiddle_transparent_small.png" style="height: 20px;margin-top: -10px;"> </a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li class="dropdown" id="db_type_id">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+								Table of Contents <b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li class="">
+									<a href="#whatToDo">What am I supposed to do here?</a>
+								</li>
+								<li class="">
+									<a href="#howWorks">How does it work?</a>
+								</li>
+								<li class="">
+									<a href="#sqlite">Why are there two strange-looking options for SQLite?</a>
+								</li>
+								<li>
+									<a href="#contact">Who should I contact for help/feedback?</a>
+								</li>
+								<li>
+									<a href="#whoBuilt">Who built this site, and why?</a>
+								</li>
+								<li>
+									<a href="#source">Source Code</a>
+								</li>
+								<li>
+									<a href="#platform">What platform is it running on?</a>
+								</li>
+							</ul>
+						</li>
+						<li class="divider-vertical"></li>
+						<li>
+							<a href="#source">
+								Source Code
+							</a>
+						</li>
+					</ul>
+					<ul class="nav pull-right">
+						<li>
+							<a href="/"><i class="icon-info-sign"></i>Home</a>
+						</li>
+					</ul>
+				</div>
+				<ul class="nav pull-right" id="exit_fullscreen">
+					<li class="">
+						<a href="#"><span>Exit Fullscreen</span> <i class="icon-resize-small"></i></a>
+					</li>
 				</ul>
-		</p>
-		
-		
-		<a name="whoBuilt"></a><h2>Who built this site, and why?</h2>
-		<p>
-		
-			
-			SQLFiddle.com was built by me, <a href="http://stackoverflow.com/users/808921/jake-feasel">Jake Feasel</a>, 
-			a web developer from Anchorage, Alaska.  I started developing the site around the middle of January, 2012.
-			
-			<br><br>
-			
-			I had been having fun answering questions on StackOverflow, particularly related to a few main categories: 
-			<a href="http://stackoverflow.com/search?q=user:808921+[coldfusion]">ColdFusion</a>, 
-			<a href="http://stackoverflow.com/search?q=user:808921+[jquery]">jQuery</a>, and 
-			<a href="http://stackoverflow.com/search?q=user:808921+[sql]">SQL</a>.
-		
-		<br><br>
-		
-		<a href="http://stackoverflow.com/users/808921/jake-feasel">
-		<img src="http://stackoverflow.com/users/flair/808921.png" width="208" height="58" alt="profile for Jake Feasel at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Jake Feasel at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
-		</a>
-		
-		<br><br>
-		
-			I found <a href="http://jsfiddle.net">JS Fiddle</a> to be a great tool for answering javascript / jQuery questions,
-			but I also found that there was nothing available that offered similar functionality for the SQL questions. So, that
-			was my inspiration to build this site.  Basically, I built this site as a tool for developers like me to be more
-			effective in assisting other developers.
-		
-		<br><br>
-		
-			<a href="https://twitter.com/#!/mrpollo">Ramon Roche</a> helped me to get the UI moved to Bootstrap, and just generally helping to make it look better.  
-			This has been my first time using Bootstrap, and without his assistance getting started I'm sure it would have been a lot rougher.  Thanks Ramon!
-			
-		</p>
-		
-		
-		
-		
-		<a name="platform"></a><h2>What platform is it running on?</h2>
-		<p>
-			This site uses many different technologies.  The primary ones, in order from client to server are these:
-			
-			<ul>
-				<li><a href="http://www.codemirror.net">CodeMirror</a> - for browser-based SQL editing with text highlighting.</li>
-				<li><a href="http://twitter.github.com/bootstrap/">Bootstrap</a> - Twitter's CSS framework.</li>
-				<li><a href="http://documentcloud.github.com/backbone/">Backbone.js</a> - MVC JavaScript framework.</li>
-				<li><a href="http://handlebarsjs.com/">Handlebars.js</a> - JavaScript templating engine.</li>
-				<li><a href="http://jquery.com">jQuery</a> - AJAX, plus misc JS goodness. (Also jq plugin <a href="http://malsup.com/jquery/block/">Block UI</a>).</li>
-				<li><a href="http://code.google.com/p/html-query-plan/">html-query-plan</a> - XSLT for building rich query plans for SQL Server</li>
-				<li><a href="http://blog.stevenlevithan.com/archives/date-time-format">Date.format.js</a> - date formatting JavaScript library</li>
-				<li><a href="http://cfwheels.org">ColdFusion on Wheels</a> - ColdFusion framework modeled after Ruby on Rails.</li>
-				<li><a href="http://www.getrailo.org">Railo</a> - Open Source CFML Application server.</li>
-				<li><a href="http://tomcat.apache.org">Tomcat</a> - Open Source Java Servlet Engine</li>
-				<li><a href="http://httpd.apache.org">Apache HTTPD</a> - Open Source HTTP Server</li>
-				<li><a href="http://www.postgresql.org">PostgreSQL</a> - Among others, of course, but PG is the central database host for this platform.</li>
-				<li><a href="http://www.centos.org">CentOS</a> - Free, stable Linux distribution.</li>
-				<li><a href="http://www.geonorth.com">GeoNorth</a> - Hosting and Consulting Company (who I work for), generously setting aside resources for this site.</li>
-				<li><a href="http://www.stratascale.com">StrataScale</a> - VPS Cloud Hosting Provider</li>
-			</ul>
-		</p>
-		<p>	
-			We also have a Windows 2008 VPS running SQL Server and Oracle.
-			
-			<br><br>
-			
-			If you are interested in the fine details of the code behind SQL Fiddle, it is all available on <a href="https://github.com/jakefeasel/sqlfiddle">github</a>.
-			
-		</p>
-	</body>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="span12" id="content">
+				<!--
+				<div class="span6 panel pull-left">
+				</div>
+				<div class="span6 panel pull-right">
+				</div>
+				-->
+				<div class="span12 panel pull-left">
+					<div class="hero-unit">
+						<img class="pull-left" src="images/fiddle_transparent.png" title="A fiddle-head fern">
+						<div class="page-header pull-left">
+							<h1 class="">About SQLFiddle.com</h1>
+						</div>
+						<p>
+							SQL Fiddle is a tool for database developers to test out their SQL queries.  If you do not know SQL or basic database
+							concepts, this site is not going to be very useful to you.  However, if you are a database developer, there are a few 
+							different use-cases of SQL Fiddle intended for you:
+						</p>
+					</div>
+				</div>
+				<div class="span9 panel pull-left">
+					<a name="whatToDo"></a><h2>What am I supposed to do here?</h2>
+					<p>
+						You want help with a tricky query, and you'd like to post a question to a Q/A site like 
+						<a href="http://stackoverflow.com" title="Awesome Q &amp; A site"><span class="label label-info">StackOverflow</span></a>.  Build a 
+						representative database (schema and data) and post a link to it in your question.  Unique 
+						URLs for each database (and each query) will be generated as you use the site; just copy and paste the 
+						URL that you want to share, and it will be available for anyone who wants to take a look.  They will 
+						then be able to use your DDL and your SQL as a starting point for answering your question.  When they
+						have something they'd like to share with you, they can then send you a link back to their query.
+					</p>
+					<p>
+						You want to compare and contrast SQL statements in different database backends.  SQLFiddle easily lets
+						you switch which database provider (MySQL, PostgreSQL, MS SQL Server, Oracle, and SQLite) your queries run
+						against.  This will allow you to quickly evaluate query porting efforts, or language options available
+						in each environment.
+					</p>
+					<p>
+						You do not have a particular database platform readily available, but you would like to see what a given
+						query would look like in that environment.  Using SQL Fiddle, you don't need to bother spinning up a 
+						whole installation for your evaluation; just create your database and queries here!
+					</p>
+				</div>
+				<div class="span3 panel pull-right">
+					<div class="thumbnail">
+						<div class="image">
+							<a href="http://www.youtube.com/watch?v=ednxTEGyfV8" target="_blank">
+								<img src="http://i2.ytimg.com/vi/ednxTEGyfV8/hqdefault.jpg">
+							</a>
+						</div>
+						<div class="caption">
+							<h5>Para falantes do português</h5>
+							<p>
+								<a href="https://twitter.com/#!/guediz" target="_blank"><span class="label">Dickson S. Guedes</span></a> fez um vídeo instrutivo
+							</p>
+							<p><a href="http://www.youtube.com/watch?v=ednxTEGyfV8" class="btn btn-primary">Ver</a></p>
+						</div>
+					</div>
+				</div>
+				<div class="span12 pull-left hr-bar">
+					<hr>
+				</div>
+				<div class="span12 panel">
+					<div class="thumbnail pull-left span3" style="margin-right: 30px; margin-left: 0pt;">
+						<div class="image">
+							<a href="http://www.vincepergolizzi.com/2012/04/how-to-use-sql-fiddle-or-help-us-to-help-you/" target="_blank">
+								<img src="/images/blog_sample.png">
+							</a>
+						</div>
+						<div class="caption">
+							<h5>How to share on StackOverflow</h5>
+							<p>
+								Vince Pergolizzi wrote a great blog post about the site, providing an overview for how to use it when you ask SQL
+								questions at places like StackOverflow.  
+							</p>
+							<p>
+								<a href="http://www.vincepergolizzi.com/2012/04/how-to-use-sql-fiddle-or-help-us-to-help-you/" class="btn btn-primary">
+									See it here
+								</a>
+							</p>
+						</div>
+					</div>
+					<a name="howWorks"></a><h2>How does it work?</h2>
+					<p>
+						The Schema DDL that is provided is used to generate a private database on the fly.  If anything is changed in your
+						DDL (even a single space!), then you will be prompted to generate a new schema and will be operating in a new database.
 
-	
+					</p>
+					<p>	
+						All SQL queries are run within a transaction that gets immediately rolled-back after the SQL executes.  This is so
+						that the underlying database structure does not change from query to query, which makes it possible to share anonymously
+						online with any number of users (each of whom may be writing queries in the same shared database, potentially modifying 
+						the structure and thus -- if not for the rollback -- each other's results).
+					</p>
+					<p>	
+						As you create schemas and write queries, unique URLs that refer to your particular schema and query will be
+						visible in your address bar.  You can share these with anyone, and they will be able to see what you've done
+						so far.  You will also be able to use your normal browser functions like 'back', 'forward', and 'reload', and you 
+						will see the various stages of your work, as you would expect.
+
+					</p>
+				</div>
+				<div class="span12 pull-left hr-bar">
+					<hr>
+				</div>
+				<div class="span12 panel">
+					<a name="sqlite"></a><h2>Why are there two strange-looking options for SQLite?</h2>	
+					<p>
+						SQLite is something of a special case amongst the various database types I support.  I could have implemented it the same way as 
+						the others, with a backend host doing the query execution, but what fun is that?  SQLite's "lite" nature allowed for some 
+						interesting alternatives.
+
+					</p>
+					<p>
+						First, I found the very neat project 
+						<a href="https://github.com/kripken/sql.js"><span class="label label-info">SQL.js</span></a>, which is an implementation of the engine translated into javascript.
+						This means that instead of using my servers (and my limited memory), I could offload the work onto your browser!  Great for me, 
+						but unfortunately SQL.js does have a few drawbacks. One is that it taxes the browser a bit when it is first loaded into memory. The
+						other is that it doesn't work in all browsers (so far I've seen it fail in IE9 and mobile Safari). 
+					</p>
+					<p>
+
+						The other option is "WebSQL."  This option makes use of the SQLite implementation that a few browsers come with built-in (I've seen it work in Chrome and Safari; supposedly Opera supports this too).  This feature
+						was considered part of the <a href="http://www.w3.org/TR/webdatabase/"><span class="label label-info">W3C working draft for HTML5</span></a>, but they depricated it in 
+						favor of <a href="http://www.w3.org/TR/IndexedDB/"><span class="label label-info">IndexedDB</span></a>.  Despite this, a few browsers (particularlly mobile browsers) still
+						have it available, so I figured that this would be a useful feature to grab onto.  The advantage over SQL.js is that it is quite a bit faster
+						to load the schema and run the queries.  The disadvantage is that it isn't widely supported, and likely not long for this world.
+
+					</p>
+					<p>
+						Together, these two options allow SQLite to run within any <i>decent</i> browser *cough*IE*cough*.  If someone links you to a SQLite fiddle
+						that your browser doesn't support, just switch over to the other option and build it using that one.
+					</p>
+				</div>
+				<div class="span12 pull-left hr-bar">
+					<hr>
+				</div>
+				<div class="span12 panel pull-right">
+					<a name="contact"></a><h2>Who should I contact for help/feedback?</h2>
+					<p>
+						There are two ways you can get in contact:
+					</p>
+					<ul>
+						<li>Email : admin&lt;at&gt;sqlfiddle&lt;dot&gt;com</li>
+						<li>Twitter: <a href="https://twitter.com/#!/sqlfiddle"><span class="label label-info">@sqlfiddle</span></a></li>
+					</ul>
+				</div>
+				<div class="span12 pull-left hr-bar">
+					<hr>
+				</div>
+				<div class="span12 panel pull-left">
+					<a name="whoBuilt"></a>
+					<h2>Who built this site, and why?</h2>
+					<p>
+						SQLFiddle.com was built by me, <a href="http://stackoverflow.com/users/808921/jake-feasel"><span class="label">Jake Feasel</span></a>, 
+						a web developer from Anchorage, Alaska.  I started developing the site around the middle of January, 2012.
+					</p>
+					<p>
+						I had been having fun answering questions on StackOverflow, particularly related to a few main categories: 
+						<a href="http://stackoverflow.com/search?q=user:808921+[coldfusion]"><span class="label label-warning">ColdFusion</span></a>, 
+						<a href="http://stackoverflow.com/search?q=user:808921+[jquery]"><span class="label label-warning">jQuery</span></a>, and 
+						<a href="http://stackoverflow.com/search?q=user:808921+[sql]"><span class="label label-warning">SQL</span></a>.
+					</p>
+					<p>
+						<a href="http://stackoverflow.com/users/808921/jake-feasel">
+							<img src="http://stackoverflow.com/users/flair/808921.png" width="208" height="58" alt="profile for Jake Feasel at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Jake Feasel at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+						</a>
+					</p>
+					<p>
+						I found <a href="http://jsfiddle.net"><span class="label label-info">JS Fiddle</span></a> to be a great tool for answering javascript / jQuery questions,
+						but I also found that there was nothing available that offered similar functionality for the SQL questions. So, that
+						was my inspiration to build this site.  Basically, I built this site as a tool for developers like me to be more
+						effective in assisting other developers.
+					</p>
+					<p>
+						<a href="http://ramonroche.com/"><span class="label label-info">Ramon Roche</span></a> helped me to get the UI moved to Bootstrap, and just generally helping to make it look better.  
+						This has been my first time using Bootstrap, and without his assistance getting started I'm sure it would have been a lot rougher.  Thanks Ramon!
+					</p>
+				</div>
+				<div class="span12 pull-left hr-bar">
+					<hr>
+				</div>
+				<div class="span12 panel pull-left">
+					<a name="source"></a>
+					<h2>Source Code</h2>
+					<p>
+						If you are interested in the fine details of the code behind SQL Fiddle, it is all available on <a href="https://github.com/jakefeasel/sqlfiddle"><span class="label label-info">github</span></a>
+					</p>
+					<div class="fork-me">
+						<iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=jakefeasel&repo=sqlfiddle&type=fork&size=large" allowtransparency="true" frameborder="0" scrolling="0" width="170px" height="30px"></iframe>
+					</div>
+				</div>
+				<div class="span12 pull-left hr-bar">
+					<hr>
+				</div>
+				<div class="span12 panel">
+					<a name="platform"></a>
+					<h2>What platform is it running on?</h2>
+					<p>
+						This site uses many different technologies.  The primary ones, in order from client to server are these:
+					</p>
+					<table class="table table-striped table-bordered table-condensed">
+						<thead>
+							<tr>
+								<th>Title</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th>
+									<a href="http://www.codemirror.net">CodeMirror</a> <span class="badge badge-important">plugin</span> 
+								</th>
+								<td>
+									for browser-based SQL editing with text highlighting.
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://twitter.github.com/bootstrap/">Bootstrap</a> <span class="badge badge-inverse">html / css / js</span> 
+								</th>
+								<td>
+									Twitter's CSS framework.
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://documentcloud.github.com/backbone/">Backbone.js</a> <span class="badge badge-success">js</span> 
+								</th>
+								<td>
+									MVC JavaScript framework.
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://handlebarsjs.com/">Handlebars.js</a> <span class="badge badge-success">js</span> 
+								</th>
+								<td>
+									JavaScript templating engine.
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://jquery.com">jQuery</a> <span class="badge badge-success">js</span> 
+								</th>
+								<td>
+									AJAX, plus misc JS goodness. (Also jq plugin <a href="http://malsup.com/jquery/block/"><span class="label label-info">Block UI</span></a> ).
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://code.google.com/p/html-query-plan/">html-query-plan</a> <span class="badge badge-important">plugin</span> 
+								</th>
+								<td>
+									XSLT for building rich query plans for SQL Server
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://blog.stevenlevithan.com/archives/date-time-format">Date.format.js</a> <span class="badge badge-important">plugin</span> 
+								</th>
+								<td>
+									date formatting JavaScript library
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://cfwheels.org">ColdFusion on Wheels</a> <span class="badge badge-info">cfm</span> 
+								</th>
+								<td>
+									ColdFusion framework modeled after Ruby on Rails.
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://www.getrailo.org">Railo</a> <span class="badge badge-info">cfm</span> 
+								</th>
+								<td>
+									Open Source CFML Application server.
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://tomcat.apache.org">Tomcat</a> <span class="badge badge-warning">java</span> 
+								</th>
+								<td>
+									Open Source Java Servlet Engine
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://httpd.apache.org">Apache HTTPD</a> <span class="badge badge">www</span> 
+								</th>
+								<td>
+									Open Source HTTP Server
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://www.postgresql.org">PostgreSQL</a> <span class="badge badge-inverse">db</span> 
+								</th>
+								<td>
+									Among others, of course, but PG is the central database host for this platform.
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://www.centos.org">CentOS</a> <span class="badge badge">os</span> 
+								</th>
+								<td>
+									Free, stable Linux distribution.
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://www.geonorth.com">GeoNorth</a> <span class="badge badge-inverse">hosting</span> 
+								</th>
+								<td>
+									Hosting and Consulting Company (who I work for), generously setting aside resources for this site.
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<a href="http://www.stratascale.com">StrataScale</a> <span class="badge badge-inverse">hosting</span> 
+								</th>
+								<td>
+									VPS Cloud Hosting Provider
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="alert alert-info">
+					  	<p>	
+							<i class="icon-search icon-info-sign"></i> We also have a Windows 2008 VPS running SQL Server and Oracle.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="javascripts/jquery.min.js" type="text/javascript"></script>
+	<script src="javascripts/jquery.blockUI.js" type="text/javascript"></script>
+	<script src="javascripts/bootstrap-collapse.js" type="text/javascript"></script>
+	<script src="javascripts/bootstrap-dropdown.js" type="text/javascript"></script>
+	<script src="javascripts/bootstrap-modal.js" type="text/javascript"></script>	
+	<script src="javascripts/qp.js" type="text/javascript"></script>
+</body>
 </html>
