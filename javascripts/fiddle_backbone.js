@@ -20,7 +20,10 @@ $(function () {
 		},
 		
 		SchemaDef: function (db_type_id, short_code) {
-
+			
+			if (window.query.get("pendingChanges") && !confirm("Warning! You have made changes to your query which will be lost. Continue?'"))
+				return false;
+				
 			var frag = "!" + db_type_id + "/" + short_code;
 		
 			this.DBType(db_type_id);
@@ -95,6 +98,10 @@ $(function () {
 		},
 		
 		Query: function (db_type_id, short_code, query_id) {
+			
+			if (window.query.get("pendingChanges") && !confirm("Warning! You have made changes to your query which will be lost. Continue?'"))
+				return false;
+			
 			var frag = "!" + db_type_id + "/" + short_code + "/" + query_id;
 		
 			this.DBType(db_type_id);
@@ -452,7 +459,8 @@ $(function () {
 		defaults: {
 			"id": 0,
 			"sql": "",
-			"sets": []
+			"sets": [],
+			"pendingChanges": false
 		},
 		reset: function () {
 			this.set(this.defaults);
@@ -811,6 +819,8 @@ $(function () {
 	});
 
 	window.query.on("reloaded", function () {
+		this.set({"pendingChanges": false}, {silent: true});	
+		
 		window.queryView.render();
 	});
 
@@ -820,12 +830,21 @@ $(function () {
 		$("#buildSchema label").html($("#buildSchema label").data("originalValue"));
 		window.schemaDefView.renderOutput();
 	});
+
+	window.query.on("change", function () {
+		if (this.hasChanged("sql") && !this.hasChanged("id") && !this.get("pendingChanges"))
+		{
+			this.set({"pendingChanges": true}, {silent: true});
+		}
+	});
 	
 	window.query.on("executed", function () {
 	// see also the router function defined below that also binds to this event 
 		var $button = $(".runQuery label");
 		$button.prop('disabled', false);
 		$button.html($button.data("originalValue"));
+
+		this.set({"pendingChanges": false}, {silent: true});	
 		window.queryView.renderOutput();
 	});
 
@@ -873,6 +892,11 @@ $(function () {
 	$("#sample").click(function (e) {
 		e.preventDefault();
 		window.router.navigate("!" + window.dbTypes.getSelectedType().get("sample_fragment"), {trigger: true});
+	});
+	
+	$(window).bind('beforeunload', function () {
+		if (window.query.get("pendingChanges"))
+			return "Warning! You have made changes to your query which will be lost. Continue?'";
 	});
 
 	
