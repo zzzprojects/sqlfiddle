@@ -37,6 +37,23 @@
 
 </script>
 
+
+	<script id="schemaBrowser-template" type="text/x-handlebars-template">
+		<ul>
+			{{#each objects}}
+			<li>
+				{{this.table_type}}: {{this.table_name}}
+				<ul>
+					{{#each this.columns}}
+					<li>{{name}} {{type}}</li>
+					{{/each}}
+				</ul>
+			</li>
+			{{/each}}
+			
+		</ul>
+	</script>
+
 	<script id="historyLog-template" type="text/x-handlebars-template">
 		<div class="modal-header">
 			<a class="close" data-dismiss="modal">x</a>
@@ -73,6 +90,7 @@
 	    <a href="#" class="btn">Close</a>
 	  </div>		
 	</script>
+	
 	<script id="db_type_id-template" type="text/x-handlebars-template">
 		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 			{{selectedFullName}} <b class="caret"></b>
@@ -83,6 +101,7 @@
 			{{/each}}
 		</ul>
 	</script>
+	
 	<script id="schema-output-template" type="text/x-handlebars-template">
 		{{#if errorMessage}}
 		<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{errorMessage}}</div>	
@@ -91,6 +110,7 @@
 		{{/if}}
 	
 	</script>
+	
 	<script id="query-output-template" type="text/x-handlebars-template">
 	{{#if id}}
 		{{#each sets}}
@@ -144,6 +164,7 @@
 		{{/each}}
 	{{/if}}
 	</script>	
+	
 </head>
 <body>
 
@@ -222,6 +243,8 @@
 								<form id="fiddleFormDDL" method="post" action="">
 									<textarea id="schema_ddl"></textarea>
 
+									<div id="browser"></div>
+
 									<div class="action_buttons">
 										
 									<a href="#" id="buildSchema">
@@ -233,7 +256,15 @@
 									<a href="#" id="schemaFullscreen" class="btn btn-info">
 										Edit Fullscreen <i class="icon-resize-full"></i>
 									</a>
-									
+
+									<a href="#" id="schemaBrowser" class="btn btn-info">
+										Browser <i class="icon-indent-left"></i>
+									</a>
+<!--
+									<a href="#" id="schemaDiagram" class="btn btn-info">
+										Diagram <i class="icon-qrcode"></i>
+									</a>
+-->									
 									</div>
 
 								</form>
