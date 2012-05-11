@@ -7,9 +7,9 @@ window.SQLite_driver = function () {
 			from the create table statements.
 		*/
 		// this query gets back a result set which contains each table, along with the create table statement used
-		var schema_sql = "select * from sqlite_master where type='table' and name != '__WebKitDatabaseInfoTable__' order by name";
+		var schema_sql = "select * from sqlite_master where type IN ('table', 'view') and name != '__WebKitDatabaseInfoTable__' order by type,name";
 		
-		var callback = function (resultSets) {
+		var localCallback = function (resultSets) {
 			var colMap = {};
 			var schemaStruct = [];
 			
@@ -22,20 +22,25 @@ window.SQLite_driver = function () {
 			{
 				var tableDef = resultSets[0]["RESULTS"]["DATA"][j][colMap["sql"]];
 				var tableName = resultSets[0]["RESULTS"]["DATA"][j][colMap["name"]];
-				var colsDef = /^[\s\S]*?\(([\s\S]*)\)$/.exec(tableDef)[1].split(/,\s*/);
-				
+				var tableType = resultSets[0]["RESULTS"]["DATA"][j][colMap["type"]];
+
 				var tableStruct = {
 					"table_name": tableName,
+					"table_type": tableType,
 					"columns": []
 				};
-				
-				for (var k in colsDef)
-				{
-					var col_components = colsDef[k].replace(/(^\s*)|(\s*$)/, '').split(/\s+/);
-					tableStruct["columns"].push({
-						"name": col_components.shift(), // first part of the col def
-						"type": col_components.join(' ') // rest of the col def
-					})
+
+				if (tableType == "table") { // sadly, there is no easy way to get the columns back from views in WebSQL
+					var colsDef = /^[\s\S]*?\(([\s\S]*)\)$/.exec(tableDef)[1].split(/,\s*/);
+					
+					
+					for (var k in colsDef) {
+						var col_components = colsDef[k].replace(/(^\s*)|(\s*$)/, '').split(/\s+/);
+						tableStruct["columns"].push({
+							"name": col_components.shift(), // first part of the col def
+							"type": col_components.join(' ') // rest of the col def
+						})
+					}
 				}
 				schemaStruct.push(tableStruct);
 			}
@@ -45,8 +50,8 @@ window.SQLite_driver = function () {
 		}
 		
 		
-		// use the primary method for this class to get the results from our special query
-		this.executeQuery({sql: schema_sql, "success": callback});
+		// use the method available in child classes to get the results from our special query
+		this.executeQuery({sql: schema_sql, "success": localCallback});
 		
 	}
 	

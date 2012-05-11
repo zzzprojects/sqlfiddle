@@ -71,4 +71,40 @@
 		return tmp_short_code;
 	}
 	</cfscript>
+	
+	<cffunction name="getSchemaStructure" returnType="array">
+		<cfset var schemaStruct = []>
+		<cfset var db_type = model("DB_Type").findByKey(key=this.db_type_id, cache="true")>
+
+		<cfif (db_type.context IS "host")><!--- if the context for this schema is anything other than "host", we don't do much on this end--->
+		
+			<cfdbinfo datasource="#this.db_type_id#_#this.short_code#" type="tables" name="local.tablesList">
+			<cfloop query="local.tablesList">
+				<cfif ListFindNoCase("TABLE,VIEW",table_type)>
+					<cfset tableStruct = {
+							"table_name"= table_Name,
+							"table_type"= table_Type,
+							"columns"= []
+						}>
+						
+						<cfdbinfo datasource="#this.db_type_id#_#this.short_code#" type="columns" table="#table_name#" name="local.columnsList">
+
+						<cfloop query="local.columnsList">
+						
+							<cfset ArrayAppend(tableStruct["columns"], {
+									"name" = column_name,
+									"type" = "#type_name# (#column_size#)"
+								})>
+							
+						</cfloop>
+						
+					<cfset ArrayAppend(schemaStruct, tableStruct)>
+				</cfif>
+			</cfloop>
+		</cfif>
+		
+		
+		<cfreturn schemaStruct>
+	</cffunction>
+			
 </cfcomponent>
