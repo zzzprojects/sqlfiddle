@@ -48,10 +48,20 @@ $(function () {
 									"errorMessage": "",
 									"dbType": window.dbTypes.getSelectedType()
 								});
-								window.schemaDef.trigger("reloaded");
-								window.schemaDef.trigger("built");
-								window.query.reset();
-								window.query.trigger("reloaded");								
+
+								window.browserEngines[selectedDBType.get("className")].getSchemaStructure({
+										callback: function (schemaStruct) {
+											window.schemaDef.set({
+												"schema_structure": schemaStruct
+											});
+
+											window.schemaDef.trigger("reloaded");
+											window.schemaDef.trigger("built");
+											window.query.reset();
+											window.query.trigger("reloaded");								
+										}
+									});
+								
 							},
 							error: function (message) {
 								window.schemaDef.set({
@@ -60,7 +70,8 @@ $(function () {
 									"ready": true,
 									"valid": false,
 									"errorMessage": message,
-									"dbType": window.dbTypes.getSelectedType()
+									"dbType": window.dbTypes.getSelectedType(),
+									"schema_structure": []
 								});
 								window.schemaDef.trigger("failed");
 								window.query.reset();
@@ -77,7 +88,8 @@ $(function () {
 							"ready": true,
 							"valid": true,
 							"errorMessage": "",
-							"dbType": window.dbTypes.getSelectedType()
+							"dbType": window.dbTypes.getSelectedType(),
+							"schema_structure": resp["schema_structure"]
 						});
 						window.schemaDef.trigger("reloaded");
 						window.schemaDef.trigger("built");				
@@ -129,34 +141,47 @@ $(function () {
 									"errorMessage": "",
 									"dbType": window.dbTypes.getSelectedType()
 								});
-								window.schemaDef.trigger("reloaded");
-								window.schemaDef.trigger("built");
+								
+								window.browserEngines[selectedDBType.get("className")].getSchemaStructure({
+										callback: function (schemaStruct) {
+											window.schemaDef.set({
+												"schema_structure": schemaStruct
+											});
 
-								window.browserEngines[selectedDBType.get("className")].executeQuery({
-									sql: resp["sql"],
-									success: function (sets) {
-										window.query.set({
-											"id": query_id,
-											"sql":  resp["sql"],
-											"sets": sets
-										});
-										window.query.trigger("reloaded");
-										window.query.trigger("executed");
+											window.schemaDef.trigger("reloaded");
+											window.schemaDef.trigger("built");
 
-										$("body").unblock();
-									},
-									error: function (e) {
-										window.query.set({
-											"id": query_id,
-											"sql":  resp["sql"],
-											"sets": []
-										});				
-										window.query.trigger("reloaded");
-										window.query.trigger("executed");
+											window.browserEngines[selectedDBType.get("className")].executeQuery({
+												sql: resp["sql"],
+												success: function (sets) {
+													window.query.set({
+														"id": query_id,
+														"sql":  resp["sql"],
+														"sets": sets
+													});
+													window.query.trigger("reloaded");
+													window.query.trigger("executed");
+			
+													$("body").unblock();
+												},
+												error: function (e) {
+													window.query.set({
+														"id": query_id,
+														"sql":  resp["sql"],
+														"sets": []
+													});				
+													window.query.trigger("reloaded");
+													window.query.trigger("executed");
+			
+													$("body").unblock();
+												}
+											});
 
-										$("body").unblock();
-									}
-								});
+
+										}
+									});
+								
+
 							},
 							error: function (message) {
 
@@ -173,7 +198,8 @@ $(function () {
 									"ready": true,
 									"valid": false,
 									"errorMessage": message,
-									"dbType": window.dbTypes.getSelectedType()
+									"dbType": window.dbTypes.getSelectedType(),
+									"schema_structure": []
 								});
 								window.schemaDef.trigger("failed");
 								window.schemaDef.trigger("reloaded");
@@ -192,7 +218,8 @@ $(function () {
 							"ddl": resp["ddl"],
 							"ready": true,
 							"valid": true,
-							"errorMessage": ""
+							"errorMessage": "",
+							"schema_structure": resp["schema_structure"]
 						});
 						window.schemaDef.trigger("reloaded");
 						
@@ -360,7 +387,8 @@ $(function () {
 			"full_name": "",
 			"valid": true,
 			"errorMessage": "",
-			"ready": false
+			"ready": false,
+			"schema_structure": []
 		},
 		reset: function () {
 			this.set(this.defaults);
@@ -400,14 +428,23 @@ $(function () {
 										"errorMessage": ""
 									});
 									
-									thisModel.trigger("built");
+									window.browserEngines[selectedDBType.get("className")].getSchemaStructure({
+											callback: function (schemaStruct) {
+												thisModel.set({
+													"schema_structure": schemaStruct
+												});
+												thisModel.trigger("built");
+											}
+										});
+									
 								},
 								error: function (message) {
 									thisModel.set({
 										"short_code": $.trim(data["short_code"]),
 										"ready": false,
 										"valid": false,
-										"errorMessage": message
+										"errorMessage": message,
+										"schema_structure": []
 									});
 									thisModel.trigger("failed");
 								}
@@ -420,7 +457,8 @@ $(function () {
 								"short_code": $.trim(data["short_code"]),
 								"ready": true,
 								"valid": true,
-								"errorMessage": ""
+								"errorMessage": "",
+								"schema_structure": data["schema_structure"]
 							});
 							
 							thisModel.trigger("built");
@@ -433,7 +471,8 @@ $(function () {
 							"short_code": "",
 							"ready": false,
 							"valid": false,
-							"errorMessage": data["error"]
+							"errorMessage": data["error"],
+							"schema_structure": []
 						});
 						thisModel.trigger("failed");
 					}
@@ -444,7 +483,8 @@ $(function () {
 						"short_code": "",
 						"ready": false,
 						"valid": false,
-						"errorMessage": errorThrown
+						"errorMessage": errorThrown,
+						"schema_structure": []
 					});
 					thisModel.trigger("failed");
 
@@ -631,7 +671,9 @@ $(function () {
 		        onChange: this.handleSchemaChange
 		      });
 
-		    this.compiledOutputTemplate = Handlebars.compile(this.options.outputTemplate.html()); 
+		    this.compiledOutputTemplate = Handlebars.compile(this.options.outputTemplate.html());
+			
+			this.compiledSchemaBrowserTemplate = Handlebars.compile(this.options.schemaBrowserTemplate.html()); 
 
 		},
 		handleSchemaChange: function () {
@@ -655,6 +697,13 @@ $(function () {
 				this.compiledOutputTemplate(this.model.toJSON())
 			);		
 		},
+		renderSchemaBrowser: function () {
+			this.options.browser_el.html(
+				this.compiledSchemaBrowserTemplate({
+					"objects": this.model.get('schema_structure')
+				})
+			);					
+		},
 		refresh: function () {
 			this.editor.refresh();
 		},
@@ -663,10 +712,12 @@ $(function () {
 			if (this.model.get("ready"))
 			{
 				$(".needsReadySchema").unblock();
+				$("#schemaBrowser").attr("disabled", false);
 			}
 			else
 			{
 				$(".needsReadySchema").block({ message: "Please build schema." });
+				$("#schemaBrowser").attr("disabled", true);
 			}
 			
 		}
@@ -778,7 +829,9 @@ $(function () {
 		id: "schema_ddl",
 		model: window.schemaDef,
 		outputTemplate: $("#schema-output-template"),
-		output_el: $("#output")
+		output_el: $("#output"),
+		schemaBrowserTemplate: $("#schema-browser-template"),
+		browser_el: $("#browser")
 	});
 
 	window.queryView = new QueryView({
@@ -811,6 +864,9 @@ $(function () {
 			
 		if (this.hasChanged("errorMessage"))
 			window.schemaDefView.renderOutput();
+		
+		if (this.hasChanged("schema_structure"))
+			window.schemaDefView.renderSchemaBrowser();
 	});
 	
 	window.schemaDef.on("reloaded", function () {
@@ -829,6 +885,7 @@ $(function () {
 		$("#buildSchema label").prop('disabled', false);
 		$("#buildSchema label").html($("#buildSchema label").data("originalValue"));
 		window.schemaDefView.renderOutput();
+		window.schemaDefView.renderSchemaBrowser();
 	});
 
 	window.query.on("change", function () {

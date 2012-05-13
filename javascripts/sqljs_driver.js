@@ -162,3 +162,5 @@ window.SQLjs_driver = function () {
 	return this;
 	
 }
+
+window.SQLjs_driver.prototype = new window.SQLite_driver();

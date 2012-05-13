@@ -37,6 +37,24 @@
 
 </script>
 
+
+	<script id="schema-browser-template" type="text/x-handlebars-template">
+		<h3>Schema Browser</h3>
+		<ul class="tables">
+			{{#each objects}}
+			<li>
+				<i class="icon-minus"></i> {{this.table_name}} ({{this.table_type}})
+				<ul class="columns">
+					{{#each this.columns}}
+					<li>{{name}} {{type}}</li>
+					{{/each}}
+				</ul>
+			</li>
+			{{/each}}
+			
+		</ul>
+	</script>
+
 	<script id="historyLog-template" type="text/x-handlebars-template">
 		<div class="modal-header">
 			<a class="close" data-dismiss="modal">x</a>
@@ -73,6 +91,7 @@
 	    <a href="#" class="btn">Close</a>
 	  </div>		
 	</script>
+	
 	<script id="db_type_id-template" type="text/x-handlebars-template">
 		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 			{{selectedFullName}} <b class="caret"></b>
@@ -83,6 +102,7 @@
 			{{/each}}
 		</ul>
 	</script>
+	
 	<script id="schema-output-template" type="text/x-handlebars-template">
 		{{#if errorMessage}}
 		<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{errorMessage}}</div>	
@@ -91,6 +111,7 @@
 		{{/if}}
 	
 	</script>
+	
 	<script id="query-output-template" type="text/x-handlebars-template">
 	{{#if id}}
 		{{#each sets}}
@@ -144,6 +165,7 @@
 		{{/each}}
 	{{/if}}
 	</script>	
+	
 </head>
 <body>
 
@@ -222,18 +244,34 @@
 								<form id="fiddleFormDDL" method="post" action="">
 									<textarea id="schema_ddl"></textarea>
 
-									<div class="action_buttons">
-										
-									<a href="#" id="buildSchema">
-									<label for="result-ddl" class="btn btn-primary">
-										Build Schema <i class="icon-download-alt"></i>
-									</label>
-									</a>
+									<div id="browser"></div>
 
-									<a href="#" id="schemaFullscreen" class="btn btn-info">
-										Edit Fullscreen <i class="icon-resize-full"></i>
-									</a>
+									<div class="action_buttons ddl_actions">
+											
+										<a href="#" id="buildSchema">
+										<label for="result-ddl" class="btn btn-primary">
+											Build Schema <i class="icon-download-alt"></i>
+										</label>
+										</a>
+	
+										<a href="#" id="schemaFullscreen" class="btn btn-info">
+											Edit Fullscreen <i class="icon-resize-full"></i>
+										</a>
+	
+										<a href="#" id="schemaBrowser" class="btn btn-info">
+											Browser <i class="icon-indent-left"></i>
+										</a>
+	<!--
+										<a href="#" id="schemaDiagram" class="btn btn-info">
+											Diagram <i class="icon-qrcode"></i>
+										</a>
+	-->									
+									</div>
 									
+									<div class="action_buttons browser_actions">
+										<a href="#" id="ddlEdit" class="btn btn-info">
+											DDL Editor <i class="icon-pencil"></i>
+										</a>
 									</div>
 
 								</form>
@@ -310,6 +348,7 @@
 			
 	<div id="historyModal" class="modal"></div>	
 
+
 	<script src="javascripts/jquery.min.js?20120504" type="text/javascript"></script>
 	<script src="javascripts/jquery.blockUI.js?20120504" type="text/javascript"></script>
 	
@@ -325,7 +364,9 @@
 	<script src="javascripts/bootstrap-dropdown.js?20120504" type="text/javascript"></script>
 	<script src="javascripts/bootstrap-modal.js?20120504" type="text/javascript"></script>
 
-	<script src="javascripts/websql_driver.js?20120505" type="text/javascript"></script>
+
+	<script src="javascripts/sqlite_driver.js?20120510" type="text/javascript"></script>
+	<script src="javascripts/websql_driver.js?20120510" type="text/javascript"></script>
 	<script src="javascripts/sqljs_driver.js?20120505" type="text/javascript"></script>
 	<script src="javascripts/fiddle_backbone.js?20120509" type="text/javascript"></script>
 

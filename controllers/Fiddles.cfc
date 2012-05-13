@@ -20,21 +20,21 @@ component extends="Controller" {
 			var md5 = Lcase(hash(params.schema_ddl, "MD5"));
 			var short_code = "";
 			
-			var existingSchema = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND md5 = '#md5#'");
+			var schema_def = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND md5 = '#md5#'");
 	
-			if (IsObject(existingSchema) AND IsNumeric(existingSchema.current_host_id))
+			if (IsObject(schema_def) AND IsNumeric(schema_def.current_host_id))
 			{
-				existingSchema.last_used = now();
-				existingSchema.save();
+				schema_def.last_used = now();
+				schema_def.save();
 				
-				short_code = existingSchema.short_code;	
+				short_code = schema_def.short_code;	
 			}
 			else
 			{
-				if (IsObject(existingSchema)) // schema record exists, but without an active database host
+				if (IsObject(schema_def)) // schema record exists, but without an active database host
 				{	
-					short_code = existingSchema.short_code;		
-					existingSchema.initialize();
+					short_code = schema_def.short_code;		
+					schema_def.initialize();
 				}
 				else // time to create a new schema
 				{
@@ -67,7 +67,10 @@ component extends="Controller" {
 				
 			}
 	
-			renderText(SerializeJSON({"short_code" = short_code}));
+			renderText(SerializeJSON({
+				"short_code" = short_code,
+				"schema_structure" = schema_def.getSchemaStructure() 
+			}));
 		
 		}
 		catch (Any e) 
@@ -150,7 +153,8 @@ component extends="Controller" {
 					{
 						schema_def.last_used = now();
 						schema_def.save();					
-					}									
+					}
+					returnVal["schema_structure"] = schema_def.getSchemaStructure();														
 				}
 			}
 			

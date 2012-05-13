@@ -75,6 +75,22 @@ $(function () {
 		toggleFullscreenNav('Query Editor');		
 	});
 	
+	
+	$("#schemaBrowser").on('click', function (e) {
+		e.preventDefault();
+		if (!$(this).attr('disabled')) {
+			$('#fiddleFormDDL .CodeMirror, .ddl_actions').css('display', 'none');
+			$('#browser, .browser_actions').css('display', 'block');
+		}		
+	});
+	
+	$("#ddlEdit").on('click', function (e) {
+		e.preventDefault();
+		$('#fiddleFormDDL .CodeMirror, .ddl_actions').css('display', 'block');
+		$('#browser, .browser_actions').css('display', 'none');		
+		
+	})
+	
 	$(window).bind('resize', resizeLayout);		
 	setTimeout(resizeLayout, 1);
 });
@@ -124,6 +140,11 @@ function resizeLayout(){
 		
 		$('#sql').width($('#fiddleFormSQL').width() - 2 - 8);
 		$('#schema_ddl').width($('#fiddleFormDDL').width() - 2 - 8);
+
+		$('#browser')
+			.height($('#fiddleFormDDL .CodeMirror-scroll').height())
+		;
+
 		
 		window.schemaDefView.refresh();
 		window.queryView.refresh();

@@ -270,3 +270,5 @@ window.WebSQL_driver = function () {
 	return this;
 	
 }
+
+window.WebSQL_driver.prototype = new window.SQLite_driver();
