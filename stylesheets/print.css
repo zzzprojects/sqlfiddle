@@ -2,7 +2,7 @@ a.executionPlanLink, .btn-navbar, .action_buttons, #hosting {
 	display: none !important;	
 }
 
-      .CodeMirror-scroll {
+      .CodeMirror-scroll, #browser {
         height: auto !important;
         overflow-y: hidden;
         overflow-x: auto;
