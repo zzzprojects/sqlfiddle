@@ -36,10 +36,20 @@
 }	
 
 
-#browser {
+#browser, .browser_actions {
+	padding-left: 15px;
 	display: none;
+	width: 100%;
+}
+#browser {
+	overflow: auto;	
+	border: solid thin lightgray;
 }
 
+.tables, .columns {
+	list-style-type: none;	
+}
+	
 .action_buttons {
   margin: 5px 0;
   padding: 0 10px;

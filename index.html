@@ -38,12 +38,13 @@
 </script>
 
 
-	<script id="schemaBrowser-template" type="text/x-handlebars-template">
-		<ul>
+	<script id="schema-browser-template" type="text/x-handlebars-template">
+		<h3>Schema Browser</h3>
+		<ul class="tables">
 			{{#each objects}}
 			<li>
-				{{this.table_type}}: {{this.table_name}}
-				<ul>
+				<i class="icon-minus"></i> {{this.table_name}} ({{this.table_type}})
+				<ul class="columns">
 					{{#each this.columns}}
 					<li>{{name}} {{type}}</li>
 					{{/each}}
@@ -245,26 +246,32 @@
 
 									<div id="browser"></div>
 
-									<div class="action_buttons">
-										
-									<a href="#" id="buildSchema">
-									<label for="result-ddl" class="btn btn-primary">
-										Build Schema <i class="icon-download-alt"></i>
-									</label>
-									</a>
-
-									<a href="#" id="schemaFullscreen" class="btn btn-info">
-										Edit Fullscreen <i class="icon-resize-full"></i>
-									</a>
-
-									<a href="#" id="schemaBrowser" class="btn btn-info">
-										Browser <i class="icon-indent-left"></i>
-									</a>
-<!--
-									<a href="#" id="schemaDiagram" class="btn btn-info">
-										Diagram <i class="icon-qrcode"></i>
-									</a>
--->									
+									<div class="action_buttons ddl_actions">
+											
+										<a href="#" id="buildSchema">
+										<label for="result-ddl" class="btn btn-primary">
+											Build Schema <i class="icon-download-alt"></i>
+										</label>
+										</a>
+	
+										<a href="#" id="schemaFullscreen" class="btn btn-info">
+											Edit Fullscreen <i class="icon-resize-full"></i>
+										</a>
+	
+										<a href="#" id="schemaBrowser" class="btn btn-info">
+											Browser <i class="icon-indent-left"></i>
+										</a>
+	<!--
+										<a href="#" id="schemaDiagram" class="btn btn-info">
+											Diagram <i class="icon-qrcode"></i>
+										</a>
+	-->									
+									</div>
+									
+									<div class="action_buttons browser_actions">
+										<a href="#" id="ddlEdit" class="btn btn-info">
+											DDL Editor <i class="icon-pencil"></i>
+										</a>
 									</div>
 
 								</form>
@@ -340,6 +347,7 @@
 	
 			
 	<div id="historyModal" class="modal"></div>	
+
 
 	<script src="javascripts/jquery.min.js?20120504" type="text/javascript"></script>
 	<script src="javascripts/jquery.blockUI.js?20120504" type="text/javascript"></script>

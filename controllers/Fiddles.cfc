@@ -143,7 +143,6 @@ component extends="Controller" {
 				
 				if (IsObject(schema_def))
 				{
-					returnVal["schema_structure"] = schema_def.getSchemaStructure();
 					returnVal["short_code"] = parts[2];
 					returnVal["ddl"] = schema_def.ddl;
 					if (! IsNumeric(schema_def.current_host_id))
@@ -154,7 +153,8 @@ component extends="Controller" {
 					{
 						schema_def.last_used = now();
 						schema_def.save();					
-					}									
+					}
+					returnVal["schema_structure"] = schema_def.getSchemaStructure();														
 				}
 			}
 			
