@@ -107,7 +107,7 @@
 						<cfif db_type.simple_name IS "Oracle">
 	
 							<cfquery datasource="#this.db_type_id#_#this.short_code#" name="local.columnsList">
-							SELECT column_name, data_type as column_name, DATA_LENGTH as column_size from all_tab_columns where owner = Upper(<cfqueryparam value="user_#this.short_code#" cfsqltype="cf_sql_varchar">)
+							SELECT column_name, data_type as type_name, DATA_LENGTH as column_size from all_tab_columns where owner = Upper(<cfqueryparam value="user_#this.short_code#" cfsqltype="cf_sql_varchar">)
 							AND table_name = <cfqueryparam value="#table_name#" cfsqltype="cf_sql_varchar">
 							</cfquery>
 					
