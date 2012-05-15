@@ -13,10 +13,10 @@ component extends="Controller" {
 
 		try 
 		{
-/*	
+	
 			if (Len(params.schema_ddl) GT 8000)
 				throw ("Your schema ddl is too large (more than 8000 characters).  Please submit a smaller DDL.");
-*/	
+	
 			var md5 = Lcase(hash(params.schema_ddl, "MD5"));
 			var short_code = "";
 			
