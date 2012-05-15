@@ -97,7 +97,7 @@
 			
 			<cfloop query="local.tablesList">
 				
-				<cfif ListFindNoCase("TABLE,VIEW",table_type)>
+				<cfif ListFindNoCase("TABLE,VIEW",table_type) AND (db_type.simple_name IS NOT "SQL Server" OR table_schem IS "dbo")>
 					<cfset local.tableStruct = {
 							"table_name"= table_Name,
 							"table_type"= table_Type,
