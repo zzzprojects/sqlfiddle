@@ -1007,7 +1007,7 @@ $(function () {
 		window.myFiddleHistory.insert(new UsedFiddle({
 			"fragment": "!" + this.get("dbType").id + "/" + this.get("short_code"),
 			"full_name": this.get("dbType").get("full_name"),
-			"ddl": this.get("ddl") 
+			"ddl": this.get("ddl").substring(0,61) 
 		}));
 		
 		window.router.navigate("!" + this.get("dbType").id + "/" + this.get("short_code"));
@@ -1019,8 +1019,8 @@ $(function () {
 		window.myFiddleHistory.insert(new UsedFiddle({
 			"fragment": "!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id,
 			"full_name": schemaDef.get("dbType").get("full_name"),
-			"ddl": schemaDef.get("ddl"),
-			"sql": this.get("sql") 
+			"ddl": schemaDef.get("ddl").substring(0,61),
+			"sql": this.get("sql").substring(0,61)
 		}));
 
 		window.router.navigate(
