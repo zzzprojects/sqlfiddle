@@ -939,8 +939,21 @@ $(function () {
 		}
 	});
 	
+	$("#queryPrettify").click(function (e) {
+		var thisButton = $(this);
+		thisButton.attr("disabled", true);
+		e.preventDefault();
+		$.get("index.cfm/proxy/formatSQL", {sql: window.query.get("sql")}, function (resp) {
+			window.query.set({"sql": resp});
+			window.query.trigger('reloaded');
+			window.query.set({"pendingChanges": true});
+			
+			thisButton.attr("disabled", false);
+		});
+	});
+	
 	$("#clear").click(function (e) {
-		e.preventDefault()
+		e.preventDefault();
 		window.schemaDef.reset();
 		window.query.reset();
 		window.router.navigate("!" + window.dbTypes.getSelectedType().id, {trigger: true});	
