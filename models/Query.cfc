@@ -39,24 +39,15 @@
 						<cfset local.ret = QueryNew("")>
 						<cfset local.executionPlan = QueryNew("")>
 	
-						<cfif Len(trim(statement))>
+						<cfif Len(trim(statement))><!--- don't run empty queries --->
 	
-							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
-	
+							<!--- if there is an execution plan mechanism available for this db type --->
 							<cfif 		(
 										Len(this.schema_def.db_type.execution_plan_prefix) OR
 										Len(this.schema_def.db_type.execution_plan_suffix)
 									) 
-								AND
-									(
-										this.schema_def.db_type.simple_name IS NOT 'MySQL' OR
-										(
-											IsDefined("local.ret") AND
-											local.ret.recordCount
-										)
-									)
-								>
-								
+								>					
+										
 								<cfset local.executionPlanSQL = this.schema_def.db_type.execution_plan_prefix & statement & this.schema_def.db_type.execution_plan_suffix> 
 								<cfset local.executionPlanSQL = Replace(local.executionPlanSQL, "##schema_short_code##", this.schema_def.short_code, "ALL")>
 								<cfset local.executionPlanSQL = Replace(local.executionPlanSQL, "##query_id##", this.id, "ALL")>
@@ -77,12 +68,14 @@
 								</cftry>								
 								</cfloop>
 	
+								<!--- Some db types offer XML for the execution plan, which can allow for customized output --->
 								<cfif 	
 									IsDefined("local.executionPlan") AND 
 									IsQuery(local.executionPlan) AND 
 									local.executionPlan.recordCount AND
 									IsXML(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])>
 
+									<!--- if we have xslt available for this db type, use it to transform the execution plan response --->
 									<cfif Len(this.schema_def.db_type.execution_plan_xslt)>
 										<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] = 
 											XMLTransform(
@@ -90,17 +83,24 @@
 												this.schema_def.db_type.execution_plan_xslt
 											)>								
 									<cfelse>
-	                                                                	<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] =
-	                                                                        	"<pre>#XMLFormat(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])#</pre>">
-									</cfif>
+										<!--- no XSLT, so just format it nicely --->
+			
+                                    	<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] =
+                                            	"<pre>#XMLFormat(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])#</pre>">
+																				
+									</cfif><!--- end if xslt is/is not available for type --->
 
-								</cfif>
+								</cfif><!--- end if xml-based execution plan --->
 	
 	
-							</cfif>
+							</cfif> <!--- end if execution plan --->
+							
+							<!--- run the actual query --->
+							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
 	
 							<cfif IsDefined("local.ret")>
 								
+								<!--- change null values to the string "(null)" for better display --->
 								<cfloop query="local.ret">
 									<cfloop list="#local.ret.columnList#" index="local.colName">
 										<cfset local.NullTest = local.ret.getString(local.colName)>
