@@ -774,7 +774,7 @@ $(function () {
 					thisModel.get("schemaDef").get("dbType").get("simple_name") == 'SQL Server'
 				   )
 				{
-					QP.drawLines($(this).closest(".set").find(".executionPlan td"));
+					QP.drawLines($(this).closest(".set").find(".executionPlan div"));
 				}
 
 
