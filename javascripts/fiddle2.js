@@ -165,3 +165,53 @@ function resizeLayout(){
 			return value;
 	});
 
+	
+	Handlebars.registerHelper("each_simple_value_with_index", function(array, fn) {
+		var buffer = "";
+		k=0;
+		for (var i = 0, j = array.length; i < j; i++) {
+			if (array[i])
+			{
+				var item = {
+					value: array[i]
+				};
+		
+				// stick an index property onto the item, starting with 0
+				item.index = k;
+				
+				item.first = (k == 0);
+				item.last = (k == array.length);
+	
+				// show the inside of the block
+				buffer += fn(item);
+
+				k++;
+			}
+		}
+
+		// return the finished buffer
+		return buffer;
+	
+	});		
+
+
+    
+	Handlebars.registerHelper("result_display_padded", function(colWidths) {
+		var padding = [];
+		
+		padding.length = colWidths[this.index] - this.value.toString().length + 1;
+		
+		return padding.join(' ') + this.value.toString();
+	});
+	
+	Handlebars.registerHelper("divider_display", function(colWidths) {
+		var padding = [];
+		
+		padding.length = colWidths[this.index] + 1;
+		
+		return padding.join('-');
+
+	});
+
+
+

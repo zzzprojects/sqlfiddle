@@ -64,9 +64,20 @@
   padding: 0 10px;
 }
 
-.action_buttons a, .action_buttons label {
+.action_buttons>a, .action_buttons>div {
 	margin-bottom: 3px;	
+	vertical-align: top;
+	display: inline-block;
 }	
+
+.action_buttons .dropdown-menu {
+	text-align: right;	
+}	
+
+pre.results {
+	font-family:monospace;
+	font-size: 10pt;	
+}
 
 #content .panel form textarea {
   display: block;

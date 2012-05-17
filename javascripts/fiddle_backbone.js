@@ -729,14 +729,19 @@ $(function () {
 		initialize: function () {
 		
 			this.editor = CodeMirror.fromTextArea(document.getElementById(this.id), {
-		        mode: "mysql",
+				mode: "mysql",
 				extraKeys: {Tab: "indentMore"},
-		        lineNumbers: true,
-		        onChange: this.handleQueryChange
-		      });
+				lineNumbers: true,
+				onChange: this.handleQueryChange
+			});
+			this.outputType = "tabular";
+			this.compiledOutputTemplate = {};
+			this.compiledOutputTemplate["tabular"] = Handlebars.compile(this.options.tabularOutputTemplate.html()); 
+			this.compiledOutputTemplate["plaintext"] = Handlebars.compile(this.options.plaintextOutputTemplate.html()); 
 		      
-		    this.compiledOutputTemplate = Handlebars.compile(this.options.outputTemplate.html()); 
-		      
+		},
+		setOutputType: function (type) {
+			this.outputType = type;
 		},
 		handleQueryChange: function () {			
 			var thisView = window.queryView; // kludge to handle the context limitations on CodeMirror change events
@@ -751,9 +756,29 @@ $(function () {
 		},
 		renderOutput: function() {
 			var thisModel = this.model;
-
+			var inspectedData = this.model.toJSON();
+			
+			/* This loop determines the max width of each column, so it can be padded appropriately (if needed) */
+			_.each(inspectedData.sets, function (set, sidx) {
+				if (set.RESULTS)
+				{
+					// Initialize the column widths with the length of the headers
+					var columnWidths = _.map(set.RESULTS.COLUMNS, function (col) {
+						return col.length;
+					});
+					
+					// then increase the width as needed if a bigger value is found in the data
+					_.each(set.RESULTS.DATA, function (row) {
+						columnWidths = _.map(row, function (col,cidx) {
+							return _.max([col.toString().length,columnWidths[cidx]]) ;
+						});
+					});
+				inspectedData.sets[sidx].RESULTS.COLUMNWIDTHS = columnWidths;
+				}
+			});
+			
 			this.options.output_el.html(
-				this.compiledOutputTemplate(this.model.toJSON())
+				this.compiledOutputTemplate[this.outputType](inspectedData)
 			);		
 			
 			$("script.oracle_xplan_xml").each(function () {
@@ -837,7 +862,8 @@ $(function () {
 	window.queryView = new QueryView({
 		id: "sql",
 		model: window.query,
-		outputTemplate: $("#query-output-template"),
+		tabularOutputTemplate: $("#query-tabular-output-template"),
+		plaintextOutputTemplate: $("#query-plaintext-output-template"),
 		output_el: $("#output")
 	});
 
@@ -897,7 +923,7 @@ $(function () {
 	
 	window.query.on("executed", function () {
 	// see also the router function defined below that also binds to this event 
-		var $button = $(".runQuery label");
+		var $button = $(".runQuery");
 		$button.prop('disabled', false);
 		$button.html($button.data("originalValue"));
 
@@ -919,7 +945,7 @@ $(function () {
 	});	
 	
 	var handleRunQuery = function (e) {
-		var $button = $(".runQuery label");
+		var $button = $(".runQuery");
 		e.preventDefault();
 		
 		if ($button.prop('disabled')) return false;
@@ -937,6 +963,12 @@ $(function () {
 			e.preventDefault();
 			handleRunQuery(e);
 		}
+	});
+	
+	$("#runQueryOptions li a").click(function (e) {
+		e.preventDefault();
+		window.queryView.setOutputType(this.id);
+		handleRunQuery(e);
 	});
 	
 	$("#queryPrettify").click(function (e) {

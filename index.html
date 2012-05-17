@@ -111,7 +111,7 @@
 	
 	</script>
 	
-	<script id="query-output-template" type="text/x-handlebars-template">
+	<script id="query-tabular-output-template" type="text/x-handlebars-template">
 	{{#if id}}
 		{{#each sets}}
 		<div class="set">
@@ -164,7 +164,50 @@
 		{{/each}}
 	{{/if}}
 	</script>	
-	
+	<script id="query-plaintext-output-template" type="text/x-handlebars-template">
+	{{#if id}}
+		{{#each sets}}
+		<div class="set">
+			{{#if this.RESULTS.DATA.length}}
+				<pre class="results">
+|{{#each_simple_value_with_index this.RESULTS.COLUMNS}} {{result_display_padded ../this/RESULTS/COLUMNWIDTHS}} |{{/each_simple_value_with_index}}
+|{{#each_simple_value_with_index this.RESULTS.COLUMNS}}-{{divider_display ../this/RESULTS/COLUMNWIDTHS}}-|{{/each_simple_value_with_index}}{{#each this.RESULTS.DATA}}
+|{{#each_simple_value_with_index this}} {{result_display_padded ../../this/RESULTS/COLUMNWIDTHS}} |{{/each_simple_value_with_index}}{{/each}}
+				</pre>
+			{{/if}}
+			{{#if this.SUCCEEDED}}
+			<div id="messages" class="alert alert-success">
+				<i class="icon-ok"></i>
+				Record Count: {{this.RESULTS.DATA.length}}; Execution Time: {{this.EXECUTIONTIME}}ms
+				{{#if this.EXECUTIONPLAN.DATA.length}}
+				<a href="#executionPlan" class="executionPlanLink"><i class="icon-plus"></i>View Execution Plan</a>
+				{{/if}}
+			</div>	
+			
+			{{#if this.EXECUTIONPLAN.DATA.length}}
+				<table class="executionPlan table table-bordered">
+					<tr>
+					{{#each this.EXECUTIONPLAN.COLUMNS}}
+					<th>{{this}}</th>
+					{{/each}}
+					</tr>
+					{{#each this.EXECUTIONPLAN.DATA}}
+					<tr>
+						{{#each this}}
+						<td style="position:relative">{{{this}}}</td>
+						{{/each}}
+					</tr>
+					{{/each}}
+				</table>
+			{{/if}}
+			
+			{{else}}
+			<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
+			{{/if}}
+		</div>
+		{{/each}}
+	{{/if}}
+	</script>	
 </head>
 <body>
 
@@ -291,11 +334,20 @@
 
 							<div class="action_buttons">
 
-								<a href="#" class="runQuery">
-								<label for="sql-ta" class="btn btn-primary">
-									Run SQL <i class="icon-play"></i>
-								</label>
-								</a>
+								<div class="btn-group" id="runQueryOptions">
+								
+										<a href="#" class="runQuery btn btn-primary">Run SQL <i class="icon-play"></i></a>
+								
+									<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<!-- dropdown menu links -->
+										<li><a href="#" id="tabular">Tabular Output</a></li>
+										<li><a href="#" id="plaintext">Plaintext Output</a></li>
+									</ul>
+
+								</div>
 
 								<a href="#" id="queryFullscreen" class="btn btn-info">
 									Edit Fullscreen <i class="icon-resize-full"></i>
