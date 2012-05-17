@@ -1,5 +1,0 @@
-$(window).bind("modelsLoaded", function () {
-	
-	
-
-});
