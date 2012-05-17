@@ -968,7 +968,7 @@ $(function () {
 	$("#runQueryOptions li a").click(function (e) {
 		e.preventDefault();
 		window.queryView.setOutputType(this.id);
-		handleRunQuery(e);
+		window.queryView.renderOutput();
 	});
 	
 	$("#queryPrettify").click(function (e) {
