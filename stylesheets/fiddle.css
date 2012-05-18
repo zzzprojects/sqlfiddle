@@ -206,7 +206,7 @@ pre.results {
 	display: none;
 }
 #raw, #parseResults { 
-	width: 100%;
+	width: 90%;
 }
 
 #parseResults {
