@@ -975,7 +975,7 @@ $(function () {
 		var thisButton = $(this);
 		thisButton.attr("disabled", true);
 		e.preventDefault();
-		$.get("index.cfm/proxy/formatSQL", {sql: window.query.get("sql")}, function (resp) {
+		$.post("index.cfm/proxy/formatSQL", {sql: window.query.get("sql")}, function (resp) {
 			window.query.set({"sql": resp});
 			window.query.trigger('reloaded');
 			window.query.set({"pendingChanges": true});
