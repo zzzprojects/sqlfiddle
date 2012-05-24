@@ -24,6 +24,8 @@ $(function () {
 			if (window.query.get("pendingChanges") && !confirm("Warning! You have made changes to your query which will be lost. Continue?'"))
 				return false;
 
+			window.schemaDef.set("loading", true);
+
 				
 			var frag = "!" + db_type_id + "/" + short_code;
 		
@@ -732,12 +734,14 @@ $(function () {
 				$(".needsReadySchema").unblock();
 				$("#schemaBrowser").attr("disabled", false);
 				$(".schema .helpTip").css("display",  "none");				
+				$(".sql .helpTip").css("display",  (this.model.get('loading') || window.query.get("sql").length) ? "none" : "block");
 			}
 			else
 			{
 				$(".needsReadySchema").block({ message: "Please build schema." });
 				$("#schemaBrowser").attr("disabled", true);
-				$(".schema .helpTip").css("display",  (this.model.get('loading') || this.model.get("ddl").length) ? "none" : "block");				
+				$(".schema .helpTip").css("display",  (this.model.get('loading') || this.model.get("ddl").length) ? "none" : "block");
+				
 			}
 			
 		}
@@ -774,6 +778,7 @@ $(function () {
 		},
 		render: function () {
 			this.editor.setValue(this.model.get("sql"));
+			
 			if (this.model.id)
 				this.renderOutput();
 		},
