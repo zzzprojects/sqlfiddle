@@ -34,6 +34,8 @@ $(function () {
 			$(".helpTip").css("display", "none");
 			$("body").block({ message: "Loading..."});
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
+				window.schemaDef.set("loading", false);
+				
 				if (resp["short_code"])
 				{
 					var selectedDBType = window.dbTypes.getSelectedType();
@@ -109,7 +111,6 @@ $(function () {
 					}
 				}
 				
-				window.schemaDef.set("loading", false);
 				$("body").unblock();
 						
 			});
@@ -130,6 +131,7 @@ $(function () {
 			$(".helpTip").css("display", "none");
 			$("body").block({ message: "Loading..."});
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
+				window.schemaDef.set("loading", false);
 
 				if (resp["short_code"])
 				{
@@ -172,7 +174,6 @@ $(function () {
 													window.query.trigger("reloaded");
 													window.query.trigger("executed");
 			
-													window.schemaDef.set("loading", false);
 													$("body").unblock();
 												},
 												error: function (e) {
@@ -184,7 +185,6 @@ $(function () {
 													window.query.trigger("reloaded");
 													window.query.trigger("executed");
 			
-													window.schemaDef.set("loading", false);
 													$("body").unblock();
 												}
 											});
@@ -216,7 +216,6 @@ $(function () {
 								window.schemaDef.trigger("failed");
 								window.schemaDef.trigger("reloaded");
 
-								window.schemaDef.set("loading", false);
 								$("body").unblock();
 								
 							}
@@ -253,7 +252,6 @@ $(function () {
 							}));
 						}
 
-						window.schemaDef.set("loading", false);													
 						$("body").unblock();
 				
 					}
@@ -261,7 +259,6 @@ $(function () {
 				}
 				else
 				{
-					window.schemaDef.set("loading", false);													
 					$("body").unblock();
 				}
 			});
