@@ -289,6 +289,12 @@
 			
 				<div class="span12" id="schema-output">
 					<div class="span6 panel schema pull-left">
+						
+						<div class="helpTip alert alert-info alert-block">
+							<h4 class="alert-heading">Schema Panel</h4>
+							Use this panel to setup your database problem (CREATE TABLE, INSERT, and whatever other statements you need to prepare a representative sample of your real database). 
+							Use "Text to DDL" to quickly build your schema objects from text.
+						</div>
 
 								<form id="fiddleFormDDL" method="post" action="">
 									<textarea id="schema_ddl"></textarea>
@@ -329,6 +335,15 @@
 					
 					
 					<div class="span6 panel sql pull-right needsReadySchema">
+						
+						
+						<div class="helpTip alert alert-info alert-block">
+							<h4 class="alert-heading">Query Panel</h4>
+							Use this panel to try to solve the problem with other SQL statements (SELECTs, etc...). 
+							Results will be displayed below. Share your queries by copying and pasting the URL that is generated after each run. 
+						</div>
+						
+						
 						<form id="fiddleFormSQL" method="post" action="" class="schema_ready">
 							<textarea id="sql"></textarea>
 

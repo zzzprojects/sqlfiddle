@@ -23,10 +23,13 @@ $(function () {
 			
 			if (window.query.get("pendingChanges") && !confirm("Warning! You have made changes to your query which will be lost. Continue?'"))
 				return false;
+
 				
 			var frag = "!" + db_type_id + "/" + short_code;
 		
 			this.DBType(db_type_id);
+			
+			$(".helpTip").css("display", "none");
 			$("body").block({ message: "Loading..."});
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
 				if (resp["short_code"])
@@ -103,6 +106,8 @@ $(function () {
 						}));
 					}
 				}
+				
+				window.schemaDef.set("loading", false);
 				$("body").unblock();
 						
 			});
@@ -114,10 +119,13 @@ $(function () {
 			if (window.query.get("pendingChanges") && !confirm("Warning! You have made changes to your query which will be lost. Continue?'"))
 				return false;
 			
+			window.schemaDef.set("loading", true);
+			
 			var frag = "!" + db_type_id + "/" + short_code + "/" + query_id;
 		
 			this.DBType(db_type_id);
-
+			
+			$(".helpTip").css("display", "none");
 			$("body").block({ message: "Loading..."});
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
 
@@ -162,6 +170,7 @@ $(function () {
 													window.query.trigger("reloaded");
 													window.query.trigger("executed");
 			
+													window.schemaDef.set("loading", false);
 													$("body").unblock();
 												},
 												error: function (e) {
@@ -173,6 +182,7 @@ $(function () {
 													window.query.trigger("reloaded");
 													window.query.trigger("executed");
 			
+													window.schemaDef.set("loading", false);
 													$("body").unblock();
 												}
 											});
@@ -204,6 +214,7 @@ $(function () {
 								window.schemaDef.trigger("failed");
 								window.schemaDef.trigger("reloaded");
 
+								window.schemaDef.set("loading", false);
 								$("body").unblock();
 								
 							}
@@ -239,7 +250,8 @@ $(function () {
 								"sql": resp["sql"] 
 							}));
 						}
-													
+
+						window.schemaDef.set("loading", false);													
 						$("body").unblock();
 				
 					}
@@ -247,6 +259,7 @@ $(function () {
 				}
 				else
 				{
+					window.schemaDef.set("loading", false);													
 					$("body").unblock();
 				}
 			});
@@ -387,6 +400,7 @@ $(function () {
 			"full_name": "",
 			"valid": true,
 			"errorMessage": "",
+			"loading": false,
 			"ready": false,
 			"schema_structure": []
 		},
@@ -682,11 +696,15 @@ $(function () {
 			
 			if (thisView.model.get("ddl") != thisView.editor.getValue()) 
 			{
+
 				thisView.model.set({
 					"ddl":thisView.editor.getValue(),
 					"ready": false
 				});
+
+				$(".schema .helpTip").css("display",  thisView.model.get("ddl").length ? "none" : "block");
 			}
+			
 		},
 		render: function () {
 			this.editor.setValue(this.model.get("ddl"));
@@ -713,11 +731,13 @@ $(function () {
 			{
 				$(".needsReadySchema").unblock();
 				$("#schemaBrowser").attr("disabled", false);
+				$(".schema .helpTip").css("display",  "none");				
 			}
 			else
 			{
 				$(".needsReadySchema").block({ message: "Please build schema." });
 				$("#schemaBrowser").attr("disabled", true);
+				$(".schema .helpTip").css("display",  (this.model.get('loading') || this.model.get("ddl").length) ? "none" : "block");				
 			}
 			
 		}
@@ -745,9 +765,12 @@ $(function () {
 		},
 		handleQueryChange: function () {			
 			var thisView = window.queryView; // kludge to handle the context limitations on CodeMirror change events
+			var schemaDef = thisView.model.get("schemaDef");
+			
 			thisView.model.set({
 				"sql":thisView.editor.getValue()
 			});
+			$(".sql .helpTip").css("display",  (!schemaDef.get("ready") || schemaDef.get("loading") || thisView.model.get("sql").length) ? "none" : "block");
 		},
 		render: function () {
 			this.editor.setValue(this.model.get("sql"));

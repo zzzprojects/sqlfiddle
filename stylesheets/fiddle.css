@@ -44,6 +44,20 @@
 	display: inline-block;
 }	
 
+.schema {
+	position: relative;	
+}
+.helpTip {
+	position: absolute;
+	display: none;
+	width: 180px;
+	height: 60%;
+	min-height: 100px;
+	overflow-y: auto;
+	right: 0px;
+	z-index: 1001;
+	margin: 10px;
+}
 
 #browser, .browser_actions {
 	padding-left: 15px;
