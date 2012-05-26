@@ -84,6 +84,12 @@ $(function () {
 		}		
 	});
 	
+	$("#browser").on('click', '.tables a', function (e) {
+		e.preventDefault();
+		$('i', this).toggleClass("icon-minus icon-plus");
+		$(this).siblings('.columns').toggle();
+	});
+	
 	$("#ddlEdit").on('click', function (e) {
 		e.preventDefault();
 		$('#fiddleFormDDL .CodeMirror, .ddl_actions').css('display', 'block');

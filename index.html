@@ -42,7 +42,7 @@
 		<ul class="tables">
 			{{#each objects}}
 			<li>
-				<i class="icon-minus"></i> {{this.table_name}} ({{this.table_type}})
+				<a href="#{{this.table_name}}"><i class="icon-plus"></i> {{this.table_name}}</a> ({{this.table_type}})
 				<ul class="columns">
 					{{#each this.columns}}
 					<li>{{name}} {{type}}</li>

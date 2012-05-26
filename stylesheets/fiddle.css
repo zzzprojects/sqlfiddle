@@ -77,7 +77,11 @@
 }
 
 .tables, .columns {
-	list-style-type: none;	
+	list-style-type: none;
+}
+
+.tables .columns {
+	display: none;	
 }
 	
 .action_buttons {
