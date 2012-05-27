@@ -99,14 +99,15 @@
 							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
 	
 							<cfif IsDefined("local.ret")>
-								
+								<!--- use getMetaData to get column names instead of local.ret.columnNames csv list, since there can be valid columns in the resultset which contain commas in their names --->
+								<cfset local.columnArray = getMetaData(local.ret)>								
 								<!--- change null values to the string "(null)" for better display --->
 								<cfloop query="local.ret">
-									<cfloop list="#local.ret.columnList#" index="local.colName">
-										<cfset local.NullTest = local.ret.getString(local.colName)>
+									<cfloop array="#local.columnArray#" index="local.colObj">
+										<cfset local.NullTest = local.ret.getString(local.colObj.name)>
 										
 										<cfif not StructKeyExists(local, "NullTest")>
-											<cfset QuerySetCell(local.ret, local.colName, "(null)", local.ret.currentRow)>
+											<cfset local.ret[local.colObj.name][local.ret.currentRow] = "(null)">
 										<cfelse>
 											<cfset structDelete(local, "NullTest")>
 										</cfif>
