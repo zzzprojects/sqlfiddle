@@ -3,14 +3,15 @@ $(function () {
 
 	/***************
 		ROUTER
-	 ***************/
+	 ***************/	
 	 
 	var Router = Backbone.Router.extend({	
 	
 		routes: {
 			"!:db_type_id":	"DBType", // #!1
 			"!:db_type_id/:short_code":"SchemaDef", // #!1/abc12
-			"!:db_type_id/:short_code/:query_id":"Query" // #!1/abc12/1
+			"!:db_type_id/:short_code/:query_id":"Query", // #!1/abc12/1
+			"!:db_type_id/:short_code/:query_id/:set_id":"SetAnchor" // #!1/abc12/1/1
 		},
 		
 		DBType: function (db_type_id) {
@@ -20,116 +21,48 @@ $(function () {
 		},
 		
 		SchemaDef: function (db_type_id, short_code) {
-			
-			if (window.query.get("pendingChanges") && !confirm("Warning! You have made changes to your query which will be lost. Continue?'"))
-				return false;
-
-			window.schemaDef.set("loading", true);
-
-				
-			var frag = "!" + db_type_id + "/" + short_code;
-		
-			this.DBType(db_type_id);
-			
-			$(".helpTip").css("display", "none");
-			$("body").block({ message: "Loading..."});
-			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
-				window.schemaDef.set("loading", false);
-				
-				if (resp["short_code"])
-				{
-					var selectedDBType = window.dbTypes.getSelectedType();
-
-					if (selectedDBType.get("context") == "browser")
-					{
-						window.browserEngines[selectedDBType.get("className")].buildSchema({
-							
-							short_code: $.trim(resp["short_code"]),
-							ddl: resp["ddl"],
-							success: function () {
-								window.schemaDef.set({
-									"short_code": resp["short_code"],
-									"ddl": resp["ddl"],
-									"ready": true,
-									"valid": true,
-									"errorMessage": "",
-									"dbType": window.dbTypes.getSelectedType()
-								});
-
-								window.browserEngines[selectedDBType.get("className")].getSchemaStructure({
-										callback: function (schemaStruct) {
-											window.schemaDef.set({
-												"schema_structure": schemaStruct
-											});
-
-											window.schemaDef.trigger("reloaded");
-											window.schemaDef.trigger("built");
-											window.query.reset();
-											window.query.trigger("reloaded");								
-										}
-									});
-								
-							},
-							error: function (message) {
-								window.schemaDef.set({
-									"short_code": resp["short_code"],
-									"ddl": resp["ddl"],
-									"ready": true,
-									"valid": false,
-									"errorMessage": message,
-									"dbType": window.dbTypes.getSelectedType(),
-									"schema_structure": []
-								});
-								window.schemaDef.trigger("failed");
-								window.query.reset();
-								window.query.trigger("reloaded");
-							}
-							
-						});
-					}
-					else // context not "browser"
-					{	
-						window.schemaDef.set({
-							"short_code": resp["short_code"],
-							"ddl": resp["ddl"],
-							"ready": true,
-							"valid": true,
-							"errorMessage": "",
-							"dbType": window.dbTypes.getSelectedType(),
-							"schema_structure": resp["schema_structure"]
-						});
-						window.schemaDef.trigger("reloaded");
-						window.schemaDef.trigger("built");				
-						window.query.reset();
-						window.query.trigger("reloaded");
-						
-						window.myFiddleHistory.insert(new UsedFiddle({
-							"fragment": frag,
-							"full_name": window.dbTypes.getSelectedType().get("full_name"),
-							"ddl": resp["ddl"] 
-						}));
-					}
-				}
-				
-				$("body").unblock();
-						
-			});
-			
+			this.loadContent(db_type_id, "!" + db_type_id + "/" + short_code);
 		},
 		
 		Query: function (db_type_id, short_code, query_id) {
+			this.loadContent(db_type_id, "!" + db_type_id + "/" + short_code + "/" + query_id);
+		},
+		SetAnchor: function (db_type_id, short_code, query_id, set_id) {
 			
+			var selectSet = function () {
+				window.scrollTo(0,$("#set_" + set_id).offset()["top"]-50);
+				$("#set_" + set_id).addClass("highlight");				
+			};
+			
+			if (
+					!window.dbTypes.getSelectedType() ||
+					window.dbTypes.getSelectedType().get("id") != db_type_id ||
+					window.schemaDef.get("short_code") != short_code ||
+					window.query.get("id") != query_id
+				)			
+			{
+				window.query.bind("reloaded", _.once(selectSet));
+				this.loadContent(db_type_id, "!" + db_type_id + "/" + short_code + "/" + query_id);
+			}
+			else
+			{
+				$(".set").removeClass("highlight");
+				selectSet();
+			}			
+		},	
+		
+		loadContent: function (db_type_id,frag) {
+
+			this.DBType(db_type_id);
+
 			if (window.query.get("pendingChanges") && !confirm("Warning! You have made changes to your query which will be lost. Continue?'"))
 				return false;
-			
+
 			window.schemaDef.set("loading", true);
-			
-			var frag = "!" + db_type_id + "/" + short_code + "/" + query_id;
-		
-			this.DBType(db_type_id);
 			
 			$(".helpTip").css("display", "none");
 			$("body").block({ message: "Loading..."});
+					
 			$.getJSON("index.cfm/fiddles/loadContent", {fragment: frag}, function (resp) {
 				window.schemaDef.set("loading", false);
 
@@ -145,6 +78,15 @@ $(function () {
 							short_code: $.trim(resp["short_code"]),
 							ddl: resp["ddl"],
 							success: function () {
+
+								if (resp["sql"])
+								{
+									window.query.set({
+										"id": resp["id"],
+										"sql":  resp["sql"]
+									});
+								}
+								
 								window.schemaDef.set({
 									"short_code": resp["short_code"],
 									"ddl": resp["ddl"],
@@ -162,33 +104,39 @@ $(function () {
 
 											window.schemaDef.trigger("reloaded");
 											window.schemaDef.trigger("built");
+											
+											if (resp["sql"])
+											{
+												window.browserEngines[selectedDBType.get("className")].executeQuery({
+													sql: resp["sql"],
+													success: function (sets) {
 
-											window.browserEngines[selectedDBType.get("className")].executeQuery({
-												sql: resp["sql"],
-												success: function (sets) {
-													window.query.set({
-														"id": query_id,
-														"sql":  resp["sql"],
-														"sets": sets
-													});
-													window.query.trigger("reloaded");
-													window.query.trigger("executed");
+														window.query.set({
+															"sets": sets
+														});				
 			
-													$("body").unblock();
-												},
-												error: function (e) {
-													window.query.set({
-														"id": query_id,
-														"sql":  resp["sql"],
-														"sets": []
-													});				
-													window.query.trigger("reloaded");
-													window.query.trigger("executed");
-			
-													$("body").unblock();
-												}
-											});
+														window.query.trigger("reloaded");
+//														window.query.trigger("executed");
+				
+														$("body").unblock();
+													},
+													error: function (e) {
 
+														window.query.set({
+															"sets": []
+														});				
+														
+//														window.query.trigger("reloaded");
+														window.query.trigger("executed");
+				
+														$("body").unblock();
+													}
+												});
+											}
+											else
+											{
+												$("body").unblock();	
+											} // end if resp["sql"]
 
 										}
 									});
@@ -197,12 +145,14 @@ $(function () {
 							},
 							error: function (message) {
 
-								window.query.set({
-									"id": query_id,
-									"sql":  resp["sql"]
-								});
-								window.query.trigger("reloaded");
-
+								if (resp["sql"])
+								{
+									window.query.set({
+										"id": query_id,
+										"sql":  resp["sql"]
+									});
+									window.query.trigger("reloaded");
+								}
 								
 								window.schemaDef.set({
 									"short_code": resp["short_code"],
@@ -238,7 +188,7 @@ $(function () {
 						if (resp["sql"])
 						{
 							window.query.set({
-								"id": query_id,
+								"id": resp["id"],
 								"sql": resp["sql"],
 								"sets": resp["sets"]
 							});
@@ -262,9 +212,10 @@ $(function () {
 					$("body").unblock();
 				}
 			});
-
-		
+			
+					
 		}
+		
 	
 	});
 	
@@ -801,6 +752,8 @@ $(function () {
 				inspectedData.sets[sidx].RESULTS.COLUMNWIDTHS = columnWidths;
 				}
 			});
+			inspectedData["schemaDef"] = this.model.get("schemaDef").toJSON();
+			inspectedData["schemaDef"]["dbType"] = this.model.get("schemaDef").get("dbType").toJSON();
 			
 			this.options.output_el.html(
 				this.compiledOutputTemplate[this.outputType](inspectedData)

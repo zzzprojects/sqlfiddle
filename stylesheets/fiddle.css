@@ -83,6 +83,10 @@
 .tables .columns {
 	display: none;	
 }
+
+.highlight {
+	
+}
 	
 .action_buttons {
   margin: 5px 0;
@@ -245,7 +249,7 @@ pre.results {
 	display: none;
 }
 
-.executionPlanLink {
+.executionPlanLink, .setLink {
 	margin-left: 20px;	
 }
 

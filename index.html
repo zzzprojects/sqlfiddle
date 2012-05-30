@@ -113,8 +113,8 @@
 	
 	<script id="query-tabular-output-template" type="text/x-handlebars-template">
 	{{#if id}}
-		{{#each sets}}
-		<div class="set">
+		{{#each_with_index sets}}
+		<div class="set" id="set_{{index}}">
 			{{#if this.RESULTS.DATA.length}}
 				<table class="results table table-bordered table-striped">
 					<tr>
@@ -132,12 +132,13 @@
 				</table>
 			{{/if}}
 			{{#if this.SUCCEEDED}}
-			<div id="messages" class="alert alert-success">
+			<div id="messages_{{index}}" class="alert alert-success">
 				<i class="icon-ok"></i>
 				Record Count: {{this.RESULTS.DATA.length}}; Execution Time: {{this.EXECUTIONTIME}}ms
 				{{#if this.EXECUTIONPLAN.DATA.length}}
-				<a href="#executionPlan" class="executionPlanLink"><i class="icon-plus"></i>View Execution Plan</a>
+				<a href="#executionPlan" class="executionPlanLink"><i class="icon-plus"></i>View Execution Plan</a>				
 				{{/if}}
+				<a href="#!{{../../schemaDef/dbType/id}}/{{../../schemaDef/short_code}}/{{../../id}}/{{index}}" class="setLink"><i class="icon-share-alt"></i> link</a>
 			</div>	
 			
 			{{#if this.EXECUTIONPLAN.DATA.length}}
@@ -161,7 +162,7 @@
 			<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
 			{{/if}}
 		</div>
-		{{/each}}
+		{{/each_with_index}}
 	{{/if}}
 	</script>	
 	<script id="query-plaintext-output-template" type="text/x-handlebars-template">
