@@ -84,8 +84,9 @@
 	display: none;	
 }
 
-.highlight a.setLink {
-	font-weight: bold;
+.highlight {
+	border: solid thin blue;
+	margin: 5px;
 }
 	
 .action_buttons {

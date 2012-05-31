@@ -116,7 +116,6 @@ $(function () {
 														});				
 			
 														window.query.trigger("reloaded");
-														window.query.trigger("executed");
 				
 														$("body").unblock();
 													},
@@ -127,7 +126,6 @@ $(function () {
 														});				
 														
 														window.query.trigger("reloaded");
-														window.query.trigger("executed");
 				
 														$("body").unblock();
 													}
