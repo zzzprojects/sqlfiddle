@@ -79,14 +79,6 @@ $(function () {
 							ddl: resp["ddl"],
 							success: function () {
 
-								if (resp["sql"])
-								{
-									window.query.set({
-										"id": resp["id"],
-										"sql":  resp["sql"]
-									});
-								}
-								
 								window.schemaDef.set({
 									"short_code": resp["short_code"],
 									"ddl": resp["ddl"],
@@ -96,6 +88,15 @@ $(function () {
 									"dbType": window.dbTypes.getSelectedType()
 								});
 								
+								if (resp["sql"])
+								{
+									window.query.set({
+										"id": resp["id"],
+										"sql":  resp["sql"]
+									});
+								}
+								
+								
 								window.browserEngines[selectedDBType.get("className")].getSchemaStructure({
 										callback: function (schemaStruct) {
 											window.schemaDef.set({
@@ -103,7 +104,6 @@ $(function () {
 											});
 
 											window.schemaDef.trigger("reloaded");
-											window.schemaDef.trigger("built");
 											
 											if (resp["sql"])
 											{
@@ -116,7 +116,7 @@ $(function () {
 														});				
 			
 														window.query.trigger("reloaded");
-//														window.query.trigger("executed");
+														window.query.trigger("executed");
 				
 														$("body").unblock();
 													},
@@ -126,7 +126,7 @@ $(function () {
 															"sets": []
 														});				
 														
-//														window.query.trigger("reloaded");
+														window.query.trigger("reloaded");
 														window.query.trigger("executed");
 				
 														$("body").unblock();
