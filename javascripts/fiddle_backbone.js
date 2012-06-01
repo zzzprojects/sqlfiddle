@@ -30,8 +30,11 @@ $(function () {
 		SetAnchor: function (db_type_id, short_code, query_id, set_id) {
 			
 			var selectSet = function () {
-				window.scrollTo(0,$("#set_" + set_id).offset()["top"]-50);
-				$("#set_" + set_id).addClass("highlight");				
+				if ($("#set_" + set_id).length)
+				{
+					window.scrollTo(0,$("#set_" + set_id).offset()["top"]-50);
+					$("#set_" + set_id).addClass("highlight");
+				}				
 			};
 			
 			if (
