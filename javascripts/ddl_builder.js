@@ -4,7 +4,10 @@
 		// output settings
 		this.fieldPrefix = '';
 		this.fieldSuffix = '';
-		
+		this.tablePrefix = '';
+		this.tableSuffix = '';
+
+
 		this.dateFormatMask = "yyyy-mm-dd HH:MM:ss";
 		
 		this.charType = 'varchar';
@@ -46,10 +49,10 @@
 
 		
 		this.ddlTemplate = "\
-CREATE TABLE {{fieldPrefix}}{{tableName}}{{fieldSuffix}}\n\
-	({{#each_with_index columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}} {{db_type}}{{/each_with_index}});\n\n\
-INSERT INTO {{fieldPrefix}}{{tableName}}{{fieldSuffix}}\n\
-	({{#each_with_index columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}}{{/each_with_index}})\n\
+CREATE TABLE {{{tablePrefix}}}{{tableName}}{{{tableSuffix}}}\n\
+	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}} {{db_type}}{{/each_with_index}});\n\n\
+INSERT INTO {{{tablePrefix}}}{{tableName}}{{{tableSuffix}}}\n\
+	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}}{{/each_with_index}})\n\
 VALUES\n\
 	{{#each_with_index data}}{{#if index}},\n\
 	{{/if}}({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}}){{/each_with_index}};";
@@ -81,14 +84,18 @@ VALUES\n\
 			case 'SQL Server':
 				this.setup({ 
 								fieldPrefix: '[',
-								fieldSuffix: ']'
+								fieldSuffix: ']',
+								tablePrefix: '[',
+								tableSuffix: ']'
 							});	
 			break;
-/*
+
 			case 'MySQL':
 				this.setup({ 
 								fieldPrefix: '`',
-								fieldSuffix: '`'
+								fieldSuffix: '`',
+								tablePrefix: '`',
+								tableSuffix: '`'
 							});	
 			break;
 			case 'PostgreSQL':
@@ -97,16 +104,16 @@ VALUES\n\
 								fieldSuffix: '"'
 							});	
 			break;
-*/
+
 			case 'Oracle':	
 				var template = 
-"CREATE TABLE {{fieldPrefix}}{{tableName}}{{fieldSuffix}}\n\
-	({{#each_with_index columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}} {{db_type}}{{/each_with_index}})\n/\n\
+"CREATE TABLE {{{tablePrefix}}}{{tableName}}{{{tableSuffix}}}\n\
+	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}} {{db_type}}{{/each_with_index}})\n/\n\
 INSERT ALL\
 {{#each_with_index data}}\n\
 	INTO \
-{{../fieldPrefix}}{{../tableName}}{{../fieldSuffix}} \
-({{#each_with_index r}}{{#if index}}, {{/if}}{{../../fieldPrefix}}{{column_name_for_index ../..}}{{../../fieldSuffix}}{{/each_with_index}})\n\
+{{{../tablePrefix}}}{{../tableName}}{{{../tableSuffix}}} \
+({{#each_with_index r}}{{#if index}}, {{/if}}{{{../../fieldPrefix}}}{{column_name_for_index ../..}}{{{../../fieldSuffix}}}{{/each_with_index}})\n\
 	     VALUES \
 ({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}})\
 {{/each_with_index}}\n\
@@ -116,7 +123,9 @@ SELECT * FROM dual";
 					
 								ddlTemplate: template,
 								dateType: 'timestamp',
-								charType: 'varchar2'
+								charType: 'varchar2',
+								fieldPrefix: '"',
+								fieldSuffix: '"'								
 							});	
 			break;
 
@@ -124,10 +133,10 @@ SELECT * FROM dual";
 
 			case 'SQLite':	
 				var template = 
-"CREATE TABLE {{fieldPrefix}}{{tableName}}{{fieldSuffix}}\n\
+"CREATE TABLE {{tablePrefix}}{{tableName}}{{tableSuffix}}\n\
 	({{#each_with_index columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}} {{db_type}}{{/each_with_index}});\n\n\
 {{#each_with_index data}}\
-INSERT INTO {{fieldPrefix}}{{../tableName}}{{fieldSuffix}}\n\
+INSERT INTO {{tablePrefix}}{{../tableName}}{{tableSuffix}}\n\
 	({{#each_with_index ../columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}}{{/each_with_index}})\n\
 VALUES\n\
 	({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}});\
