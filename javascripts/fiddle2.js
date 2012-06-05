@@ -147,9 +147,7 @@ function resizeLayout(){
 		$('#sql').width($('#fiddleFormSQL').width() - 2 - 8);
 		$('#schema_ddl').width($('#fiddleFormDDL').width() - 2 - 8);
 
-		$('#browser')
-			.height($('#fiddleFormDDL .CodeMirror-scroll').height())
-		;
+		$('#browser').height($('#fiddleFormDDL .CodeMirror-scroll').height());
 
 		
 		window.schemaDefView.refresh();

@@ -53,43 +53,6 @@
 			
 		</ul>
 	</script>
-
-	<script id="historyLog-template" type="text/x-handlebars-template">
-		<div class="modal-header">
-			<a class="close" data-dismiss="modal">x</a>
-			<h3>My Recently Used Fiddles</h3>
-		</div>
-		<div class="modal-body">
-			{{#if logs.length}}
-			<table id="historyLog" class="table table-bordered table-striped">
-				<tr>
-					<th>Identifier</th>
-					<th>Last Used</th>
-					<th>DB Type</th>
-					<th>DDL</th>
-					<th>SQL</th>
-					<th>&nbsp;</th>
-				</tr>
-				{{#each logs}}
-				<tr>
-					<td><a href="#{{this.fragment}}" class="fiddle">{{this.fragment}}</a></td>
-					<td>{{this.last_used}}</td>
-					<td>{{this.full_name}}</td>
-					<td>{{this.ddl}}</td>
-					<td>{{this.sql}}</td>	
-					<td><a href="#" class="delete"><i class="icon-remove"></i></a></td>				
-				</tr>
-				{{/each}}
-			</table>
-			{{else}}
-			<h4>No recently used fiddles found.  Try viewing a sample, or writing your own.</h4>
-			{{/if}}
-		</div>
-	  
-	  <div class="modal-footer">
-	    <a href="#" class="btn">Close</a>
-	  </div>		
-	</script>
 	
 	<script id="db_type_id-template" type="text/x-handlebars-template">
 		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -246,8 +209,9 @@
 						<li class="">
 							<a id="clear" href="#clear"><i class="icon-refresh"></i>Clear</a>
 						</li>
+												
 						<li class="">
-							<a href="#historyModal" data-toggle="modal"><i class="icon-list"></i>My Fiddles</a>
+							<a href="#loginModal" data-toggle="modal"><i class="icon-user"></i>Login</a>
 						</li>
 					</ul>
 
@@ -418,7 +382,27 @@
 	</div>	
 	
 			
-	<div id="historyModal" class="modal"></div>	
+	<div id="loginModal" class="modal">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">x</a>
+			<h3>Login to SQL Fiddle</h3>
+		</div>
+		<div class="modal-body">
+			
+			<h4>Choose login method</h4>
+			
+			<ul>
+				<li>Twitter</li>
+				<li>Google</li>
+				<li>Facebook</li>				
+			</ul>
+			
+		</div>
+	  
+	  <div class="modal-footer">
+	    <a href="#" class="btn btn-primary">Login</a>
+	  </div>	
+	</div>	
 
 
 	<script src="javascripts/jquery.min.js?20120504" type="text/javascript"></script>
