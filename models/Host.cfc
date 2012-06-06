@@ -8,6 +8,7 @@
 	
 	<cffunction name="initializeDatabase">
 		<cfargument name="databaseName" type="string">
+		<cfargument name="firstAttempt" type="boolean" default="true">
 
 		<cfset var sql = Replace(this.db_type.setup_script_template, '##databaseName##', databaseName, 'ALL')>
                 <cfset var statement = "">
@@ -16,9 +17,18 @@
 	               	<cfset sql = REReplace(sql, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
 		</cfif>
 
-		<cfloop list="#sql#" index="statement" delimiters="#chr(7)#">
-			<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(statement)#</cfquery>
-		</cfloop>
+		<cftry>
+			<cfloop list="#sql#" index="statement" delimiters="#chr(7)#">
+				<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(statement)#</cfquery>
+			</cfloop>
+			<cfcatch type="any">
+				<cfset this.dropDatabase(arguments.databaseName)>	
+				<cfif arguments.firstAttempt>
+					<cfset this.initializeDatabase(arguments.databaseName, false)>
+				</cfif>	
+			</cfcatch>
+		</cftry>
+
 	</cffunction>
 	
 	<cffunction name="initializeDSN">
