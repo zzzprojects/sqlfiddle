@@ -365,6 +365,16 @@ pre.results {
   color: #999999;
   opacity: .5;
 }
+.dropdown-menu.nav {
+  z-index:1050 !important;
+}
+.dropdown-menu.nav li > a:hover,
+.dropdown-menu.nav .active > a,
+.dropdown-menu.nav .active > a:hover {
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #0088cc;
+}
 #sidebar .well {
   padding: 8px 0;
 }

@@ -167,12 +167,12 @@
 	</script>	
 	<script id="query-plaintext-output-template" type="text/x-handlebars-template">
 	{{#if id}}
-		{{#each sets}}
-		<div class="set">
+		{{#each_with_index sets}}
+		<div class="set" id="set_{{index}}">
 			{{#if this.RESULTS.DATA.length}}
 				<pre class="results">
 |{{#each_simple_value_with_index this.RESULTS.COLUMNS}} {{result_display_padded ../this/RESULTS/COLUMNWIDTHS}} |{{/each_simple_value_with_index}}
-|{{#each_simple_value_with_index this.RESULTS.COLUMNS}}-{{divider_display ../this/RESULTS/COLUMNWIDTHS}}-|{{/each_simple_value_with_index}}{{#each this.RESULTS.DATA}}
+-{{#each_simple_value_with_index this.RESULTS.COLUMNS}}-{{divider_display ../this/RESULTS/COLUMNWIDTHS}}--{{/each_simple_value_with_index}}{{#each this.RESULTS.DATA}}
 |{{#each_simple_value_with_index this}} {{result_display_padded ../../this/RESULTS/COLUMNWIDTHS}} |{{/each_simple_value_with_index}}{{/each}}
 				</pre>
 			{{/if}}
@@ -183,6 +183,7 @@
 				{{#if this.EXECUTIONPLAN.DATA.length}}
 				<a href="#executionPlan" class="executionPlanLink"><i class="icon-plus"></i>View Execution Plan</a>
 				{{/if}}
+				<a href="#!{{../../schemaDef/dbType/id}}/{{../../schemaDef/short_code}}/{{../../id}}/{{index}}" class="setLink"><i class="icon-share-alt"></i> link</a>
 			</div>	
 			
 			{{#if this.EXECUTIONPLAN.DATA.length}}
@@ -206,7 +207,7 @@
 			<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
 			{{/if}}
 		</div>
-		{{/each}}
+		{{/each_with_index}}
 	{{/if}}
 	</script>	
 </head>
@@ -322,6 +323,24 @@
 											Diagram <i class="icon-qrcode"></i>
 										</a>
 	-->									
+										<div class="btn-group terminator" id="schemaStmtTerminator" data-statement_separator=";">
+											<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">
+											[ ; ]
+											<span class="caret"></span>
+											</a>
+											<ul class="dropdown-menu nav">
+												<li class="nav-header">Query Terminator</li>
+												<li class="divider"></li>										
+												<li><a href=";">Semi-colon [ ; ]</a></li>
+												<li><a href="|">Pipe [ | ]</a></li>
+												<li><a href="/">Slash [ / ]</a></li>
+												<li><a href="//">Double-slash [ // ]</a></li>
+												<li><a href="GO">Keyword [ GO ]</a></li>
+											</ul>
+										</div>
+	
+	
+	
 									</div>
 									
 									<div class="action_buttons browser_actions">
@@ -329,6 +348,8 @@
 											DDL Editor <i class="icon-pencil"></i>
 										</a>
 									</div>
+	
+
 
 								</form>
 
@@ -372,6 +393,23 @@
 								<a href="#" id="queryPrettify" class="btn btn-info">
 									Format Code <i class="icon-filter"></i>
 								</a>
+
+								<div class="btn-group terminator" id="queryStmtTerminator" data-statement_separator=";">
+									<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">
+									[ ; ]
+									<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu nav">
+										<li class="nav-header">Query Terminator</li>
+										<li class="divider"></li>										
+										<li><a href=";">Semi-colon [ ; ]</a></li>
+										<li><a href="|">Pipe [ | ]</a></li>
+										<li><a href="/">Slash [ / ]</a></li>
+										<li><a href="//">Double-slash [ // ]</a></li>
+										<li><a href="GO">Keyword [ GO ]</a></li>
+									</ul>
+								</div>
+
 	
 							</div>
 

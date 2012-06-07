@@ -46,16 +46,18 @@
 	<cffunction name="initializeSchema" output=true>
 		<cfargument name="datasourceName" type="string">
 		<cfargument name="ddl" type="string">
+		<cfargument name="statement_separator" type="string" default=";">
 
 		<cfset var statement = "">
 		<cfset var ddl_list = "">
+		<cfset var escaped_separator = ReReplace(arguments.statement_separator, "([^A-Za-z0-9])", "\\\1", "ALL")>
 
 		<cfif Len(this.db_type.batch_separator)>
 	        <cfset ddl_list = REReplace(arguments.ddl, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
 		<cfelse>
 			<cfset ddl_list = arguments.ddl>
 		</cfif>
-		<cfset ddl_list = REReplace(ddl_list, ";\s*(\r?\n|$)", "#chr(7)#", "all")>
+		<cfset ddl_list = REReplace(ddl_list, "#escaped_separator#\s*(\r?\n|$)", "#chr(7)#", "all")>
 
         <cfloop list="#ddl_list#" index="statement" delimiters="#chr(7)#">
 			<cfif Len(trim(statement))>

@@ -15,6 +15,8 @@
 		<cfset var statement = "">
 		<cfset var sqlBatchList = "">
 
+		<cfset var escaped_separator = ReReplace(this.statement_separator, "([^A-Za-z0-9])", "\\\1", "ALL")>
+
 		<cfif not IsDefined("this.schema_def") OR not IsDefined("this.schema_def.db_type")>
 			<cfset this.schema_def = model("Schema_Def").findByKey(key=this.schema_def_id, include="DB_Type")>
 		</cfif>
@@ -31,7 +33,7 @@
 					<cfset sqlBatchList = this.sql>
 				</cfif>
 	
-				<cfset sqlBatchList = REReplace(sqlBatchList, ";\s*(\r?\n|$)", "#chr(7)#", "all")>
+				<cfset sqlBatchList = REReplace(sqlBatchList, "#escaped_separator#\s*(\r?\n|$)", "#chr(7)#", "all")>
 	
 				<cftry>
 	

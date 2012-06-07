@@ -13,8 +13,11 @@ component extends="Controller" {
 
 		try 
 		{
-	
-			var md5 = Lcase(hash(params.schema_ddl, "MD5"));
+			if (params.statement_separator IS NOT ";") // necessary to preserve older fiddles
+				var md5 = Lcase(hash(params.statement_separator & params.schema_ddl, "MD5"));
+			else
+				var md5 = Lcase(hash(params.schema_ddl, "MD5"));
+				
 			var short_code = "";
 			
 			var schema_def = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND md5 = '#md5#'");
@@ -43,6 +46,7 @@ component extends="Controller" {
 	
 					schema_def = model("Schema_Def").new();
 					schema_def.db_type_id = params.db_type_id;
+					schema_def.statement_separator = params.statement_separator;
 					schema_def.ddl = params.schema_ddl;
 					schema_def.short_code = short_code;
 					schema_def.md5 = md5;
@@ -90,7 +94,12 @@ component extends="Controller" {
 			throw ("Your sql is too large (more than 8000 characters).  Please submit a smaller SQL statement.");
 		
 		var schema_def = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND short_code='#params.schema_short_code#'");
-		var md5 = Lcase(hash(params.sql, "MD5"));
+		
+		if (params.statement_separator IS NOT ";") // necessary to preserve older fiddles
+			var md5 = Lcase(hash(params.statement_separator & params.sql, "MD5"));
+		else
+			var md5 = Lcase(hash(params.sql, "MD5"));
+		
 
 		if (! IsObject(schema_def))
 		{
@@ -110,6 +119,7 @@ component extends="Controller" {
 			query = model("Query").new();
 			query.schema_def_id = schema_def.id;
 			query.sql = params.sql;
+			query.statement_separator = params.statement_separator;
 			query.md5 = md5;
 			query.id = nextQueryID;
 			query.save();
@@ -146,6 +156,7 @@ component extends="Controller" {
 				{
 					returnVal["short_code"] = parts[2];
 					returnVal["ddl"] = schema_def.ddl;
+					returnVal["schema_statement_separator"] = schema_def.statement_separator;
 					if (! IsNumeric(schema_def.current_host_id))
 					{
 						schema_def.initialize();					
@@ -168,6 +179,7 @@ component extends="Controller" {
 					{
 						returnVal["id"] = myQuery.id;	
 						returnVal["sql"] = myQuery.sql;	
+						returnVal["query_statement_separator"] = myQuery.statement_separator;	
 						StructAppend(returnVal, myQuery.executeSQL());						
 					}				
 				}

@@ -104,6 +104,11 @@ $(function () {
 $.blockUI.defaults.overlayCSS.cursor = 'auto';
 $.blockUI.defaults.css.cursor = 'auto';
 
+function renderTerminator(parentPanel, selectedTerminator){
+		var mainBtn = parentPanel.find('.terminator a.btn');
+		mainBtn.html(mainBtn.html().replace(/\[ .+ \]/, '[ ' + selectedTerminator + ' ]'));
+		parentPanel.find(".terminator").data("statement_separator", selectedTerminator);
+}
 
 function resizeLayout(){
 

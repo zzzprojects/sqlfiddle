@@ -88,14 +88,17 @@ $(function () {
 									"ready": true,
 									"valid": true,
 									"errorMessage": "",
+									"statement_separator": resp["schema_statement_separator"],
 									"dbType": window.dbTypes.getSelectedType()
 								});
-								
+								renderTerminator($(".panel.schema"), resp["schema_statement_separator"]);
+																
 								if (resp["sql"])
 								{
 									window.query.set({
 										"id": resp["id"],
-										"sql":  resp["sql"]
+										"sql":  resp["sql"],
+										"statement_separator": resp["query_statement_separator"]
 									});
 								}
 								
@@ -150,7 +153,8 @@ $(function () {
 								{
 									window.query.set({
 										"id": query_id,
-										"sql":  resp["sql"]
+										"sql":  resp["sql"],
+										"statement_separator": resp["query_statement_separator"]
 									});
 									window.query.trigger("reloaded");
 								}
@@ -162,8 +166,10 @@ $(function () {
 									"valid": false,
 									"errorMessage": message,
 									"dbType": window.dbTypes.getSelectedType(),
+									"statement_separator": resp["schema_statement_separator"],
 									"schema_structure": []
 								});
+								renderTerminator($(".panel.schema"), resp["schema_statement_separator"]);
 								window.schemaDef.trigger("failed");
 								window.schemaDef.trigger("reloaded");
 
@@ -182,8 +188,10 @@ $(function () {
 							"ready": true,
 							"valid": true,
 							"errorMessage": "",
+							"statement_separator": resp["schema_statement_separator"],
 							"schema_structure": resp["schema_structure"]
 						});
+						renderTerminator($(".panel.schema"), resp["schema_statement_separator"]);
 						window.schemaDef.trigger("reloaded");
 						
 						if (resp["sql"])
@@ -191,7 +199,8 @@ $(function () {
 							window.query.set({
 								"id": resp["id"],
 								"sql": resp["sql"],
-								"sets": resp["sets"]
+								"sets": resp["sets"],
+								"statement_separator": resp["query_statement_separator"]
 							});
 							window.query.trigger("reloaded");
 			
@@ -353,7 +362,8 @@ $(function () {
 			"errorMessage": "",
 			"loading": false,
 			"ready": false,
-			"schema_structure": []
+			"schema_structure": [],
+			"statement_separator": ";"
 		},
 		reset: function () {
 			this.set(this.defaults);
@@ -372,6 +382,7 @@ $(function () {
 				type: "POST",
 				url: "index.cfm/fiddles/createSchema",
 				data: {
+					statement_separator: this.get('statement_separator'),
 					db_type_id: this.get('dbType').id,
 					schema_ddl: this.get('ddl')
 				},
@@ -465,7 +476,8 @@ $(function () {
 			"id": 0,
 			"sql": "",
 			"sets": [],
-			"pendingChanges": false
+			"pendingChanges": false,
+			"statement_separator": ";"
 		},
 		reset: function () {
 			this.set(this.defaults);
@@ -487,6 +499,7 @@ $(function () {
 				data: {
 					db_type_id: this.get("schemaDef").get("dbType").id,
 					schema_short_code: this.get("schemaDef").get("short_code"),
+					statement_separator: this.get("statement_separator"),
 					sql: this.get("sql")
 				},
 				dataType: "json",
@@ -645,11 +658,11 @@ $(function () {
 			
 			var thisView = window.schemaDefView; // kludge to handle the context limitations on CodeMirror change events
 			
-			if (thisView.model.get("ddl") != thisView.editor.getValue()) 
+			if (thisView.model.get("ddl") != thisView.editor.getValue() || thisView.model.get("statement_separator") != $(".panel.schema .terminator").data("statement_separator")) 
 			{
-
 				thisView.model.set({
 					"ddl":thisView.editor.getValue(),
+					"statement_separator":$(".panel.schema .terminator").data("statement_separator"),
 					"ready": false
 				});
 
@@ -660,6 +673,7 @@ $(function () {
 		render: function () {
 			this.editor.setValue(this.model.get("ddl"));
 			this.updateDependents();
+			renderTerminator($(".panel.schema"), this.model.get("statement_separator"));			
 		},
 		renderOutput: function() {
 			this.options.output_el.html(
@@ -730,6 +744,8 @@ $(function () {
 			
 			if (this.model.id)
 				this.renderOutput();
+			
+			renderTerminator($(".panel.sql"), this.model.get("statement_separator"));
 		},
 		renderOutput: function() {
 			var thisModel = this.model;
@@ -866,7 +882,7 @@ $(function () {
 	window.schemaDef.on("change", function () {
 		if (this.hasChanged("ready"))
 			window.schemaDefView.updateDependents();
-			
+		
 		if (this.hasChanged("errorMessage"))
 			window.schemaDefView.renderOutput();
 		
@@ -894,7 +910,7 @@ $(function () {
 	});
 
 	window.query.on("change", function () {
-		if (this.hasChanged("sql") && !this.hasChanged("id") && !this.get("pendingChanges"))
+		if ((this.hasChanged("sql") || this.hasChanged("statement_separator")) && !this.hasChanged("id") && !this.get("pendingChanges"))
 		{
 			this.set({"pendingChanges": true}, {silent: true});
 		}
@@ -974,6 +990,26 @@ $(function () {
 		e.preventDefault();
 		window.router.navigate("!" + window.dbTypes.getSelectedType().get("sample_fragment"), {trigger: true});
 	});
+	
+	$(".terminator .dropdown-menu a").on('click', function (e) {
+		e.preventDefault();
+		
+		renderTerminator($(this).closest(".panel"), $(this).attr('href'));
+		
+		if ($(this).closest(".panel").hasClass("schema"))
+		{
+			window.schemaDefView.handleSchemaChange();
+		}
+		else // must be the query panel button
+		{
+			window.query.set({
+				"pendingChanges": true,
+				"statement_separator": $(this).attr('href')
+			}, {silent: true});			
+		}
+
+	});
+	
 	
 	$(window).bind('beforeunload', function () {
 		if (window.query.get("pendingChanges"))
