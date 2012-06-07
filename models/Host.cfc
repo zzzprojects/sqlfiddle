@@ -60,8 +60,12 @@
 
 		<cfset var statement = "">
 		<cfset var ddl_list = "">
-		<cfset var escaped_separator = ReReplace(arguments.statement_separator, "([^A-Za-z0-9])", "\\1", "ALL")>
-
+		
+		<cfif StructKeyExists(server, "railo")><!--- Annoying incompatiblity found in how ACF and Railo escape backreferences --->
+			<cfset var escaped_separator = ReReplace(arguments.statement_separator, "([^A-Za-z0-9])", "\\1", "ALL")>
+		<cfelse>
+			<cfset var escaped_separator = ReReplace(arguments.statement_separator, "([^A-Za-z0-9])", "\\\1", "ALL")>
+		</cfif>
 		<cfif Len(this.db_type.batch_separator)>
 	        <cfset ddl_list = REReplace(arguments.ddl, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
 		<cfelse>

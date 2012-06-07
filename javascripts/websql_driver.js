@@ -5,9 +5,12 @@ window.WebSQL_driver = function () {
 	
 	var nativeSQLite = (window.openDatabase !== undefined);
 
-	var splitStatement = function (statements)
-	{	
-		var sArray = (statements ? statements.split(/;\s*\r?(\n|$)/) : []);
+	var splitStatement = function (statements, separator)
+	{
+		if (! separator) separator = ";";
+		var escaped_separator = separator.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+		
+		var sArray = (statements ? statements.split(new RegExp(escaped_separator + "\s*\r?(\n|$)")) : []);
 		return sArray; 
 	}
 
@@ -20,11 +23,9 @@ window.WebSQL_driver = function () {
 
 				db.transaction(function(tx){
 					
-					var statements = splitStatement(args["ddl"]);
+					var statements = splitStatement(args["ddl"],args["statement_separator"]);
 					ddl = statements;
 					
-					// $.each(splitStatement(args["ddl"]), function (i, stmt) { statements.push(stmt); });
-
 					var currentStatement = 0;
 					var statement = statements[currentStatement];
 					
@@ -238,11 +239,9 @@ window.WebSQL_driver = function () {
 				
 				var setArray = [], k, stop = false;
 
-				// $.each(splitStatement(args["ddl"]), function (i, stmt) { statements.push(stmt); });
-				
 				var statements = ddl.slice(0);
 
-				$.each(splitStatement(args["sql"]), function (i, stmt) { statements.push(stmt); });
+				$.each(splitStatement(args["sql"],args["statement_separator"]), function (i, stmt) { statements.push(stmt); });
 
 				var currentStatement = 0;
 				var statement = statements[currentStatement];

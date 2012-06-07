@@ -15,8 +15,12 @@
 		<cfset var statement = "">
 		<cfset var sqlBatchList = "">
 
-		<cfset var escaped_separator = ReReplace(this.statement_separator, "([^A-Za-z0-9])", "\\1", "ALL")>
-
+		<cfif StructKeyExists(server, "railo")><!--- Annoying incompatiblity found in how ACF and Railo escape backreferences --->
+			<cfset var escaped_separator = ReReplace(this.statement_separator, "([^A-Za-z0-9])", "\\1", "ALL")>
+		<cfelse>
+			<cfset var escaped_separator = ReReplace(this.statement_separator, "([^A-Za-z0-9])", "\\\1", "ALL")>
+		</cfif>
+		
 		<cfif not IsDefined("this.schema_def") OR not IsDefined("this.schema_def.db_type")>
 			<cfset this.schema_def = model("Schema_Def").findByKey(key=this.schema_def_id, include="DB_Type")>
 		</cfif>

@@ -2,9 +2,13 @@ window.SQLjs_driver = function () {
 	
 	var db = null;
 
-	var splitStatement = function (statements)
+	var splitStatement = function (statements, separator)
 	{
-		return statements.split(/;\s*\r?\n|$/);
+		if (! separator) separator = ";";
+		var escaped_separator = separator.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+		
+		var sArray = (statements ? statements.split(new RegExp(escaped_separator + "\s*\r?(\n|$)")) : []);
+		return sArray; 
 	}
 
 	this.buildSchema = function (args) {
@@ -18,7 +22,7 @@ window.SQLjs_driver = function () {
 			var jsBuildSchema = function () {
 				
 				db = SQL.open();
-				$.each(splitStatement(args["ddl"]), function (i, statement) {
+				$.each(splitStatement(args["ddl"],args["statement_separator"]), function (i, statement) {
 					db.exec(statement);
 				});				
 				
@@ -66,7 +70,7 @@ window.SQLjs_driver = function () {
 
 			db.exec("BEGIN TRANSACTION");
 
-			$.each(splitStatement(args["sql"]), function (i, statement) {
+			$.each(splitStatement(args["sql"],args["statement_separator"]), function (i, statement) {
 				var startTime = new Date();
 				
 				var setArray = [];

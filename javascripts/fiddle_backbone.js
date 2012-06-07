@@ -79,6 +79,7 @@ $(function () {
 						window.browserEngines[selectedDBType.get("className")].buildSchema({
 							
 							short_code: $.trim(resp["short_code"]),
+							statement_separator: resp["schema_statement_separator"],
 							ddl: resp["ddl"],
 							success: function () {
 
@@ -115,6 +116,7 @@ $(function () {
 											{
 												window.browserEngines[selectedDBType.get("className")].executeQuery({
 													sql: resp["sql"],
+													statement_separator: resp["query_statement_separator"],
 													success: function (sets) {
 
 														window.query.set({
@@ -149,16 +151,6 @@ $(function () {
 							},
 							error: function (message) {
 
-								if (resp["sql"])
-								{
-									window.query.set({
-										"id": query_id,
-										"sql":  resp["sql"],
-										"statement_separator": resp["query_statement_separator"]
-									});
-									window.query.trigger("reloaded");
-								}
-								
 								window.schemaDef.set({
 									"short_code": resp["short_code"],
 									"ddl": resp["ddl"],
@@ -169,7 +161,20 @@ $(function () {
 									"statement_separator": resp["schema_statement_separator"],
 									"schema_structure": []
 								});
+
 								renderTerminator($(".panel.schema"), resp["schema_statement_separator"]);
+
+								if (resp["sql"])
+								{
+									window.query.set({
+										"id": resp["id"],
+										"sql":  resp["sql"],
+										"statement_separator": resp["query_statement_separator"],
+										"schemaDef": window.schemaDef
+									});
+									window.query.trigger("reloaded");
+								}
+								
 								window.schemaDef.trigger("failed");
 								window.schemaDef.trigger("reloaded");
 
@@ -395,6 +400,7 @@ $(function () {
 							window.browserEngines[selectedDBType.get("className")].buildSchema({
 								
 								short_code: $.trim(data["short_code"]),
+								statement_separator: thisModel.get('statement_separator'),
 								ddl: thisModel.get('ddl'),
 								success: function () {
 									thisModel.set({
@@ -508,6 +514,7 @@ $(function () {
 					{
 						window.browserEngines[thisModel.get("schemaDef").get("dbType").get("className")].executeQuery({
 							sql: thisModel.get("sql"),
+							statement_separator: thisModel.get("statement_separator"),
 							success: function (sets) {
 								thisModel.set({
 									"id": resp["ID"],
