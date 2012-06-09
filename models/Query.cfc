@@ -96,6 +96,11 @@
 																				
 									</cfif><!--- end if xslt is/is not available for type --->
 
+									<cfif len(this.schema_def.db_type.execution_plan_check)>
+										<cfset local.checkResult = XMLSearch(local.executionPlan[ListFirst(local.executionPlan.columnList)][1], this.schema_def.db_type.execution_plan_check)>
+										
+									</cfif>
+
 								</cfif><!--- end if xml-based execution plan --->
 	
 	
