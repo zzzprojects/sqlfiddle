@@ -115,7 +115,16 @@
 									</cfif><!--- end if xslt is/is not available for type --->
 
 								</cfif><!--- end if xml-based execution plan --->
-	
+
+								<!--- We're restricting MySQL to just select statements for the query panel, since we can't prevent commits any other way --->
+								<cfif this.schema_def.db_type.simple_name IS "MySQL" AND 
+									NOT (
+										IsDefined("local.executionPlan") AND
+										IsQuery(local.executionPlan) AND
+										local.executionPlan.recordCount
+									)>	
+									<cfthrow type="database" message="DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel.">
+								</cfif>
 	
 							</cfif> <!--- end if execution plan --->
 							
