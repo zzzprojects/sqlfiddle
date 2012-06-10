@@ -81,6 +81,14 @@
 									local.executionPlan.recordCount AND
 									IsXML(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])>
 
+									<!--- This is pretty much only for SQL Server, since only SQL Server reports when explicit commits occur. --->
+									<cfif len(this.schema_def.db_type.execution_plan_check)>
+                                                                                <cfset local.checkResult = XMLSearch(local.executionPlan[ListFirst(local.executionPlan.columnList)][1], this.schema_def.db_type.execution_plan_check)>       
+										<cfif ArrayLen(local.checkResult)>
+											<cfthrow type="database" message="Explicit commits not allowed.">
+										</cfif>
+                                                                        </cfif>
+
 									<!--- if we have xslt available for this db type, use it to transform the execution plan response --->
 									<cfif Len(this.schema_def.db_type.execution_plan_xslt)>
 										<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] = 
@@ -91,15 +99,10 @@
 									<cfelse>
 										<!--- no XSLT, so just format it nicely --->
 			
-                                    	<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] =
-                                            	"<pre>#XMLFormat(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])#</pre>">
+										<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] =
+											"<pre>#XMLFormat(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])#</pre>">
 																				
 									</cfif><!--- end if xslt is/is not available for type --->
-
-									<cfif len(this.schema_def.db_type.execution_plan_check)>
-										<cfset local.checkResult = XMLSearch(local.executionPlan[ListFirst(local.executionPlan.columnList)][1], this.schema_def.db_type.execution_plan_check)>
-										
-									</cfif>
 
 								</cfif><!--- end if xml-based execution plan --->
 	
@@ -148,7 +151,7 @@
 						<cfset StructDelete(local, "executionPlan")>
 						<cfset StructDelete(local, "ret")>
 	              	</cfloop>
-					
+
 					<cfcatch type="database">
 						<cfset ArrayAppend(returnVal["sets"], {
 							succeeded = false,
