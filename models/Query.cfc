@@ -39,6 +39,16 @@
 
 				<cfset sqlBatchList = REReplace(sqlBatchList, "#escaped_separator#\s*(\r?\n|$)", "#chr(7)#", "all")>
 
+					<cfif this.schema_def.db_type.simple_name IS "Oracle">
+						<cfset local.defered_table = "DEFERRED_#Left(Hash(createuuid(), "MD5"), 8)#">
+						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+						CREATE TABLE #local.defered_table# (val NUMBER(1) CONSTRAINT #local.defered_table#_ck CHECK(val =1) DEFERRABLE INITIALLY DEFERRED)
+						</cfquery>
+						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+						INSERT INTO #local.defered_table# VALUES (2)
+						</cfquery>
+					</cfif>
+
 				<cftry>
 	
 	              	<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
@@ -153,17 +163,37 @@
 	              	</cfloop>
 
 					<cfcatch type="database">
-						<cfset ArrayAppend(returnVal["sets"], {
-							succeeded = false,
-							errorMessage = (IsDefined("cfcatch.queryError") ? (cfcatch.message & ": " & cfcatch.queryError) : cfcatch.message)
+
+						<cfif 	this.schema_def.db_type.simple_name IS "Oracle" AND
+							FindNoCase("ORA-02290: check constraint (USER_#UCase(this.schema_def.short_code)#.#local.defered_table#_CK) violated", cfcatch.message)>
+
+							<cfset ArrayAppend(returnVal["sets"], {
+								succeeded = false,
+								errorMessage = "Explicit commits and DDL (ex: CREATE, DROP, RENAME, or ALTER) are not allowed within query panel for Oracle."
+                                                        })>     
+
+
+						<cfelse>	
+
+							<cfset ArrayAppend(returnVal["sets"], {
+								succeeded = false,
+								errorMessage = (IsDefined("cfcatch.queryError") ? (cfcatch.message & ": " & cfcatch.queryError) : cfcatch.message)
 							})>
-<!---
-						<cfdump var="#statement#">
-						<cfrethrow>
---->
+
+						</cfif>
 					</cfcatch>
-					<cffinally>		
+					<cffinally>	
+	
 						<cftransaction action="rollback" />
+
+						<cfif this.schema_def.db_type.simple_name IS "Oracle">
+
+							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+							DROP TABLE #local.defered_table#
+							</cfquery>
+
+						</cfif>
+
 					</cffinally>
 					
 				</cftry>
