@@ -178,7 +178,7 @@
 
 							<cfset ArrayAppend(returnVal["sets"], {
 								succeeded = false,
-								errorMessage = "Explicit commits and DDL (ex: CREATE, DROP, RENAME, or ALTER) are not allowed within query panel for Oracle."
+								errorMessage = "Explicit commits and DDL (ex: CREATE, DROP, RENAME, or ALTER) are not allowed within the query panel for Oracle.  Put DDL in the schema panel instead."
                                                         })>     
 
 
