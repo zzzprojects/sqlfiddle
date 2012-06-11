@@ -104,9 +104,9 @@
 	
 	<script id="schema-output-template" type="text/x-handlebars-template">
 		{{#if errorMessage}}
-		<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{errorMessage}}</div>	
+		<div class="alert alert-error database-error database-messages"><i class="icon-remove"></i>{{errorMessage}}</div>	
 		{{else}}
-		<div id="messages" class="alert alert-success"><i class="icon-ok"></i>Schema Ready</div>	
+		<div class="alert alert-success database-messages"><i class="icon-ok"></i>Schema Ready</div>	
 		{{/if}}
 	
 	</script>
@@ -132,7 +132,7 @@
 				</table>
 			{{/if}}
 			{{#if this.SUCCEEDED}}
-			<div id="messages_{{index}}" class="alert alert-success">
+			<div id="messages_{{index}}" class="alert alert-success database-messages">
 				<i class="icon-ok"></i>
 				Record Count: {{this.RESULTS.DATA.length}}; Execution Time: {{this.EXECUTIONTIME}}ms
 				{{#if this.EXECUTIONPLAN.DATA.length}}
@@ -159,7 +159,7 @@
 			{{/if}}
 			
 			{{else}}
-			<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
+			<div id="messages_{{index}}" class="alert alert-error database-messages"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
 			{{/if}}
 		</div>
 		{{/each_with_index}}
@@ -177,7 +177,7 @@
 				</pre>
 			{{/if}}
 			{{#if this.SUCCEEDED}}
-			<div id="messages" class="alert alert-success">
+			<div id="messages_{{index}}" class="alert alert-success database-messages">
 				<i class="icon-ok"></i>
 				Record Count: {{this.RESULTS.DATA.length}}; Execution Time: {{this.EXECUTIONTIME}}ms
 				{{#if this.EXECUTIONPLAN.DATA.length}}
@@ -204,7 +204,7 @@
 			{{/if}}
 			
 			{{else}}
-			<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
+			<div id="messages_{{index}}" class="alert alert-error database-error database-messages"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
 			{{/if}}
 		</div>
 		{{/each_with_index}}
@@ -307,16 +307,16 @@
 											
 										<a href="#" id="buildSchema">
 										<label for="result-ddl" class="btn btn-primary">
-											Build Schema <i class="icon-download-alt"></i>
+											Build Schema <i class="icon-download-alt icon-white"></i>
 										</label>
 										</a>
 	
 										<a href="#" id="schemaFullscreen" class="btn btn-info">
-											Edit Fullscreen <i class="icon-resize-full"></i>
+											Edit Fullscreen <i class="icon-resize-full icon-white"></i>
 										</a>
 	
 										<a href="#" id="schemaBrowser" class="btn btn-info">
-											Browser <i class="icon-indent-left"></i>
+											Browser <i class="icon-indent-left icon-white"></i>
 										</a>
 	<!--
 										<a href="#" id="schemaDiagram" class="btn btn-info">
@@ -345,7 +345,7 @@
 									
 									<div class="action_buttons browser_actions">
 										<a href="#" id="ddlEdit" class="btn btn-info">
-											DDL Editor <i class="icon-pencil"></i>
+											DDL Editor <i class="icon-pencil icon-white"></i>
 										</a>
 									</div>
 	
@@ -373,7 +373,7 @@
 
 								<div class="btn-group" id="runQueryOptions">
 								
-										<a href="#" class="runQuery btn btn-primary">Run SQL <i class="icon-play"></i></a>
+										<a href="#" class="runQuery btn btn-primary">Run SQL <i class="icon-play icon-white"></i></a>
 								
 									<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 										<span class="caret"></span>
@@ -387,11 +387,11 @@
 								</div>
 
 								<a href="#" id="queryFullscreen" class="btn btn-info">
-									Edit Fullscreen <i class="icon-resize-full"></i>
+									Edit Fullscreen <i class="icon-resize-full icon-white"></i>
 								</a>
 
 								<a href="#" id="queryPrettify" class="btn btn-info">
-									Format Code <i class="icon-filter"></i>
+									Format Code <i class="icon-filter icon-white"></i>
 								</a>
 
 								<div class="btn-group terminator" id="queryStmtTerminator" data-statement_separator=";">
