@@ -15,7 +15,7 @@
 	<link href="stylesheets/codemirror.css?20120504" media="all" rel="stylesheet" type="text/css" />
 	<link href="stylesheets/bootstrap.css?20120504" media="all" rel="stylesheet" type="text/css" />
 	<link href="stylesheets/bootstrap-responsive.min.css?20120504" media="all" rel="stylesheet" type="text/css" />
-	<link href="stylesheets/fiddle.css?20120530" media="all" rel="stylesheet" type="text/css" />
+	<link href="stylesheets/fiddle.css?20120606" media="all" rel="stylesheet" type="text/css" />
 
 	<link href="stylesheets/qp.css?20120504" media="all" rel="stylesheet" type="text/css" />
 
@@ -67,9 +67,9 @@
 	
 	<script id="schema-output-template" type="text/x-handlebars-template">
 		{{#if errorMessage}}
-		<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{errorMessage}}</div>	
+		<div class="alert alert-error database-error database-messages"><i class="icon-remove"></i>{{errorMessage}}</div>	
 		{{else}}
-		<div id="messages" class="alert alert-success"><i class="icon-ok"></i>Schema Ready</div>	
+		<div class="alert alert-success database-messages"><i class="icon-ok"></i>Schema Ready</div>	
 		{{/if}}
 	
 	</script>
@@ -95,7 +95,7 @@
 				</table>
 			{{/if}}
 			{{#if this.SUCCEEDED}}
-			<div id="messages_{{index}}" class="alert alert-success">
+			<div id="messages_{{index}}" class="alert alert-success database-messages">
 				<i class="icon-ok"></i>
 				Record Count: {{this.RESULTS.DATA.length}}; Execution Time: {{this.EXECUTIONTIME}}ms
 				{{#if this.EXECUTIONPLAN.DATA.length}}
@@ -122,7 +122,7 @@
 			{{/if}}
 			
 			{{else}}
-			<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
+			<div id="messages_{{index}}" class="alert alert-error database-messages"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
 			{{/if}}
 		</div>
 		{{/each_with_index}}
@@ -130,22 +130,23 @@
 	</script>	
 	<script id="query-plaintext-output-template" type="text/x-handlebars-template">
 	{{#if id}}
-		{{#each sets}}
-		<div class="set">
+		{{#each_with_index sets}}
+		<div class="set" id="set_{{index}}">
 			{{#if this.RESULTS.DATA.length}}
 				<pre class="results">
 |{{#each_simple_value_with_index this.RESULTS.COLUMNS}} {{result_display_padded ../this/RESULTS/COLUMNWIDTHS}} |{{/each_simple_value_with_index}}
-|{{#each_simple_value_with_index this.RESULTS.COLUMNS}}-{{divider_display ../this/RESULTS/COLUMNWIDTHS}}-|{{/each_simple_value_with_index}}{{#each this.RESULTS.DATA}}
+-{{#each_simple_value_with_index this.RESULTS.COLUMNS}}-{{divider_display ../this/RESULTS/COLUMNWIDTHS}}--{{/each_simple_value_with_index}}{{#each this.RESULTS.DATA}}
 |{{#each_simple_value_with_index this}} {{result_display_padded ../../this/RESULTS/COLUMNWIDTHS}} |{{/each_simple_value_with_index}}{{/each}}
 				</pre>
 			{{/if}}
 			{{#if this.SUCCEEDED}}
-			<div id="messages" class="alert alert-success">
+			<div id="messages_{{index}}" class="alert alert-success database-messages">
 				<i class="icon-ok"></i>
 				Record Count: {{this.RESULTS.DATA.length}}; Execution Time: {{this.EXECUTIONTIME}}ms
 				{{#if this.EXECUTIONPLAN.DATA.length}}
 				<a href="#executionPlan" class="executionPlanLink"><i class="icon-plus"></i>View Execution Plan</a>
 				{{/if}}
+				<a href="#!{{../../schemaDef/dbType/id}}/{{../../schemaDef/short_code}}/{{../../id}}/{{index}}" class="setLink"><i class="icon-share-alt"></i> link</a>
 			</div>	
 			
 			{{#if this.EXECUTIONPLAN.DATA.length}}
@@ -166,10 +167,10 @@
 			{{/if}}
 			
 			{{else}}
-			<div id="messages" class="alert alert-error"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
+			<div id="messages_{{index}}" class="alert alert-error database-error database-messages"><i class="icon-remove"></i>{{this.ERRORMESSAGE}}</div>	
 			{{/if}}
 		</div>
-		{{/each}}
+		{{/each_with_index}}
 	{{/if}}
 	</script>	
 </head>
@@ -270,29 +271,49 @@
 											
 										<a href="#" id="buildSchema">
 										<label for="result-ddl" class="btn btn-primary">
-											Build Schema <i class="icon-download-alt"></i>
+											Build Schema <i class="icon-download-alt icon-white"></i>
 										</label>
 										</a>
 	
 										<a href="#" id="schemaFullscreen" class="btn btn-info">
-											Edit Fullscreen <i class="icon-resize-full"></i>
+											Edit Fullscreen <i class="icon-resize-full icon-white"></i>
 										</a>
 	
 										<a href="#" id="schemaBrowser" class="btn btn-info">
-											Browser <i class="icon-indent-left"></i>
+											Browser <i class="icon-indent-left icon-white"></i>
 										</a>
 	<!--
 										<a href="#" id="schemaDiagram" class="btn btn-info">
 											Diagram <i class="icon-qrcode"></i>
 										</a>
 	-->									
+										<div class="btn-group terminator" id="schemaStmtTerminator" data-statement_separator=";">
+											<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">
+											[ ; ]
+											<span class="caret"></span>
+											</a>
+											<ul class="dropdown-menu nav">
+												<li class="nav-header">Query Terminator</li>
+												<li class="divider"></li>										
+												<li><a href=";">Semi-colon [ ; ]</a></li>
+												<li><a href="|">Pipe [ | ]</a></li>
+												<li><a href="/">Slash [ / ]</a></li>
+												<li><a href="//">Double-slash [ // ]</a></li>
+												<li><a href="GO">Keyword [ GO ]</a></li>
+											</ul>
+										</div>
+	
+	
+	
 									</div>
 									
 									<div class="action_buttons browser_actions">
 										<a href="#" id="ddlEdit" class="btn btn-info">
-											DDL Editor <i class="icon-pencil"></i>
+											DDL Editor <i class="icon-pencil icon-white"></i>
 										</a>
 									</div>
+	
+
 
 								</form>
 
@@ -316,7 +337,7 @@
 
 								<div class="btn-group" id="runQueryOptions">
 								
-										<a href="#" class="runQuery btn btn-primary">Run SQL <i class="icon-play"></i></a>
+										<a href="#" class="runQuery btn btn-primary">Run SQL <i class="icon-play icon-white"></i></a>
 								
 									<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 										<span class="caret"></span>
@@ -330,12 +351,29 @@
 								</div>
 
 								<a href="#" id="queryFullscreen" class="btn btn-info">
-									Edit Fullscreen <i class="icon-resize-full"></i>
+									Edit Fullscreen <i class="icon-resize-full icon-white"></i>
 								</a>
 
 								<a href="#" id="queryPrettify" class="btn btn-info">
-									Format Code <i class="icon-filter"></i>
+									Format Code <i class="icon-filter icon-white"></i>
 								</a>
+
+								<div class="btn-group terminator" id="queryStmtTerminator" data-statement_separator=";">
+									<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">
+									[ ; ]
+									<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu nav">
+										<li class="nav-header">Query Terminator</li>
+										<li class="divider"></li>										
+										<li><a href=";">Semi-colon [ ; ]</a></li>
+										<li><a href="|">Pipe [ | ]</a></li>
+										<li><a href="/">Slash [ / ]</a></li>
+										<li><a href="//">Double-slash [ // ]</a></li>
+										<li><a href="GO">Keyword [ GO ]</a></li>
+									</ul>
+								</div>
+
 	
 							</div>
 
@@ -368,7 +406,7 @@
 	
 	  <div class="modal-body">
 			<label for="tableName">Table Name: </label><input type="text" id="tableName" value="Table1"><br>
-			<textarea id="raw" cols="40" rows="8" placeholder="Paste formatted text here."></textarea>
+			<textarea id="raw" cols="40" rows="8" placeholder="Paste formatted text here. CSV, space-separated, pipe-delimited are all valid."></textarea>
 			<hr>
 			
 			<pre id="parseResults"></pre>
@@ -422,12 +460,12 @@
 
 
 	<script src="javascripts/sqlite_driver.js?20120512" type="text/javascript"></script>
-	<script src="javascripts/websql_driver.js?20120512" type="text/javascript"></script>
-	<script src="javascripts/sqljs_driver.js?20120512" type="text/javascript"></script>
-	<script src="javascripts/fiddle_backbone.js?20120530" type="text/javascript"></script>
+	<script src="javascripts/websql_driver.js?20120606" type="text/javascript"></script>
+	<script src="javascripts/sqljs_driver.js?20120606" type="text/javascript"></script>
+	<script src="javascripts/fiddle_backbone.js?20120606" type="text/javascript"></script>
 
 	<script src="javascripts/date.format.js?20120504" type="text/javascript"></script>
-	<script src="javascripts/ddl_builder.js?20120504" type="text/javascript"></script>
+	<script src="javascripts/ddl_builder.js?20120604" type="text/javascript"></script>
 	
 	<script src="javascripts/qp.js?20120504" type="text/javascript"></script>
 
@@ -435,7 +473,7 @@
 	<script src="javascripts/oracle_xplan/loadswf.js?20120504" type="text/javascript"></script>
 
 
-	<script src="javascripts/fiddle2.js?20120517" type="text/javascript"></script>
+	<script src="javascripts/fiddle2.js?20120606" type="text/javascript"></script>
 
   </body>
 </html>

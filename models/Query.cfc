@@ -15,6 +15,12 @@
 		<cfset var statement = "">
 		<cfset var sqlBatchList = "">
 
+		<cfif StructKeyExists(server, "railo")><!--- Annoying incompatiblity found in how ACF and Railo escape backreferences --->
+			<cfset var escaped_separator = ReReplace(this.statement_separator, "([^A-Za-z0-9])", "\\1", "ALL")>
+		<cfelse>
+			<cfset var escaped_separator = ReReplace(this.statement_separator, "([^A-Za-z0-9])", "\\\1", "ALL")>
+		</cfif>
+		
 		<cfif not IsDefined("this.schema_def") OR not IsDefined("this.schema_def.db_type")>
 			<cfset this.schema_def = model("Schema_Def").findByKey(key=this.schema_def_id, include="DB_Type")>
 		</cfif>
@@ -30,9 +36,19 @@
 				<cfelse>
 					<cfset sqlBatchList = this.sql>
 				</cfif>
-	
-				<cfset sqlBatchList = REReplace(sqlBatchList, ";\s*(\r?\n|$)", "#chr(7)#", "all")>
-	
+
+				<cfset sqlBatchList = REReplace(sqlBatchList, "#escaped_separator#\s*(\r?\n|$)", "#chr(7)#", "all")>
+
+					<cfif this.schema_def.db_type.simple_name IS "Oracle">
+						<cfset local.defered_table = "DEFERRED_#Left(Hash(createuuid(), "MD5"), 8)#">
+						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+						CREATE TABLE #local.defered_table# (val NUMBER(1) CONSTRAINT #local.defered_table#_ck CHECK(val =1) DEFERRABLE INITIALLY DEFERRED)
+						</cfquery>
+						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+						INSERT INTO #local.defered_table# VALUES (2)
+						</cfquery>
+					</cfif>
+
 				<cftry>
 	
 	              	<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
@@ -75,6 +91,14 @@
 									local.executionPlan.recordCount AND
 									IsXML(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])>
 
+									<!--- This is pretty much only for SQL Server, since only SQL Server reports when explicit commits occur. --->
+									<cfif len(this.schema_def.db_type.execution_plan_check)>
+                                                                                <cfset local.checkResult = XMLSearch(local.executionPlan[ListFirst(local.executionPlan.columnList)][1], this.schema_def.db_type.execution_plan_check)>       
+										<cfif ArrayLen(local.checkResult)>
+											<cfthrow type="database" message="Explicit commits not allowed.">
+										</cfif>
+                                                                        </cfif>
+
 									<!--- if we have xslt available for this db type, use it to transform the execution plan response --->
 									<cfif Len(this.schema_def.db_type.execution_plan_xslt)>
 										<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] = 
@@ -85,18 +109,34 @@
 									<cfelse>
 										<!--- no XSLT, so just format it nicely --->
 			
-                                    	<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] =
-                                            	"<pre>#XMLFormat(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])#</pre>">
+										<cfset local.executionPlan[ListFirst(local.executionPlan.columnList)][1] =
+											"<pre>#XMLFormat(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])#</pre>">
 																				
 									</cfif><!--- end if xslt is/is not available for type --->
 
 								</cfif><!--- end if xml-based execution plan --->
-	
+
+								<!--- We're restricting MySQL to just select statements for the query panel, since we can't prevent commits any other way --->
+								<cfif this.schema_def.db_type.simple_name IS "MySQL" AND 
+									NOT (
+										IsDefined("local.executionPlan") AND
+										IsQuery(local.executionPlan) AND
+										local.executionPlan.recordCount
+									)>	
+									<cfthrow type="database" message="DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel.">
+								</cfif>
 	
 							</cfif> <!--- end if execution plan --->
 							
 							<!--- run the actual query --->
 							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
+
+							<cfif this.schema_def.db_type.simple_name IS "Oracle">
+								<!--- Just in case some sneaky person finds a way to delete the intentionally-invalid record, we put one back in after each statement that executes. --->
+								<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+								INSERT INTO #local.defered_table# VALUES (2)
+								</cfquery>
+							</cfif>
 	
 							<cfif IsDefined("local.ret")>
 								<!--- use getMetaData to get column names instead of local.ret.columnNames csv list, since there can be valid columns in the resultset which contain commas in their names --->
@@ -137,19 +177,39 @@
 						<cfset StructDelete(local, "executionPlan")>
 						<cfset StructDelete(local, "ret")>
 	              	</cfloop>
-					
+
 					<cfcatch type="database">
-						<cfset ArrayAppend(returnVal["sets"], {
-							succeeded = false,
-							errorMessage = (IsDefined("cfcatch.queryError") ? (cfcatch.message & ": " & cfcatch.queryError) : cfcatch.message)
+
+						<cfif 	this.schema_def.db_type.simple_name IS "Oracle" AND
+							FindNoCase("ORA-02290: check constraint (USER_#UCase(this.schema_def.short_code)#.#local.defered_table#_CK) violated", cfcatch.message)>
+
+							<cfset ArrayAppend(returnVal["sets"], {
+								succeeded = false,
+								errorMessage = "Explicit commits and DDL (ex: CREATE, DROP, RENAME, or ALTER) are not allowed within the query panel for Oracle.  Put DDL in the schema panel instead."
+                                                        })>     
+
+
+						<cfelse>	
+
+							<cfset ArrayAppend(returnVal["sets"], {
+								succeeded = false,
+								errorMessage = (IsDefined("cfcatch.queryError") ? (cfcatch.message & ": " & cfcatch.queryError) : cfcatch.message)
 							})>
-<!---
-						<cfdump var="#statement#">
-						<cfrethrow>
---->
+
+						</cfif>
 					</cfcatch>
-					<cffinally>		
+					<cffinally>	
+	
 						<cftransaction action="rollback" />
+
+						<cfif this.schema_def.db_type.simple_name IS "Oracle">
+
+							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+							DROP TABLE #local.defered_table#
+							</cfquery>
+
+						</cfif>
+
 					</cffinally>
 					
 				</cftry>

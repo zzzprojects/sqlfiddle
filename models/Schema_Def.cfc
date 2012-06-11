@@ -23,7 +23,7 @@
 	
 			host.initializeDatabase(this.short_code);
 			host.initializeDSN(this.short_code);
-			host.initializeSchema(this.short_code, this.ddl);
+			host.initializeSchema(this.short_code, this.ddl, this.statement_separator);
 		}
 		this.save();					
 		

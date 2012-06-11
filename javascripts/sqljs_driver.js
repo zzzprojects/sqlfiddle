@@ -2,9 +2,13 @@ window.SQLjs_driver = function () {
 	
 	var db = null;
 
-	var splitStatement = function (statements)
+	var splitStatement = function (statements, separator)
 	{
-		return statements.split(/;\s*\r?\n|$/);
+		if (! separator) separator = ";";
+		var escaped_separator = separator.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+		
+		var sArray = (statements ? statements.split(new RegExp(escaped_separator + "\s*\r?(\n|$)")) : []);
+		return sArray; 
 	}
 
 	this.buildSchema = function (args) {
@@ -18,7 +22,7 @@ window.SQLjs_driver = function () {
 			var jsBuildSchema = function () {
 				
 				db = SQL.open();
-				$.each(splitStatement(args["ddl"]), function (i, statement) {
+				$.each(splitStatement(args["ddl"],args["statement_separator"]), function (i, statement) {
 					db.exec(statement);
 				});				
 				
@@ -66,84 +70,79 @@ window.SQLjs_driver = function () {
 
 			db.exec("BEGIN TRANSACTION");
 
-			$.each(splitStatement(args["sql"]), function (i, statement) {
-				var startTime = new Date();
-				
-				var setArray = [];
-
-				try {
-					setArray = db.exec(statement);
-	
-					var thisSet = {
-						"SUCCEEDED": true,
-						"EXECUTIONTIME": (new Date()) - startTime,
-						"RESULTS": {
-							"COLUMNS": [],
-							"DATA": []
-						},
-						"EXECUTIONPLAN": {
-							"COLUMNS": [],
-							"DATA": []
-						} 
-						 
-					};
+			$.each(splitStatement(args["sql"],args["statement_separator"]), function (i, statement) {
+				if ($.trim(statement).length) {
+					var startTime = new Date();
 					
-					if (setArray.length)
-					{
-						$.each(setArray, function (rowNumber, row) {
-							var rowVals = [];
-							$.each(row, function (columnNumber, col) {
-								if (rowNumber == 0)
-								{
-									thisSet["RESULTS"]["COLUMNS"].push(col.column);	
-								}
-								rowVals.push(col.value);
-							});
-							thisSet["RESULTS"]["DATA"].push(rowVals);
-						});
-					}
-
+					var setArray = [];
+					
 					try {
+						setArray = db.exec(statement);
 						
-						exectionPlanArray = db.exec("EXPLAIN QUERY PLAN " + statement);
+						var thisSet = {
+							"SUCCEEDED": true,
+							"EXECUTIONTIME": (new Date()) - startTime,
+							"RESULTS": {
+								"COLUMNS": [],
+								"DATA": []
+							},
+							"EXECUTIONPLAN": {
+								"COLUMNS": [],
+								"DATA": []
+							}
 						
-						if (exectionPlanArray.length)
-						{
-							$.each(exectionPlanArray, function (rowNumber, row) {
+						};
+						
+						if (setArray.length) {
+							$.each(setArray, function(rowNumber, row){
 								var rowVals = [];
-								$.each(row, function (columnNumber, col) {
-									if (rowNumber == 0)
-									{
-										thisSet["EXECUTIONPLAN"]["COLUMNS"].push(col.column);	
+								$.each(row, function(columnNumber, col){
+									if (rowNumber == 0) {
+										thisSet["RESULTS"]["COLUMNS"].push(col.column);
 									}
 									rowVals.push(col.value);
 								});
-								thisSet["EXECUTIONPLAN"]["DATA"].push(rowVals);
+								thisSet["RESULTS"]["DATA"].push(rowVals);
 							});
 						}
 						
-					}
-					catch (e)
-					{
+						try {
+						
+							exectionPlanArray = db.exec("EXPLAIN QUERY PLAN " + statement);
+							
+							if (exectionPlanArray.length) {
+								$.each(exectionPlanArray, function(rowNumber, row){
+									var rowVals = [];
+									$.each(row, function(columnNumber, col){
+										if (rowNumber == 0) {
+											thisSet["EXECUTIONPLAN"]["COLUMNS"].push(col.column);
+										}
+										rowVals.push(col.value);
+									});
+									thisSet["EXECUTIONPLAN"]["DATA"].push(rowVals);
+								});
+							}
+							
+						} 
+						catch (e) {
 						// if we get an error with the execution plan, just ignore and move on.
+						}
+						
+						returnSets.push(thisSet);
+						
+						
+					} 
+					catch (e) {
+						var thisSet = {
+							"SUCCEEDED": false,
+							"EXECUTIONTIME": (new Date()) - startTime,
+							"ERRORMESSAGE": e
+						};
+						returnSets.push(thisSet);
+						return false; // breaks the each loop
 					}
-
-					returnSets.push(thisSet);
-
-
+					
 				}
-				catch (e)
-				{
-					var thisSet = {
-						"SUCCEEDED": false,
-						"EXECUTIONTIME": (new Date()) - startTime,
-						"ERRORMESSAGE": e 
-					};
-					returnSets.push(thisSet);
-					return false; // breaks the each loop
-				}
-
-				
 			});				
 			
 			db.exec("ROLLBACK TRANSACTION");
