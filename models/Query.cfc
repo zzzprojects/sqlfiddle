@@ -49,6 +49,12 @@
 						</cfquery>
 					</cfif>
 
+                                        <cfif this.schema_def.db_type.simple_name IS "SQL Server">
+                                                <cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+  						begin tran;
+						</cfquery>
+					</cfif>
+
 				<cftry>
 	
 	              	<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
@@ -95,7 +101,7 @@
 									<cfif len(this.schema_def.db_type.execution_plan_check)>
                                                                                 <cfset local.checkResult = XMLSearch(local.executionPlan[ListFirst(local.executionPlan.columnList)][1], this.schema_def.db_type.execution_plan_check)>       
 										<cfif ArrayLen(local.checkResult)>
-											<cfthrow type="database" message="Explicit commits and dynamic SQL not allowed in SQL Server.">
+											<cfthrow type="database" message="Explicit commits are not allowed.">
 										</cfif>
                                                                         </cfif>
 
