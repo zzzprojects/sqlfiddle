@@ -130,6 +130,13 @@
 							
 							<!--- run the actual query --->
 							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
+
+							<cfif this.schema_def.db_type.simple_name IS "Oracle">
+								<!--- Just in case some sneaky person finds a way to delete the intentionally-invalid record, we put one back in after each statement that executes. --->
+								<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+								INSERT INTO #local.defered_table# VALUES (2)
+								</cfquery>
+							</cfif>
 	
 							<cfif IsDefined("local.ret")>
 								<!--- use getMetaData to get column names instead of local.ret.columnNames csv list, since there can be valid columns in the resultset which contain commas in their names --->
