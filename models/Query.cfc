@@ -95,7 +95,7 @@
 									<cfif len(this.schema_def.db_type.execution_plan_check)>
                                                                                 <cfset local.checkResult = XMLSearch(local.executionPlan[ListFirst(local.executionPlan.columnList)][1], this.schema_def.db_type.execution_plan_check)>       
 										<cfif ArrayLen(local.checkResult)>
-											<cfthrow type="database" message="Explicit commits not allowed.">
+											<cfthrow type="database" message="Explicit commits and dynamic SQL not allowed in SQL Server.">
 										</cfif>
                                                                         </cfif>
 
