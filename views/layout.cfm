@@ -5,6 +5,12 @@
 		<title>SQL Fiddle</title>
 
 
+	</head>
+	<body>
+		#includeContent()#
+	</body>
+
+
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -19,12 +25,6 @@
   })();
 
 </script>
-
-	</head>
-	<body>
-		#includeContent()#
-	</body>
-
 	
 </html>
 </cfoutput>

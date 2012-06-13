@@ -1,7 +1,7 @@
 component extends="Controller" {
 
 	function index() {
-		location(url='index.html', addtoken=false);
+		location(url='../index.html', addtoken=false);
 	}
 
 	function db_types() {
