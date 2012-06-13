@@ -7,6 +7,10 @@ $(function () {
 		//console.log("Recent Fiddles clicked!");
 	});
 	
+	$("#loginModal").on("hidden", function () {
+		$("iframe")
+			.css("display", "none");
+	});
 
 	$("#textToDDLModal .btn").click(function (e){
 		e.preventDefault();
