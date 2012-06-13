@@ -40,8 +40,8 @@ component extends="Controller" {
 			else
 				session.user.identity = openID.identity;
 				
-			if (StructKeyExists(openid, "email"))
-				session.user.email = openid.email;
+			if (StructKeyExists(openid, "ax") AND StructKeyExists(openid.ax, "email"))
+				session.user.email = openid.ax.email;
 				
 			if (StructKeyExists(openid, "ax") AND StructKeyExists(openid.ax, "firstname"))
 				session.user.firstname = openid.ax.firstname;
