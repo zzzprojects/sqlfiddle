@@ -1,5 +1,12 @@
 component extends="Controller" {
 
+	function info() {
+		if (StructKeyExists(session, "user"))
+			renderPartial("info");
+		else
+			renderPartial("login");
+	}
+
 	function auth() {
 
 		openIDSession = CreateObject("component", "lib.OpenIDConsumer.SessionScopeOpenIDSession").init();
@@ -60,16 +67,14 @@ component extends="Controller" {
 				userObj = model("User").create(session.user);
 			}
 			
-			redirectTo(controller="Dashboard", action="index");
 		}
 		else
 		{
 			StructClear(session);
-			location(url='..', addtoken=false);
 			//<p class="error">ERROR: <span><cfoutput>#openID.resultMsg#</cfoutput></span></p>
 
 		}
-		
+		location(url='..', addtoken=false);
 	}
 
 	function logout() {

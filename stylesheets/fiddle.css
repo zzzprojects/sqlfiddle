@@ -416,4 +416,8 @@ pre.results {
 	background-position: 3px 2px;
 }
 
-
+#gravatar {
+	height: 20px;
+	width: 20px;
+	margin: 0 10px 0 5px;	
+}

@@ -1,6 +1,13 @@
 
 $(function () {
 
+	$("#userInfo").load("index.cfm/Users/info");
+	$("#userInfo").on("click", "#recentFiddles", function (e) {
+		e.preventDefault();
+		//console.log("Recent Fiddles clicked!");
+	});
+	
+
 	$("#textToDDLModal .btn").click(function (e){
 		e.preventDefault();
 
