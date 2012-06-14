@@ -8,6 +8,7 @@
 	</a>
 	<ul class="dropdown-menu">
 		<li><a href="##" id="recentFiddles">Recent Fiddles</a></li>
+		
 		<li><a href="index.cfm/Users/logout">Logout</a></li>
 	</ul>
 </cfoutput>

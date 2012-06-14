@@ -5,6 +5,7 @@ component extends="Controller" {
 
 	function init()
 	{
+		super.init();
 		filters(through="validateAccess");
 	}
 	

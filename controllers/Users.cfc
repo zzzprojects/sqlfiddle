@@ -1,6 +1,6 @@
 component extends="Controller" {
 
-	function info() {
+	function info() {		
 		if (StructKeyExists(session, "user"))
 			renderPartial("info");
 		else
@@ -41,11 +41,16 @@ component extends="Controller" {
 		{
 			session.user = {};
 			session.user.openid_server = openID.openid_server;
+			session.user.auth_token = createuuid();
 			
 			if (StructKeyExists(openID, "user_identity"))
 				session.user.identity = openID.user_identity;
 			else
 				session.user.identity = openID.identity;
+
+			getPageContext().getResponse().addHeader("Set-Cookie", "openid=#URLEncodedFormat(session.user.identity)#; path=/; Max-Age=31622400" );
+			getPageContext().getResponse().addHeader("Set-Cookie", "auth_token=#URLEncodedFormat(session.user.auth_token)#; path=/; Max-Age=31622400" );
+
 				
 			if (StructKeyExists(openid, "ax") AND StructKeyExists(openid.ax, "email"))
 				session.user.email = openid.ax.email;
@@ -78,6 +83,9 @@ component extends="Controller" {
 	}
 
 	function logout() {
+		getPageContext().getResponse().addHeader("Set-Cookie", "openid=; path=/; Max-Age=0" );
+		getPageContext().getResponse().addHeader("Set-Cookie", "auth_token=; path=/; Max-Age=0" );
+		
 		StructClear(session);
 		location(url='..', addtoken=false);		
 	}
