@@ -66,10 +66,13 @@ component extends="Controller" {
 			if (IsObject(userObj))
 			{
 				userObj.update(session.user);
+				session.user.id = userObj.id;
 			}
 			else
 			{
 				userObj = model("User").create(session.user);
+				userObj.reload();
+				session.user.id = userObj.id;
 			}
 			
 		}

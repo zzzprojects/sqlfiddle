@@ -25,8 +25,7 @@
 			host.initializeDSN(this.short_code);
 			host.initializeSchema(this.short_code, this.ddl, this.statement_separator);
 		}
-		this.save();					
-		
+		this.save();	
 		
 	}
 	

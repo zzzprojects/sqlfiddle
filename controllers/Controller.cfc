@@ -15,6 +15,7 @@
 			if (IsObject(openid))
 			{
 				session.user = {};
+				session.user.id = openID.id;
 				session.user.openid_server = openID.openid_server;
 				session.user.identity = openID.identity;
 				session.user.auth_token = openID.auth_token;
