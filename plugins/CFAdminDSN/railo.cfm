@@ -23,6 +23,8 @@
 	<cfargument name="pooling" type="boolean" default="true"><!--- not used in Railo --->
 	<cfargument name="description" type="string" default=""><!--- not used in Railo --->
 
+		<cflock name="cfadmin" timeout="30">
+
 			<cfadmin
 			    action="updateDatasource"
 			    type="web"
@@ -44,6 +46,8 @@
 			    allowed_revoke="#arguments.allowed_revoke#"
 			    allowed_create="#arguments.allowed_create#"
 			    allowed_grant="#arguments.allowed_grant#">
+		</cflock>
+
 	
 </cffunction>
 
@@ -52,11 +56,14 @@
 	<cfargument name="adminPassword" type="string" required="true">
 	<cfargument name="name" type="string" required="true">
 
-	<cfadmin 
-		action="removeDatasource" 
-		name="#arguments.name#" 
-		type="web" 
-		password="#arguments.adminPassword#">
+	<cflock name="cfadmin" timeout="30">
 
+		<cfadmin 
+			action="removeDatasource" 
+			name="#arguments.name#" 
+			type="web" 
+			password="#arguments.adminPassword#">
+
+	</cflock>
 
 </cffunction>					
