@@ -2,12 +2,25 @@
 $(function () {
 
 	$("#userInfo").load("index.cfm/Users/info");
-	$("#userInfo").on("click", "#recentFiddles", function (e) {
+	
+	$("#userInfo").on("click", "#myFiddles", function (e) {
 		e.preventDefault();
-		//console.log("Recent Fiddles clicked!");
+		
+		$('#myFiddlesModal').modal('show');
+		$('#myFiddlesModal .modal-body').block({ message: "Loading..."});
+
+		$("#myFiddlesModal .modal-body").load("index.cfm/UserFiddles", {tz: (new Date()).getTimezoneOffset()/60}, function () {
+			$(this).unblock();
+		});
 	});
 	
+	$("#myFiddlesModal").on("click", "a", function (e) {
+			$('#myFiddlesModal').modal('hide');
+	});
+		
+	
 	$("#loginModal").on("hidden", function () {
+		// this fixes a bug with the openid UI staying open even after the login modal has closed.
 		$("iframe")
 			.css("display", "none");
 	});

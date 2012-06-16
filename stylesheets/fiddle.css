@@ -240,6 +240,16 @@ pre.results {
 .modal {
 	display: none;
 }
+
+#myFiddlesModal {
+	width: 800px;
+	margin: -250px 0 0 -420px;	
+}
+
+#myFiddlesModal .modal-body {
+	overflow-y: auto;	
+}
+
 #raw, #parseResults { 
 	width: 90%;
 }

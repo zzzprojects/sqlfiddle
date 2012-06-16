@@ -6,15 +6,9 @@ component extends="Controller" {
 	function init()
 	{
 		super.init();
-		filters(through="validateAccess");
+		filters(through="requireLoggedIn");
 	}
 	
-	function validateAccess()
-	{
-		if (! StructKeyExists(session, "user"))
-			location(url="..", addToken=false);
-	}
-
 
 
 }

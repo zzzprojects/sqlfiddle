@@ -25,5 +25,13 @@
 			}
 		}
 	}
+
+	function requireLoggedIn()
+	{
+		if (! StructKeyExists(session, "user"))
+			location(url="..", addToken=false);
+	}
+
+	
 	</cfscript>
 </cfcomponent>
