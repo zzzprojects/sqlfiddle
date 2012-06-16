@@ -77,57 +77,69 @@
 
 		<cfif (db_type.context IS "host")><!--- if the context for this schema is anything other than "host", we don't do much on this end--->
 			
-			<cfif db_type.simple_name IS "Oracle">
+			<cfif isJSON(this.structure_json)>
 				
-				<!--- using dbinfo is far too slow for Oracle, since it returns thousands of unneeded system tables --->
-
-				<cfquery datasource="#this.db_type_id#_#this.short_code#" name="local.tablesList">
-				SELECT table_name as table_Name, 'TABLE' as table_Type from all_tables where owner = Upper(<cfqueryparam value="user_#this.short_code#" cfsqltype="cf_sql_varchar">)
-				UNION
-				SELECT view_name as table_Name, 'VIEW' as table_Type from all_views where owner = Upper(<cfqueryparam value="user_#this.short_code#" cfsqltype="cf_sql_varchar">)
-				</cfquery>
+				<cfset schemaStruct = deserializeJSON(this.structure_json)>
 				
 			<cfelse>
-		
-				<cfdbinfo datasource="#this.db_type_id#_#this.short_code#" type="tables" name="local.tablesList">
-
-			</cfif>
 			
-			
-			<cfloop query="local.tablesList">
 				
-				<cfif ListFindNoCase("TABLE,VIEW",table_type) AND (db_type.simple_name IS NOT "SQL Server" OR table_schem IS "dbo")>
-					<cfset local.tableStruct = {
-							"table_name"= table_Name,
-							"table_type"= table_Type,
-							"columns"= []
-						}>
-							
-						<cfif db_type.simple_name IS "Oracle">
-	
-							<cfquery datasource="#this.db_type_id#_#this.short_code#" name="local.columnsList">
-							SELECT column_name, data_type as type_name, DATA_LENGTH as column_size from all_tab_columns where owner = Upper(<cfqueryparam value="user_#this.short_code#" cfsqltype="cf_sql_varchar">)
-							AND table_name = <cfqueryparam value="#table_name#" cfsqltype="cf_sql_varchar">
-							</cfquery>
+				<cfif db_type.simple_name IS "Oracle">
 					
-						<cfelse>
-							
-							<cfdbinfo datasource="#this.db_type_id#_#this.short_code#" type="columns" table="#table_name#" name="local.columnsList">
+					<!--- using dbinfo is far too slow for Oracle, since it returns thousands of unneeded system tables --->
 	
-						</cfif>
-
-						<cfloop query="local.columnsList">
-						
-							<cfset ArrayAppend(local.tableStruct["columns"], {
-									"name" = column_name,
-									"type" = "#type_name# (#column_size#)"
-								})>
-							
-						</cfloop>
-						
-					<cfset ArrayAppend(schemaStruct, local.tableStruct)>
+					<cfquery datasource="#this.db_type_id#_#this.short_code#" name="local.tablesList">
+					SELECT table_name as table_Name, 'TABLE' as table_Type from all_tables where owner = Upper(<cfqueryparam value="user_#this.short_code#" cfsqltype="cf_sql_varchar">)
+					UNION
+					SELECT view_name as table_Name, 'VIEW' as table_Type from all_views where owner = Upper(<cfqueryparam value="user_#this.short_code#" cfsqltype="cf_sql_varchar">)
+					</cfquery>
+					
+				<cfelse>
+			
+					<cfdbinfo datasource="#this.db_type_id#_#this.short_code#" type="tables" name="local.tablesList">
+	
 				</cfif>
-			</cfloop>
+				
+				
+				<cfloop query="local.tablesList">
+					
+					<cfif ListFindNoCase("TABLE,VIEW",table_type) AND (db_type.simple_name IS NOT "SQL Server" OR table_schem IS "dbo")>
+						<cfset local.tableStruct = {
+								"table_name"= table_Name,
+								"table_type"= table_Type,
+								"columns"= []
+							}>
+								
+							<cfif db_type.simple_name IS "Oracle">
+		
+								<cfquery datasource="#this.db_type_id#_#this.short_code#" name="local.columnsList">
+								SELECT column_name, data_type as type_name, DATA_LENGTH as column_size from all_tab_columns where owner = Upper(<cfqueryparam value="user_#this.short_code#" cfsqltype="cf_sql_varchar">)
+								AND table_name = <cfqueryparam value="#table_name#" cfsqltype="cf_sql_varchar">
+								</cfquery>
+						
+							<cfelse>
+								
+								<cfdbinfo datasource="#this.db_type_id#_#this.short_code#" type="columns" table="#table_name#" name="local.columnsList">
+		
+							</cfif>
+	
+							<cfloop query="local.columnsList">
+							
+								<cfset ArrayAppend(local.tableStruct["columns"], {
+										"name" = column_name,
+										"type" = "#type_name# (#column_size#)"
+									})>
+								
+							</cfloop>
+							
+						<cfset ArrayAppend(schemaStruct, local.tableStruct)>
+					</cfif>
+				</cfloop>
+			
+				<cfset this.structure_json = serializeJSON(schemaStruct)>
+				<cfset this.save()>
+			
+			</cfif>
 			
 		</cfif>
 		

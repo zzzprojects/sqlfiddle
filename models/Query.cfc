@@ -13,6 +13,7 @@
 		<cfset var ret = QueryNew("")>
 		<cfset var executionPlan = QueryNew("")>
 		<cfset var statement = "">
+		<cfset var statementArray = []>
 		<cfset var sqlBatchList = "">
 
 		<cfif StructKeyExists(server, "railo")><!--- Annoying incompatiblity found in how ACF and Railo escape backreferences --->
@@ -26,7 +27,9 @@
 		</cfif>
 		
 		<cfif this.schema_def.db_type.context IS "host">
-				
+			
+			<cfset local.hasQuerySets = model("Query_Set").count(where="query_id=#this.id# AND schema_def_id = #this.schema_def_id#")>
+			
 			<cfset returnVal["sets"] = []>
 			
 			<cftransaction>
@@ -130,6 +133,7 @@
 							
 							<!--- run the actual query --->
 							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
+							<cfset ArrayAppend(statementArray, statement)>
 
 							<cfif this.schema_def.db_type.simple_name IS "Oracle">
 								<!--- Just in case some sneaky person finds a way to delete the intentionally-invalid record, we put one back in after each statement that executes. --->
@@ -161,6 +165,7 @@
 									ExecutionTime = (IsDefined("resultInfo.ExecutionTime") ? resultInfo.ExecutionTime : 0),
 									ExecutionPlan = ((IsDefined("local.executionPlan") AND IsQuery(local.executionPlan) AND local.executionPlan.recordCount) ? Duplicate(local.executionPlan) : [])
 									})>
+
 							<cfelse>
 								<cfset ArrayAppend(returnVal["sets"], {
 									succeeded = true,
@@ -169,8 +174,6 @@
 									ExecutionPlan = ((IsDefined("local.executionPlan") AND IsQuery(local.executionPlan) AND local.executionPlan.recordCount) ? Duplicate(local.executionPlan) : [])
 									})>
 							</cfif>
-							
-							
 	
 						</cfif>
 						
@@ -197,6 +200,7 @@
 							})>
 
 						</cfif>
+						
 					</cfcatch>
 					<cffinally>	
 	
@@ -216,6 +220,25 @@
 	
 	
 			</cftransaction>
+
+
+			<cfif not local.hasQuerySets>
+				<cfloop from="1" to="#ArrayLen(returnVal['sets'])#" index="i" >
+					<cfset tmp= model("Query_Set").create({
+						id = i,
+						query_id = this.id,
+						schema_def_id = this.schema_def_id,
+						row_count = StructKeyExists(returnVal["sets"][i], "results") AND IsQuery(returnVal["sets"][i].results) ? returnVal["sets"][i].results.recordCount : 0,
+						execution_time = StructKeyExists(returnVal["sets"][i], "ExecutionTime") ? returnVal["sets"][i].ExecutionTime : 0,
+						execution_plan = StructKeyExists(returnVal["sets"][i], "ExecutionPlan") ? SerializeJSON(returnVal["sets"][i].ExecutionPlan) : "",
+						succeeded = returnVal["sets"][i].succeeded ? 1 : 0,
+						error_message = StructKeyExists(returnVal["sets"][i], "errorMessage") ? returnVal["sets"][i].errorMessage : "",
+						sql = statementArray[i]
+					})>
+				</cfloop>
+			</cfif>
+			
+
 
 		</cfif>
 		
