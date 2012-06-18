@@ -24,7 +24,13 @@
 
 	</cffunction>
 
-	
+	<cffunction name="buildMetaData">
+		<cfscript>
+		
+			schemas = model("Schema_Def").findAll(where="structure_json IS NULL");
+		
+		</cfscript>
+	</cffunction>
 
 
 </cfcomponent>
