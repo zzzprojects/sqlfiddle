@@ -78,8 +78,18 @@
 								<cftry>	
 									<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="executionPlan">#PreserveSingleQuotes(executionPlanStatement)#</cfquery>								
 									<cfcatch type="database">
+										
 									<!--- execution plan failed! Oh well, carry on.... --->
 									<cfset local.executionPlan = QueryNew("")>
+
+
+									<cfif this.schema_def.db_type.simple_name IS "MySQL">
+										<!--- since we only want to allow queries with valid execution plans for MySQL, 
+											queries that throw errors at the execution plan level should have those 
+											errors reported (otherwise they'd be trapped) --->
+										<cfrethrow>
+									</cfif>
+									
 									</cfcatch>
 								</cftry>								
 								</cfloop>
@@ -93,11 +103,11 @@
 
 									<!--- This is pretty much only for SQL Server, since only SQL Server reports when explicit commits occur. --->
 									<cfif len(this.schema_def.db_type.execution_plan_check)>
-                                                                                <cfset local.checkResult = XMLSearch(local.executionPlan[ListFirst(local.executionPlan.columnList)][1], this.schema_def.db_type.execution_plan_check)>       
+										<cfset local.checkResult = XMLSearch(local.executionPlan[ListFirst(local.executionPlan.columnList)][1], this.schema_def.db_type.execution_plan_check)>       
 										<cfif ArrayLen(local.checkResult)>
 											<cfthrow type="database" message="Explicit commits not allowed.">
 										</cfif>
-                                                                        </cfif>
+									</cfif>
 
 									<!--- if we have xslt available for this db type, use it to transform the execution plan response --->
 									<cfif Len(this.schema_def.db_type.execution_plan_xslt)>
