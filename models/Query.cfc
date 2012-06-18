@@ -105,7 +105,7 @@
 									<cfif len(this.schema_def.db_type.execution_plan_check)>
 										<cfset local.checkResult = XMLSearch(local.executionPlan[ListFirst(local.executionPlan.columnList)][1], this.schema_def.db_type.execution_plan_check)>       
 										<cfif ArrayLen(local.checkResult)>
-											<cfthrow type="database" message="Explicit commits not allowed.">
+											<cfthrow type="database" message="Explicit commits are not allowed.">
 										</cfif>
 									</cfif>
 
@@ -135,9 +135,17 @@
 									)>	
 									<cfthrow type="database" message="DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel.">
 								</cfif>
-	
+
 							</cfif> <!--- end if execution plan --->
-							
+				
+
+							<cfif this.schema_def.db_type.simple_name IS "SQL Server">
+								<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+								begin tran;
+								</cfquery>
+							</cfif>
+
+			
 							<!--- run the actual query --->
 							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>
 
