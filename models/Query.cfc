@@ -56,7 +56,12 @@
 						<cfset local.executionPlan = QueryNew("")>
 	
 						<cfif Len(trim(statement))><!--- don't run empty queries --->
-	
+
+							<!--- We're restricting MySQL to just select statements for the query panel, since we can't prevent commits any other way --->
+							<cfif this.schema_def.db_type.simple_name IS "MySQL" AND NOT (ReFindNoCase("^\s*SELECT", statement))>	
+								<cfthrow type="database" message="DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel.">
+							</cfif>
+
 							<!--- if there is an execution plan mechanism available for this db type --->
 							<cfif 		(
 										Len(this.schema_def.db_type.execution_plan_prefix) OR
@@ -125,6 +130,7 @@
 									</cfif><!--- end if xslt is/is not available for type --->
 
 								</cfif><!--- end if xml-based execution plan --->
+
 
 								<!--- We're restricting MySQL to just select statements for the query panel, since we can't prevent commits any other way --->
 								<cfif this.schema_def.db_type.simple_name IS "MySQL" AND 
