@@ -58,8 +58,13 @@
 						<cfif Len(trim(statement))><!--- don't run empty queries --->
 
 							<!--- We're restricting MySQL to just select statements for the query panel, since we can't prevent commits any other way --->
-							<cfif this.schema_def.db_type.simple_name IS "MySQL" AND NOT (ReFindNoCase("^\s*SELECT", statement))>	
-								<cfthrow type="database" message="DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel.">
+							<cfif this.schema_def.db_type.simple_name IS "MySQL">
+								<!--- if we are looking at the first bit of executable code in this statement, we have to ignore comments --->
+								<cfset local.cleanStatement = ReReplaceNoCase(statement,"((--)|(##))(.*?)\n","","ALL")>
+								<cfset local.cleanStatement = ReReplaceNoCase(local.cleanStatement,"/\*(.*?)\*/","","ALL")>
+								<cfif NOT (ReFindNoCase("^\s*SELECT", local.cleanStatement))>	
+									<cfthrow message="DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel.">
+								</cfif>
 							</cfif>
 
 							<!--- if there is an execution plan mechanism available for this db type --->
@@ -82,7 +87,7 @@
 								<cfloop list="#local.executionPlanBatchList#" index="executionPlanStatement" delimiters="#chr(7)#">
 								<cftry>	
 									<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="executionPlan">#PreserveSingleQuotes(executionPlanStatement)#</cfquery>								
-									<cfcatch type="database">
+									<cfcatch>
 										
 									<!--- execution plan failed! Oh well, carry on.... --->
 									<cfset local.executionPlan = QueryNew("")>
@@ -110,7 +115,7 @@
 									<cfif len(this.schema_def.db_type.execution_plan_check)>
 										<cfset local.checkResult = XMLSearch(local.executionPlan[ListFirst(local.executionPlan.columnList)][1], this.schema_def.db_type.execution_plan_check)>       
 										<cfif ArrayLen(local.checkResult)>
-											<cfthrow type="database" message="Explicit commits are not allowed.">
+											<cfthrow message="Explicit commits are not allowed.">
 										</cfif>
 									</cfif>
 
@@ -139,7 +144,7 @@
 										IsQuery(local.executionPlan) AND
 										local.executionPlan.recordCount
 									)>	
-									<cfthrow type="database" message="DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel.">
+									<cfthrow message="DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel.">
 								</cfif>
 
 							</cfif> <!--- end if execution plan --->
@@ -202,7 +207,7 @@
 						<cfset StructDelete(local, "ret")>
 	              	</cfloop>
 
-					<cfcatch type="database">
+					<cfcatch>
 
 						<cfif 	this.schema_def.db_type.simple_name IS "Oracle" AND
 							FindNoCase("ORA-02290: check constraint (USER_#UCase(this.schema_def.short_code)#.#local.defered_table#_CK) violated", cfcatch.message)>
