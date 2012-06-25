@@ -11,18 +11,46 @@ $(function () {
 
 		$("#myFiddlesModal .modal-body").load("index.cfm/UserFiddles", {tz: (new Date()).getTimezoneOffset()/60}, function () {
 			$(this).unblock();
+			
+			$(".schemaLog .popover-anchor").popover({
+				placement: "left",
+				title: "Schema Structure",
+				content: function () {
+					return $(this).closest('td').find('.schemaPreviewWrapper').html();
+				}				
+			});
+
+			$(".queryLog .result-sets").popover({
+				placement: "left",
+				title: "Query Results",
+				content: function () {
+					return $(this).closest('td').find('.resultSetWrapper').html();
+				}				
+			});
+			
+			$(".showAll", this).click(function (e) {
+				e.preventDefault();
+				console.log($(this).closest("tr").attr("id"));
+				$("tr.for-schema-" + $(this).closest("tr").attr("id")).show("fast");
+				$(this).hide();
+			});
+			
 		});
 	});
 	
 	$("#myFiddlesModal").on("click", "a", function (e) {
 			$('#myFiddlesModal').modal('hide');
 	});
-		
+
+	$("#myFiddlesModal").on("hidden", function () {
+		$(".popover-anchor", this).popover('hide');
+	});	
 	
 	$("#loginModal").on("hidden", function () {
 		// this fixes a bug with the openid UI staying open even after the login modal has closed.
 		$("iframe")
 			.css("display", "none");
+			
 	});
 
 	$("#textToDDLModal .btn").click(function (e){

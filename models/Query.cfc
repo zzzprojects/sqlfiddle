@@ -183,6 +183,8 @@
 
 					<cfcatch type="database">
 
+						<cfset ArrayAppend(statementArray, statement)>
+
 						<cfif 	this.schema_def.db_type.simple_name IS "Oracle" AND
 							FindNoCase("ORA-02290: check constraint (USER_#UCase(this.schema_def.short_code)#.#local.defered_table#_CK) violated", cfcatch.message)>
 
@@ -190,7 +192,6 @@
 								succeeded = false,
 								errorMessage = "Explicit commits and DDL (ex: CREATE, DROP, RENAME, or ALTER) are not allowed within the query panel for Oracle.  Put DDL in the schema panel instead."
                                                         })>     
-
 
 						<cfelse>	
 
@@ -228,12 +229,13 @@
 						id = i,
 						query_id = this.id,
 						schema_def_id = this.schema_def_id,
-						row_count = StructKeyExists(returnVal["sets"][i], "results") AND IsQuery(returnVal["sets"][i].results) ? returnVal["sets"][i].results.recordCount : 0,
+						row_count = (StructKeyExists(returnVal["sets"][i], "results") AND IsQuery(returnVal["sets"][i].results)) ? returnVal["sets"][i].results.recordCount : 0,
 						execution_time = StructKeyExists(returnVal["sets"][i], "ExecutionTime") ? returnVal["sets"][i].ExecutionTime : 0,
 						execution_plan = StructKeyExists(returnVal["sets"][i], "ExecutionPlan") ? SerializeJSON(returnVal["sets"][i].ExecutionPlan) : "",
 						succeeded = returnVal["sets"][i].succeeded ? 1 : 0,
 						error_message = StructKeyExists(returnVal["sets"][i], "errorMessage") ? returnVal["sets"][i].errorMessage : "",
-						sql = statementArray[i]
+						sql = statementArray[i],
+						columns_list = (StructKeyExists(returnVal["sets"][i], "results") AND IsQuery(returnVal["sets"][i].results)) ? Left(returnVal["sets"][i].results.columnList, 500) : ""
 					})>
 				</cfloop>
 			</cfif>

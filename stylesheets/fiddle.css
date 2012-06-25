@@ -65,7 +65,7 @@
 	z-index: 1001;
 	margin: 10px 20px;
 }
-
+	
 #browser, .browser_actions {
 	padding-left: 15px;
 	display: none;
@@ -82,6 +82,29 @@
 
 .tables .columns {
 	display: none;	
+}
+.popover .tables .columns {
+	display: block;	
+}
+	
+.resultSetWrapper, .schemaPreviewWrapper, .queryLog-hidden {
+	display: none;
+}
+
+.resultSetPreview {
+	list-style-type: none;
+	margin: 0;
+}
+
+.resultSetPreview li {
+	white-space: nowrap;		
+}
+.resultSetPreview li pre {
+	margin-bottom: 2px;
+	overflow-x: hidden;		
+	max-height: 75px;
+	overflow-y: hidden;
+	background-color: white;
 }
 
 .highlight {
@@ -104,7 +127,7 @@
 	text-align: right;	
 }	
 
-pre.results {
+pre.results, .resultSetPreview li pre {
 	font-family:monospace;
 	font-size: 10pt;	
 }
@@ -390,6 +413,23 @@ pre.results {
   text-decoration: none;
   background-color: #0088cc;
 }
+
+
+
+.popover-inner {
+  min-width: 280px;
+  width: auto;
+  overflow-x: visible;
+  overflow-y: hidden;
+  max-height: 400px;
+}
+
+.popover-inner .alert {
+	max-width: 400px;
+	overflow-x: hidden;	
+}
+
+
 #sidebar .well {
   padding: 8px 0;
 }

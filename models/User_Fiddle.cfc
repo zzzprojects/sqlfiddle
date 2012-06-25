@@ -20,8 +20,17 @@
 			mySchemas.schema_def_id,
 			mySchemas.owner_id,
 			mySchemas.user_id,
+			mySchemas.structure_json,
+			
 			max(uf.accessed) as most_recent_query_access,
-			uf.query_id
+			uf.query_id,
+			
+			qs.id as set_id,
+			qs.row_count,
+			qs.succeeded,
+			qs.sql,
+			qs.error_message,
+			qs.columns_list
 		FROM
 		(
 			SELECT
@@ -31,6 +40,7 @@
 				sd.db_type_id,
 				sd.short_code,
 				sd.id as schema_def_id,
+				sd.structure_json,
 				sd.owner_id,
 				uf.user_id
 			FROM
@@ -52,6 +62,9 @@
 			LEFT OUTER JOIN User_Fiddles uf ON
 				mySchemas.schema_def_id = uf.schema_def_id AND
 				mySchemas.user_id = uf.user_id
+			LEFT OUTER JOIN Query_Sets qs ON
+				uf.schema_def_id = qs.schema_def_id AND
+				uf.query_id = qs.query_id
 		WHERE
 			uf.query_id IS NOT NULL
 		GROUP BY
@@ -63,10 +76,20 @@
 			mySchemas.schema_def_id,
 			mySchemas.owner_id,
 			mySchemas.user_id,
-			uf.query_id
+			mySchemas.structure_json,
+			uf.query_id,
+			
+			qs.id,
+			qs.row_count,
+			qs.succeeded,
+			qs.sql,
+			qs.error_message,
+			qs.columns_list
+			
 		ORDER BY
 			most_recent_schema_access DESC,
-			most_recent_query_access DESC
+			most_recent_query_access DESC,
+			qs.id
 		</cfquery>
 		
 		<cfreturn local.fiddles>

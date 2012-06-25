@@ -9,7 +9,8 @@ create table Query_Sets (
 	succeeded smallint,
 	sql text,
 	execution_plan text,
-	error_message text
+	error_message text,
+	columns_list varchar(500)
 );
 
 
