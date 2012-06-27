@@ -12,6 +12,9 @@ component extends="Controller" {
 		openIDSession = CreateObject("component", "lib.OpenIDConsumer.SessionScopeOpenIDSession").init();
 		oConsumer = CreateObject("component", "lib.OpenIDConsumer.OpenIDConsumer2").init(openIDSession);
 
+		session.remember = StructKeyExists(params, "remember");
+		session.prelogin_hash = params.hash;
+
 		authArgs = {};
 		authArgs.identifier = params.openid_identity;
 		authArgs.returnURL = "http#IIF(cgi.https eq 'on',DE('s'),DE(''))#://#cgi.http_host##cgi.script_name#/Users/process";
@@ -48,9 +51,16 @@ component extends="Controller" {
 			else
 				session.user.identity = openID.identity;
 
-			getPageContext().getResponse().addHeader("Set-Cookie", "openid=#URLEncodedFormat(session.user.identity)#; path=/; Max-Age=31622400" );
-			getPageContext().getResponse().addHeader("Set-Cookie", "auth_token=#URLEncodedFormat(session.user.auth_token)#; path=/; Max-Age=31622400" );
-
+			if (StructKeyExists(session, "remember") AND session.remember)
+			{
+				getPageContext().getResponse().addHeader("Set-Cookie", "openid=#URLEncodedFormat(session.user.identity)#; path=/; Max-Age=31622400" );
+				getPageContext().getResponse().addHeader("Set-Cookie", "auth_token=#URLEncodedFormat(session.user.auth_token)#; path=/; Max-Age=31622400" );
+			}
+			else
+			{
+				getPageContext().getResponse().addHeader("Set-Cookie", "openid=#URLEncodedFormat(session.user.identity)#; path=/;" );
+				getPageContext().getResponse().addHeader("Set-Cookie", "auth_token=#URLEncodedFormat(session.user.auth_token)#; path=/;" );
+			}
 				
 			if (StructKeyExists(openid, "ax") AND StructKeyExists(openid.ax, "email"))
 				session.user.email = openid.ax.email;
@@ -82,7 +92,11 @@ component extends="Controller" {
 			//<p class="error">ERROR: <span><cfoutput>#openID.resultMsg#</cfoutput></span></p>
 
 		}
-		location(url='..', addtoken=false);
+		
+		if (StructKeyExists(session, "prelogin_hash"))
+			location(url='..#session.prelogin_hash#', addtoken=false);
+		else
+			location(url='..', addtoken=false);
 	}
 
 	function logout() {
@@ -90,7 +104,10 @@ component extends="Controller" {
 		getPageContext().getResponse().addHeader("Set-Cookie", "auth_token=; path=/; Max-Age=0" );
 		
 		StructClear(session);
-		location(url='..', addtoken=false);		
+		if (StructKeyExists(params, "hash"))
+			location(url='..#params.hash#', addtoken=false);
+		else
+			location(url='..', addtoken=false);
 	}
 
 }

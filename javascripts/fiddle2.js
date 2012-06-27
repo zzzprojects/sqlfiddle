@@ -1,8 +1,6 @@
 
 $(function () {
 
-	$("#userInfo").load("index.cfm/Users/info");
-	
 	$("#userInfo").on("click", "#myFiddles", function (e) {
 		e.preventDefault();
 		
@@ -38,6 +36,16 @@ $(function () {
 		});
 	});
 	
+
+	$("#userInfo").on("click", "#logout", function (e) {
+		e.preventDefault();
+
+		// fun way to modify a link after it's been clicked - change it to a form and attach a hidden input to it.
+		$("<form>", { action: $(this).attr("href"), method: "GET"})
+			.append($("<input>", { type: "hidden", name:"hash", value: window.location.hash}))
+			.submit();
+	});	
+	
 	$("#myFiddlesModal").on("click", "a", function (e) {
 			$('#myFiddlesModal').modal('hide');
 	});
@@ -45,7 +53,16 @@ $(function () {
 	$("#myFiddlesModal").on("hidden", function () {
 		$(".popover-anchor", this).popover('hide');
 	});	
-	
+
+	if ($.cookie('openid'))
+		$("#userInfo").load("index.cfm/Users/info");
+	else
+		$("#userInfo a").toggle();
+
+	$("#loginModal form").submit(function () {
+		$("#hash", this).val(window.location.hash);
+	});
+		
 	$("#loginModal").on("hidden", function () {
 		// this fixes a bug with the openid UI staying open even after the login modal has closed.
 		$("iframe")

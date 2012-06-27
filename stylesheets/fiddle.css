@@ -414,7 +414,13 @@ pre.results, .resultSetPreview li pre {
   background-color: #0088cc;
 }
 
+.form-horizontal .control-group {
+  margin-bottom: 6px;
+}
 
+.modal form {
+	margin:0;
+}
 
 .popover-inner {
   min-width: 280px;
@@ -456,7 +462,7 @@ pre.results, .resultSetPreview li pre {
 
 
 #openid_identifier {
-	width: 322px;
+	width: 250px;
 	margin: 0px;
 	padding: 2px;
 	padding-left: 20px;

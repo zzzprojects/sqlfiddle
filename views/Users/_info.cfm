@@ -9,6 +9,6 @@
 	<ul class="dropdown-menu">
 		<li><a href="##" id="myFiddles">My Fiddles</a></li>
 		
-		<li><a href="index.cfm/Users/logout">Logout</a></li>
+		<li><a href="index.cfm/Users/logout" id="logout">Logout</a></li>
 	</ul>
 </cfoutput>
