@@ -4,7 +4,8 @@ create table user_fiddles
 	user_id int not null,
 	schema_def_id int not null,
 	query_id int,
-	accessed timestamp without time zone default now()
+	last_accessed timestamp without time zone default now(),
+	num_accesses int default 1
 );
 
 
@@ -13,3 +14,5 @@ ALTER TABLE ONLY user_fiddles
 
 
 CREATE INDEX user_fiddles_user_id ON user_fiddles USING btree (user_id);
+
+CREATE INDEX user_fiddles_user_schema_query_id ON user_fiddles USING btree (user_id,schema_def_id,query_id);

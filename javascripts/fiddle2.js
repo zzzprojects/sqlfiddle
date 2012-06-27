@@ -1,6 +1,8 @@
 
 $(function () {
 
+/* MY FIDDLES */
+
 	$("#userInfo").on("click", "#myFiddles", function (e) {
 		e.preventDefault();
 		
@@ -33,19 +35,12 @@ $(function () {
 				$(this).hide();
 			});
 			
+			
+			
 		});
 	});
 	
 
-	$("#userInfo").on("click", "#logout", function (e) {
-		e.preventDefault();
-
-		// fun way to modify a link after it's been clicked - change it to a form and attach a hidden input to it.
-		$("<form>", { action: $(this).attr("href"), method: "GET"})
-			.append($("<input>", { type: "hidden", name:"hash", value: window.location.hash}))
-			.submit();
-	});	
-	
 	$("#myFiddlesModal").on("click", "a", function (e) {
 			$('#myFiddlesModal').modal('hide');
 	});
@@ -53,6 +48,9 @@ $(function () {
 	$("#myFiddlesModal").on("hidden", function () {
 		$(".popover-anchor", this).popover('hide');
 	});	
+
+
+/* LOGIN/LOGOUT */
 
 	if ($.cookie('openid'))
 		$("#userInfo").load("index.cfm/Users/info");
@@ -69,6 +67,18 @@ $(function () {
 			.css("display", "none");
 			
 	});
+
+	$("#userInfo").on("click", "#logout", function (e) {
+		e.preventDefault();
+
+		// fun way to modify a link after it's been clicked - change it to a form and attach a hidden input to it.
+		$("<form>", { action: $(this).attr("href"), method: "GET"})
+			.append($("<input>", { type: "hidden", name:"hash", value: window.location.hash}))
+			.submit();
+	});	
+	
+
+/* TEXT TO DDL */
 
 	$("#textToDDLModal .btn").click(function (e){
 		e.preventDefault();
@@ -91,10 +101,8 @@ $(function () {
 	});
 	
 	
-	$(".nav").on('click', 'a', function (e) {
-		$(".nav-collapse.in").collapse('hide');
-	});
-	
+/* FULLSCREEN EDITS */
+
 	function toggleFullscreenNav(option)
 	{
 		
@@ -145,6 +153,8 @@ $(function () {
 	});
 	
 	
+/* SCHEMA BROWSER */
+	
 	$("#schemaBrowser").on('click', function (e) {
 		e.preventDefault();
 		if (!$(this).attr('disabled')) {
@@ -166,8 +176,20 @@ $(function () {
 		
 	})
 	
+	
+/* RESIZING UI*/
+	
 	$(window).bind('resize', resizeLayout);		
 	setTimeout(resizeLayout, 1);
+	
+
+/* COLLAPSING NAV (for responsive UI) */
+
+	$(".nav").on('click', 'a', function (e) {
+		$(".nav-collapse.in").collapse('hide');
+	});
+
+	
 });
 
 $.blockUI.defaults.overlayCSS.cursor = 'auto';

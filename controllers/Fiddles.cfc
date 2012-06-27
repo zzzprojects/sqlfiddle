@@ -77,14 +77,8 @@ component extends="Controller" {
 				
 			}
 			
-			if (StructKeyExists(session, "user"))
-			{
-				model("User_Fiddles").create({
-					"user_id" = session.user.id,
-					"schema_def_id" = schema_def.id
-				});
-			}
-			
+			model("User_Fiddle").logAccess(schema_def_id=schema_def.id);
+
 			renderText(SerializeJSON({
 				"short_code" = short_code,
 				"schema_structure" = schema_def.getSchemaStructure() 
@@ -143,17 +137,9 @@ component extends="Controller" {
 			
 			query.save();
 		}
+
+		model("User_Fiddle").logAccess(schema_def_id=schema_def.id,query_id=query.id);
 		
-		if (StructKeyExists(session, "user"))
-		{
-			model("User_Fiddles").create({
-				"user_id" = session.user.id,
-				"schema_def_id" = schema_def.id,
-				"query_id" = query.id
-			});
-		}
-
-
 		returnVal = {id = query.id};
 		StructAppend(returnVal, query.executeSQL());
 
@@ -196,13 +182,9 @@ component extends="Controller" {
 						schema_def.save();					
 					}
 
-					if (StructKeyExists(session, "user") AND 
-						NOT (ArrayLen(parts) >= 3 AND IsDefined("schema_def") AND IsObject(schema_def)))
+					if (NOT (ArrayLen(parts) >= 3 AND IsDefined("schema_def") AND IsObject(schema_def)))
 					{
-						model("User_Fiddles").create({
-							"user_id" = session.user.id,
-							"schema_def_id" = schema_def.id
-						});
+						model("User_Fiddle").logAccess(schema_def_id=schema_def.id);
 					}
 					
 
@@ -221,14 +203,7 @@ component extends="Controller" {
 						returnVal["sql"] = myQuery.sql;	
 						returnVal["query_statement_separator"] = myQuery.statement_separator;
 						
-						if (StructKeyExists(session, "user"))
-						{
-							model("User_Fiddles").create({
-								"user_id" = session.user.id,
-								"schema_def_id" = schema_def.id,
-								"query_id" = myQuery.id
-							});
-						}
+						model("User_Fiddle").logAccess(schema_def_id=schema_def.id,query_id=myQuery.id);
 							
 						StructAppend(returnVal, myQuery.executeSQL());						
 					}				
