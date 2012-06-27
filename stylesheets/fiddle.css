@@ -99,14 +99,21 @@
 .resultSetPreview li {
 	white-space: nowrap;		
 }
-.resultSetPreview li pre {
+
+.resultSetPreview pre {
 	margin-bottom: 2px;
 	overflow-x: hidden;		
 	max-height: 75px;
 	overflow-y: hidden;
 	background-color: white;
 }
-
+.resultSetPreview>pre, .schemaPreview>pre {
+	margin-bottom: 2px;
+	overflow-x: hidden;		
+	max-height: 200px;
+	overflow-y: hidden;
+	background-color: white;
+}
 .highlight {
 	border: solid thin blue;
 	margin: 5px;

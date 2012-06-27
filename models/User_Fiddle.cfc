@@ -65,6 +65,7 @@
 			mySchemas.my_query_count,
 			mySchemas.full_name,
 			mySchemas.context,
+			mySchemas.ddl,
 			cast(mySchemas.db_type_id as varchar) || '/' || mySchemas.short_code as schema_fragment,
 			mySchemas.db_type_id,
 			mySchemas.short_code,
@@ -75,6 +76,8 @@
 			
 			uf.last_accessed as most_recent_query_access,
 			uf.query_id,
+			
+			q.sql as full_sql,
 			
 			qs.id as set_id,
 			qs.row_count,
@@ -91,6 +94,7 @@
 				d.context,
 				sd.db_type_id,
 				sd.short_code,
+				sd.ddl,
 				sd.id as schema_def_id,
 				sd.structure_json,
 				sd.owner_id,
@@ -108,6 +112,7 @@
 				d.context,
 				sd.db_type_id,
 				sd.short_code,
+				sd.ddl,
 				sd.id,
 				sd.owner_id,
 				uf.user_id
@@ -115,6 +120,9 @@
 			LEFT OUTER JOIN User_Fiddles uf ON
 				mySchemas.schema_def_id = uf.schema_def_id AND
 				mySchemas.user_id = uf.user_id
+			LEFT OUTER JOIN Queries q ON
+				uf.schema_def_id = q.schema_def_id AND
+				uf.query_id = q.id
 			LEFT OUTER JOIN Query_Sets qs ON
 				uf.schema_def_id = qs.schema_def_id AND
 				uf.query_id = qs.query_id

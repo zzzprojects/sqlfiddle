@@ -16,30 +16,41 @@
 			<!---<td style="text-align:center"><cfif session.user.id IS owner_id><i class="icon-ok"></i><cfelse>&nbsp;</cfif></td>--->
 			<td>#DateFormat(schema_access, "mm/dd/yyyy")# #TimeFormat(schema_access, "hh:mm tt")#</td>
 			<td>
-				<div class="schemaPreviewWrapper">
-					<cfset tableCount = 0>
-					<cfif IsJSON(structure_json)>
-						<cfset tables = deserializeJSON(structure_json)>
-
-						<ul class="tables">
+				<cfif context IS "host">
+					
+					<div class="schemaPreviewWrapper">
+						<cfset tableCount = 0>
+						<cfif IsJSON(structure_json)>
+							<cfset tables = deserializeJSON(structure_json)>
+	
+							<ul class="tables">
+								
+								<cfloop array="#tables#" index="this" >
+								<cfset tableCount ++>
+								<li>
+									#this.table_name# (#this.table_type#)
+									<ul class="columns">
+										<cfloop array="#this.columns#" index="col">
+										<li>#col.name# #col.type#</li>
+										</cfloop>
+									</ul>
+								</li>
+								</cfloop>
+								
+							</ul>
 							
-							<cfloop array="#tables#" index="this" >
-							<cfset tableCount ++>
-							<li>
-								#this.table_name# (#this.table_type#)
-								<ul class="columns">
-									<cfloop array="#this.columns#" index="col">
-									<li>#col.name# #col.type#</li>
-									</cfloop>
-								</ul>
-							</li>
-							</cfloop>
-							
-						</ul>
-						
-					</cfif>
-				</div>	
-				<a href="##!#schema_fragment#" class="label label-info popover-anchor">#tableCount# table<cfif tableCount IS NOT 1>s</cfif></a>
+						</cfif>
+					</div>	
+					<a href="##!#schema_fragment#" class="label label-info preview-schema popover-anchor">#tableCount# table<cfif tableCount IS NOT 1>s</cfif></a>
+			
+				<cfelse>
+					<div class="schemaPreviewWrapper">
+						<div class="schemaPreview">
+							#HTMLCodeFormat(ddl)#
+						</div>
+					</div>					
+					<a href="##!#schema_fragment#" class="label label-info preview-ddl popover-anchor">preview ddl</a>
+				</cfif>
 				
 			</td>
 
@@ -64,23 +75,34 @@
 				<!---<td>&nbsp;</td>--->
 				<td>#DateFormat(query_access, "mm/dd/yyyy")# #TimeFormat(query_access, "hh:mm tt")#</td>
 				<td>
-					<cfset numSets = 0>
-					<div class="resultSetWrapper">
-						<ol class="resultSetPreview">
-						<cfoutput>
-							<cfif IsNumeric(set_id)>
-								<cfset numSets++>
-									<li class="statement_preview"><pre>#HTMLEditFormat(sql)#</pre></li>
-								<cfif succeeded>
-									<li class="alert alert-success">Rows: #row_count#<cfif len(columns_list)> Cols: #columns_list#</cfif></li>									
-								<cfelse>									
-									<li class="alert alert-error">#error_message#</li>										
-								</cfif>							
-							</cfif>
-						</cfoutput>
-						</ol>
-					</div>
-					<a href="##!#schema_fragment#/#query_id#" class="label label-info result-sets popover-anchor">#numSets# result set<cfif numSets IS NOT 1>s</cfif></a>
+					<cfif context IS "host">
+				
+						<cfset numSets = 0>
+						<div class="resultSetWrapper">
+							<ol class="resultSetPreview">
+							<cfoutput>
+								<cfif IsNumeric(set_id)>
+									<cfset numSets++>
+										<li class="statement_preview"><pre>#HTMLEditFormat(sql)#</pre></li>
+									<cfif succeeded>
+										<li class="alert alert-success">Rows: #row_count#<cfif len(columns_list)> Cols: #columns_list#</cfif></li>									
+									<cfelse>									
+										<li class="alert alert-error">#error_message#</li>										
+									</cfif>							
+								</cfif>
+							</cfoutput>
+							</ol>
+						</div>
+						<a href="##!#schema_fragment#/#query_id#" class="label label-info result-sets popover-anchor">#numSets# result set<cfif numSets IS NOT 1>s</cfif></a>
+						
+					<cfelse>
+						<div class="resultSetWrapper">
+							<div class="resultSetPreview">
+							#HTMLCodeFormat(full_sql)#
+							</div>
+						</div>					
+						<a href="##!#schema_fragment#/#query_id#" class="label label-info preview-sql popover-anchor">preview sql</a>
+					</cfif>
 				</td>
 				<td><button class="btn btn-mini btn-warning forgetQuery" title="This will remove this query from your list.">Forget This Query</button><cfif my_query_count GT 1> <button class="btn btn-mini btn-warning forgetOtherQueries" title="This will remove all other queries for this schema from your list.">Forget Others</button></cfif></td>
 			</tr>

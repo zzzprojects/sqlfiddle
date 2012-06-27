@@ -12,9 +12,17 @@ $(function () {
 		$("#myFiddlesModal .modal-body").load("index.cfm/UserFiddles", {tz: (new Date()).getTimezoneOffset()/60}, function () {
 			$(this).unblock();
 			
-			$(".schemaLog .popover-anchor").popover({
+			$(".schemaLog .preview-schema").popover({
 				placement: "left",
 				title: "Schema Structure",
+				content: function () {
+					return $(this).closest('td').find('.schemaPreviewWrapper').html();
+				}				
+			});
+			
+			$(".schemaLog .preview-ddl").popover({
+				placement: "left",
+				title: "Schema DDL",
 				content: function () {
 					return $(this).closest('td').find('.schemaPreviewWrapper').html();
 				}				
@@ -27,6 +35,16 @@ $(function () {
 					return $(this).closest('td').find('.resultSetWrapper').html();
 				}				
 			});
+
+			$(".queryLog .preview-sql").popover({
+				placement: "left",
+				title: "SQL Statements",
+				content: function () {
+					return $(this).closest('td').find('.resultSetWrapper').html();
+				}				
+			});
+			
+
 			
 			$(".showAll", this).click(function (e) {
 				e.preventDefault();
