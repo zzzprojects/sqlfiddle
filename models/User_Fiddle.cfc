@@ -19,6 +19,7 @@
 					{
 						local.alreadyExists.last_accessed = arguments.last_accessed > local.alreadyExists.last_accessed ? arguments.last_accessed : local.alreadyExists.last_accessed;
 						local.alreadyExists.num_accesses++;
+						local.alreadyExists.show_in_history = 1;						
 						succeeded = local.alreadyExists.save();
 					}
 					else
@@ -27,7 +28,8 @@
 							"user_id" = session.user.id,
 							"schema_def_id" = arguments.schema_def_id,
 							"query_id" = arguments.query_id,
-							"last_accessed" = arguments.last_accessed
+							"last_accessed" = arguments.last_accessed,
+							"show_in_history" = 1
 						}).hasErrors();
 					}
 				}
@@ -41,6 +43,7 @@
 					{
 						local.alreadyExists.last_accessed = arguments.last_accessed > local.alreadyExists.last_accessed ? arguments.last_accessed : local.alreadyExists.last_accessed;
 						local.alreadyExists.num_accesses++;
+						local.alreadyExists.show_in_history = 1;
 						succeeded = local.alreadyExists.save();
 					}
 					else
@@ -48,7 +51,8 @@
 						succeeded = ! model("User_Fiddles").create({
 							"user_id" = session.user.id,
 							"schema_def_id" = arguments.schema_def_id,
-							"last_accessed" = arguments.last_accessed
+							"last_accessed" = arguments.last_accessed,
+							"show_in_history" = 1
 						}).hasErrors();
 					}
 				}				
@@ -111,7 +115,8 @@
 					INNER JOIN DB_Types d ON
 						sd.db_type_id = d.id
 			WHERE
-				uf.user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">
+				uf.user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer"> AND
+				uf.show_in_history = 1
 			GROUP BY
 				d.full_name,
 				d.context,
@@ -121,19 +126,21 @@
 				sd.id,
 				sd.owner_id,
 				uf.user_id
+			HAVING
+				max(uf.show_in_history) = 1
 		) mySchemas
 			LEFT OUTER JOIN User_Fiddles uf ON
 				mySchemas.schema_def_id = uf.schema_def_id AND
-				mySchemas.user_id = uf.user_id
+				mySchemas.user_id = uf.user_id AND
+				uf.query_id IS NOT NULL AND
+				uf.show_in_history = 1
+				
 			LEFT OUTER JOIN Queries q ON
 				uf.schema_def_id = q.schema_def_id AND
 				uf.query_id = q.id
 			LEFT OUTER JOIN Query_Sets qs ON
 				uf.schema_def_id = qs.schema_def_id AND
 				uf.query_id = qs.query_id
-		WHERE
-			uf.query_id IS NOT NULL
-
 			
 		ORDER BY
 			most_recent_schema_access DESC,

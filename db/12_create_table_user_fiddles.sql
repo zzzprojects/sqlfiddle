@@ -5,7 +5,8 @@ create table user_fiddles
 	schema_def_id int not null,
 	query_id int,
 	last_accessed timestamp without time zone default now(),
-	num_accesses int default 1
+	num_accesses int default 1,
+	show_in_history smallint default 1
 );
 
 

@@ -1,3 +1,6 @@
+
+<cfif fiddles.recordCount>
+	
 <table class="table table-striped" id="fiddle_history_table">
 	<thead>
 		<th>Database Type</th>
@@ -52,7 +55,7 @@
 			</td>
 
 			<td>
-				<button class="btn btn-mini btn-warning forgetSchema" title="This will remove the schema and all related queries from your list.">Forget Schema</button>
+				<button class="btn btn-mini btn-warning forgetSchema" schema_def_id="#schema_def_id#" title="This will remove the schema and all related queries from your list.">Forget Schema</button>
 				<cfif my_query_count GT 2>
 					<button class="btn btn-mini showAll">Show All #my_query_count# Queries</button>
 				</cfif>
@@ -66,10 +69,9 @@
 
 			<cfset query_access = DateAdd('h', #getTimeZoneInfo().utcHourOffset#-#params.tz#, most_recent_query_access)>
 				
-			<tr class="queryLog for-schema-#Replace(schema_fragment, "/", "-")#<cfif queryCount GT 2> queryLog-hidden</cfif>">
+			<tr class="queryLog for-schema-#Replace(schema_fragment, "/", "-")#<cfif queryCount GT 2> queryLog-hidden</cfif>" schema_def_id="#schema_def_id#" query_id="#query_id#">
 				<td>&nbsp;</td>
 				<td><a href="##!#schema_fragment#/#query_id#">##!#schema_fragment#/#query_id#</a></td>
-				<!---<td>&nbsp;</td>--->
 				<td>#DateFormat(query_access, "mm/dd/yyyy")# #TimeFormat(query_access, "hh:mm tt")#</td>
 				<td>
 					<cfif IsJSON(structure_json)>
@@ -101,10 +103,17 @@
 						<a href="##!#schema_fragment#/#query_id#" class="label label-info preview-sql popover-anchor">preview sql</a>
 					</cfif>
 				</td>
-				<td><button class="btn btn-mini btn-warning forgetQuery" title="This will remove this query from your list.">Forget This Query</button><cfif my_query_count GT 1> <button class="btn btn-mini btn-warning forgetOtherQueries" title="This will remove all other queries for this schema from your list.">Forget Others</button></cfif></td>
+				<td><button class="btn btn-mini btn-warning forgetQuery" schema_def_id="#schema_def_id#" query_id="#query_id#" title="This will remove this query from your list.">Forget This Query</button><cfif my_query_count GT 1> <button class="btn btn-mini btn-warning forgetOtherQueries" schema_def_id="#schema_def_id#" query_id="#query_id#" title="This will remove all other queries for this schema from your list.">Forget Others</button></cfif></td>
 			</tr>
 		</cfif>
 		</cfoutput>
 	</tbody>
 	</cfoutput>
 </table>
+
+<cfelse>
+	
+<div class="alert">
+  <h4 class="alert-heading">No Fiddles Found!</h4> Why not try a sample fiddle to get some wheels turning?
+</div>	
+</cfif>

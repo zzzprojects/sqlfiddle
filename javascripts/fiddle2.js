@@ -10,7 +10,8 @@ $(function () {
 		$('#myFiddlesModal .modal-body').block({ message: "Loading..."});
 
 		$("#myFiddlesModal .modal-body").load("index.cfm/UserFiddles", {tz: (new Date()).getTimezoneOffset()/60}, function () {
-			$(this).unblock();
+			var thisModal = $(this); 
+			thisModal.unblock();
 			
 			$(".schemaLog .preview-schema").popover({
 				placement: "left",
@@ -44,16 +45,45 @@ $(function () {
 				}				
 			});
 			
-
-			
 			$(".showAll", this).click(function (e) {
 				e.preventDefault();
-				console.log($(this).closest("tr").attr("id"));
 				$("tr.for-schema-" + $(this).closest("tr").attr("id")).show("fast");
 				$(this).hide();
 			});
+
+			$(".forgetSchema", this).click(function (e) {
+				e.preventDefault();
+				var schema_identifier = $(this).closest("tr.schemaLog").attr("id");
+				$.post("index.cfm/UserFiddles/forgetSchema", {schema_def_id: $(this).attr('schema_def_id')}, function () {
+					$("#" + schema_identifier + ",tr.for-schema-" + schema_identifier, thisModal).remove();
+				});
+			});
 			
+			$(".forgetQuery", this).click(function (e) {
+				e.preventDefault();
+				var containing_row = $(this).closest("tr.queryLog");
+				$.post(	"index.cfm/UserFiddles/forgetQuery", 
+						{
+							schema_def_id: $(this).attr('schema_def_id'),
+							query_id: $(this).attr('query_id')
+						}, 
+						function () {
+							containing_row.remove();
+						});
+			});
 			
+			$(".forgetOtherQueries", this).click(function (e) {
+				e.preventDefault();
+				var other_rows = $(this).closest("tbody").find('tr.queryLog[schema_def_id="'+ $(this).attr("schema_def_id") +'"][query_id!="'+ $(this).attr("query_id") +'"]');
+				$.post(	"index.cfm/UserFiddles/forgetOtherQueries", 
+						{
+							schema_def_id: $(this).attr('schema_def_id'),
+							query_id: $(this).attr('query_id')
+						}, 
+						function () {
+							other_rows.remove();
+						});
+			});
 			
 		});
 	});
@@ -72,6 +102,8 @@ $(function () {
 
 	if ($.cookie('openid'))
 		$("#userInfo").load("index.cfm/Users/info", function () {
+			
+			// Upload localStorage fiddle history to server to use new mechanism
 			if ($("#user_choices", this).length) // simple way to detect if we are logged in
 			{
 				var fiddleArray = [];
@@ -103,16 +135,15 @@ $(function () {
 								});
 								
 							});
-							console.log(fullHistory);
-							localStorage.setItem("fiddleHistory", JSON.stringify(fullHistory));
 							
+							// assuming all went well, this should be setting it to an empty array
+							localStorage.setItem("fiddleHistory", JSON.stringify(fullHistory));
 						});
 					}
 				}
 				catch (e)
 				{
-					console.log("Error caught!");
-					console.log(e);
+					// something went wrong with our attempt to access localStorage.  Maybe it's not available?
 				}			
 			}
 		});
