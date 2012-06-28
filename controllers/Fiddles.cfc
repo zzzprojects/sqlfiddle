@@ -1,7 +1,7 @@
 component extends="Controller" {
 
 	function index() {
-		location(url='index.html', addtoken=false);
+		location(url='../index.html', addtoken=false);
 	}
 
 	function db_types() {
@@ -50,7 +50,12 @@ component extends="Controller" {
 					schema_def.ddl = params.schema_ddl;
 					schema_def.short_code = short_code;
 					schema_def.md5 = md5;
-
+					
+					if (StructKeyExists(session, "user"))
+					{
+						schema_def.owner_id = session.user.id;
+					}
+					
 					lock name="#params.db_type_id#_#short_code#" type="exclusive" timeout="60"
 					{
 					
@@ -71,7 +76,9 @@ component extends="Controller" {
 				}
 				
 			}
-	
+			
+			model("User_Fiddle").logAccess(schema_def_id=schema_def.id);
+
 			renderText(SerializeJSON({
 				"short_code" = short_code,
 				"schema_structure" = schema_def.getSchemaStructure() 
@@ -122,9 +129,17 @@ component extends="Controller" {
 			query.statement_separator = params.statement_separator;
 			query.md5 = md5;
 			query.id = nextQueryID;
+			
+			if (StructKeyExists(session, "user"))
+			{
+				query.author_id = session.user.id;
+			}
+			
 			query.save();
 		}
 
+		model("User_Fiddle").logAccess(schema_def_id=schema_def.id,query_id=query.id);
+		
 		returnVal = {id = query.id};
 		StructAppend(returnVal, query.executeSQL());
 
@@ -166,6 +181,13 @@ component extends="Controller" {
 						schema_def.last_used = now();
 						schema_def.save();					
 					}
+
+					if (NOT (ArrayLen(parts) >= 3 AND IsDefined("schema_def") AND IsObject(schema_def)))
+					{
+						model("User_Fiddle").logAccess(schema_def_id=schema_def.id);
+					}
+					
+
 					returnVal["schema_structure"] = schema_def.getSchemaStructure();														
 				}
 			}
@@ -179,7 +201,10 @@ component extends="Controller" {
 					{
 						returnVal["id"] = myQuery.id;	
 						returnVal["sql"] = myQuery.sql;	
-						returnVal["query_statement_separator"] = myQuery.statement_separator;	
+						returnVal["query_statement_separator"] = myQuery.statement_separator;
+						
+						model("User_Fiddle").logAccess(schema_def_id=schema_def.id,query_id=myQuery.id);
+							
 						StructAppend(returnVal, myQuery.executeSQL());						
 					}				
 				}

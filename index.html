@@ -22,21 +22,6 @@
 	<link href="stylesheets/print.css?20120512" media="print" rel="stylesheet" type="text/css" />
 
 
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-28576776-1']);
-  _gaq.push(['_setDomainName', 'sqlfiddle.com']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
-
 	<script id="schema-browser-template" type="text/x-handlebars-template">
 		<h3>Schema Browser</h3>
 		<ul class="tables">
@@ -52,43 +37,6 @@
 			{{/each}}
 			
 		</ul>
-	</script>
-
-	<script id="historyLog-template" type="text/x-handlebars-template">
-		<div class="modal-header">
-			<a class="close" data-dismiss="modal">x</a>
-			<h3>My Recently Used Fiddles</h3>
-		</div>
-		<div class="modal-body">
-			{{#if logs.length}}
-			<table id="historyLog" class="table table-bordered table-striped">
-				<tr>
-					<th>Identifier</th>
-					<th>Last Used</th>
-					<th>DB Type</th>
-					<th>DDL</th>
-					<th>SQL</th>
-					<th>&nbsp;</th>
-				</tr>
-				{{#each logs}}
-				<tr>
-					<td><a href="#{{this.fragment}}" class="fiddle">{{this.fragment}}</a></td>
-					<td>{{this.last_used}}</td>
-					<td>{{this.full_name}}</td>
-					<td>{{this.ddl}}</td>
-					<td>{{this.sql}}</td>	
-					<td><a href="#" class="delete"><i class="icon-remove"></i></a></td>				
-				</tr>
-				{{/each}}
-			</table>
-			{{else}}
-			<h4>No recently used fiddles found.  Try viewing a sample, or writing your own.</h4>
-			{{/if}}
-		</div>
-	  
-	  <div class="modal-footer">
-	    <a href="#" class="btn">Close</a>
-	  </div>		
 	</script>
 	
 	<script id="db_type_id-template" type="text/x-handlebars-template">
@@ -247,8 +195,9 @@
 						<li class="">
 							<a id="clear" href="#clear"><i class="icon-refresh"></i>Clear</a>
 						</li>
-						<li class="">
-							<a href="#historyModal" data-toggle="modal"><i class="icon-list"></i>My Fiddles</a>
+												
+						<li class="dropdown" id="userInfo">
+							<a href="#loginModal" data-toggle="modal" style="display:none"><i class="icon-user"></i>Login</a>
 						</li>
 					</ul>
 
@@ -456,11 +405,56 @@
 	</div>	
 	
 			
-	<div id="historyModal" class="modal"></div>	
+	<div id="loginModal" class="modal">
+		<form action="index.cfm/Users/auth" method="post" class="form-horizontal">
+		<input type="hidden" name="hash" value="" id="hash">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">x</a>
+			<h3>Login to SQL Fiddle</h3>
+		</div>
+		<div class="modal-body">
+			<div class="control-group">
+				<label class="control-label" for="openid_identifier">OpenID Identity: </label>
+				<div class="controls">
+					<input type="text" id="openid_identifier" name="openid_identity" value="" size="20" />
+				</div>
+			</div>	
+			
+			<div class="control-group">				
+				<label class="control-label" for="remember">Remember Me: </label>
+				<div class="controls">
+					<input type="checkbox" value="true" name="remember" id="remember">
+				</div>
+			</div>	
+		</div>
+	  
+		<div class="modal-footer">
+			<input class="btn btn-primary" type="submit" value="Login" />
+		</div>	
+	  
+		</form>
+	</div>	
+
+
+	<div id="myFiddlesModal" class="modal">
+		
+		<form action="index.cfm/Users/auth" method="post">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">x</a>
+			<h3>My Fiddles</h3>
+		</div>
+		<div class="modal-body">
+						
+		</div>
+	  
+		</form>
+	</div>	
+
 
 
 	<script src="javascripts/jquery.min.js?20120504" type="text/javascript"></script>
 	<script src="javascripts/jquery.blockUI.js?20120504" type="text/javascript"></script>
+	<script src="javascripts/jquery.cookie.js?20120626" type="text/javascript"></script>
 	
 	<script src="javascripts/handlebars-1.0.0.beta.6.js?20120504" type="text/javascript"></script>
 	<script src="javascripts/json2.js?20120504" type="text/javascript"></script>
@@ -473,7 +467,10 @@
 	<script src="javascripts/bootstrap-collapse.js?20120504" type="text/javascript"></script>
 	<script src="javascripts/bootstrap-dropdown.js?20120504" type="text/javascript"></script>
 	<script src="javascripts/bootstrap-modal.js?20120504" type="text/javascript"></script>
-
+	<script src="javascripts/bootstrap-tooltip.js?20120624" type="text/javascript"></script>
+	<script src="javascripts/bootstrap-popover.js?20120624" type="text/javascript"></script>
+	
+	<script src="javascripts/idselector.js" id="__openidselector" type="text/javascript" charset="utf-8"></script>
 
 	<script src="javascripts/sqlite_driver.js?20120512" type="text/javascript"></script>
 	<script src="javascripts/websql_driver.js?20120606" type="text/javascript"></script>
@@ -490,6 +487,21 @@
 
 
 	<script src="javascripts/fiddle2.js?20120606" type="text/javascript"></script>
+	
+	<script type="text/javascript">
+	
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-28576776-1']);
+	  _gaq.push(['_setDomainName', 'sqlfiddle.com']);
+	  _gaq.push(['_trackPageview']);
+	
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+	
+	</script>
 
   </body>
 </html>

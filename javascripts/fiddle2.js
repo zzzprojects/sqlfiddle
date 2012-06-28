@@ -1,6 +1,178 @@
 
 $(function () {
 
+/* MY FIDDLES */
+
+	$("#userInfo").on("click", "#myFiddles", function (e) {
+		e.preventDefault();
+		
+		$('#myFiddlesModal').modal('show');
+		$('#myFiddlesModal .modal-body').block({ message: "Loading..."});
+
+		$("#myFiddlesModal .modal-body").load("index.cfm/UserFiddles", {tz: (new Date()).getTimezoneOffset()/60}, function () {
+			var thisModal = $(this); 
+			thisModal.unblock();
+			
+			$(".schemaLog .preview-schema").popover({
+				placement: "left",
+				title: "Schema Structure",
+				content: function () {
+					return $(this).closest('td').find('.schemaPreviewWrapper').html();
+				}				
+			});
+			
+			$(".schemaLog .preview-ddl").popover({
+				placement: "left",
+				title: "Schema DDL",
+				content: function () {
+					return $(this).closest('td').find('.schemaPreviewWrapper').html();
+				}				
+			});
+
+			$(".queryLog .result-sets").popover({
+				placement: "left",
+				title: "Query Results",
+				content: function () {
+					return $(this).closest('td').find('.resultSetWrapper').html();
+				}				
+			});
+
+			$(".queryLog .preview-sql").popover({
+				placement: "left",
+				title: "SQL Statements",
+				content: function () {
+					return $(this).closest('td').find('.resultSetWrapper').html();
+				}				
+			});
+			
+			$(".showAll", this).click(function (e) {
+				e.preventDefault();
+				$("tr.for-schema-" + $(this).closest("tr").attr("id")).show("fast");
+				$(this).hide();
+			});
+
+			$(".forgetSchema", this).click(function (e) {
+				e.preventDefault();
+				var schema_identifier = $(this).closest("tr.schemaLog").attr("id");
+				$.post("index.cfm/UserFiddles/forgetSchema", {schema_def_id: $(this).attr('schema_def_id')}, function () {
+					$("#" + schema_identifier + ",tr.for-schema-" + schema_identifier, thisModal).remove();
+				});
+			});
+			
+			$(".forgetQuery", this).click(function (e) {
+				e.preventDefault();
+				var containing_row = $(this).closest("tr.queryLog");
+				$.post(	"index.cfm/UserFiddles/forgetQuery", 
+						{
+							schema_def_id: $(this).attr('schema_def_id'),
+							query_id: $(this).attr('query_id')
+						}, 
+						function () {
+							containing_row.remove();
+						});
+			});
+			
+			$(".forgetOtherQueries", this).click(function (e) {
+				e.preventDefault();
+				var other_rows = $(this).closest("tbody").find('tr.queryLog[schema_def_id="'+ $(this).attr("schema_def_id") +'"][query_id!="'+ $(this).attr("query_id") +'"]');
+				$.post(	"index.cfm/UserFiddles/forgetOtherQueries", 
+						{
+							schema_def_id: $(this).attr('schema_def_id'),
+							query_id: $(this).attr('query_id')
+						}, 
+						function () {
+							other_rows.remove();
+						});
+			});
+			
+		});
+	});
+	
+
+	$("#myFiddlesModal").on("click", "a", function (e) {
+			$('#myFiddlesModal').modal('hide');
+	});
+
+	$("#myFiddlesModal").on("hidden", function () {
+		$(".popover-anchor", this).popover('hide');
+	});	
+
+
+/* LOGIN/LOGOUT */
+
+	if ($.cookie('openid'))
+		$("#userInfo").load("index.cfm/Users/info", function () {
+			
+			// Upload localStorage fiddle history to server to use new mechanism
+			if ($("#user_choices", this).length) // simple way to detect if we are logged in
+			{
+				var fiddleArray = [];
+				try
+				{
+					fullHistory = $.parseJSON(localStorage.getItem("fiddleHistory"));
+					
+					if (fullHistory.length) {
+						
+						fiddleArray = _.map(fullHistory, function(val, key){
+							return [val.fragment, new Date(val.last_used)];
+						});
+						
+						$.post("index.cfm/UserFiddles/loadFromLocalStorage", {
+							localHistory: JSON.stringify(fiddleArray)
+						}, function(resp){
+							var loadedFiddles = $.parseJSON(resp);
+							
+							// remove all entries from the local list which have
+							// been reported as loaded up into the server.
+							fullHistory = _.reject(fullHistory, function(localFiddle){
+							
+								// look through all the fiddles which have been loaded into the server
+								return _.find(loadedFiddles, function(serverFiddle){
+								
+									// if we find a match for the current "localFiddle" amongst
+									// those loaded onto the server, then remove it from the local list
+									return serverFiddle[0] == localFiddle.fragment;
+								});
+								
+							});
+							
+							// assuming all went well, this should be setting it to an empty array
+							localStorage.setItem("fiddleHistory", JSON.stringify(fullHistory));
+						});
+					}
+				}
+				catch (e)
+				{
+					// something went wrong with our attempt to access localStorage.  Maybe it's not available?
+				}			
+			}
+		});
+	else
+		$("#userInfo a").toggle();
+
+	$("#loginModal form").submit(function () {
+		$("#hash", this).val(window.location.hash);
+	});
+		
+	$("#loginModal").on("hidden", function () {
+		// this fixes a bug with the openid UI staying open even after the login modal has closed.
+		$("iframe")
+			.css("display", "none");
+			
+	});
+
+	$("#userInfo").on("click", "#logout", function (e) {
+		e.preventDefault();
+
+		// fun way to modify a link after it's been clicked - change it to a form and attach a hidden input to it.
+		$("<form>", { action: $(this).attr("href"), method: "GET"})
+			.append($("<input>", { type: "hidden", name:"hash", value: window.location.hash}))
+			.submit();
+	});	
+	
+
+/* TEXT TO DDL */
+
 	$("#textToDDLModal .btn").click(function (e){
 		e.preventDefault();
 
@@ -22,10 +194,8 @@ $(function () {
 	});
 	
 	
-	$(".nav").on('click', 'a', function (e) {
-		$(".nav-collapse.in").collapse('hide');
-	});
-	
+/* FULLSCREEN EDITS */
+
 	function toggleFullscreenNav(option)
 	{
 		
@@ -76,6 +246,8 @@ $(function () {
 	});
 	
 	
+/* SCHEMA BROWSER */
+	
 	$("#schemaBrowser").on('click', function (e) {
 		e.preventDefault();
 		if (!$(this).attr('disabled')) {
@@ -97,8 +269,20 @@ $(function () {
 		
 	})
 	
+	
+/* RESIZING UI*/
+	
 	$(window).bind('resize', resizeLayout);		
 	setTimeout(resizeLayout, 1);
+	
+
+/* COLLAPSING NAV (for responsive UI) */
+
+	$(".nav").on('click', 'a', function (e) {
+		$(".nav-collapse.in").collapse('hide');
+	});
+
+	
 });
 
 $.blockUI.defaults.overlayCSS.cursor = 'auto';
@@ -152,9 +336,7 @@ function resizeLayout(){
 		$('#sql').width($('#fiddleFormSQL').width() - 2 - 8);
 		$('#schema_ddl').width($('#fiddleFormDDL').width() - 2 - 8);
 
-		$('#browser')
-			.height($('#fiddleFormDDL .CodeMirror-scroll').height())
-		;
+		$('#browser').height($('#fiddleFormDDL .CodeMirror-scroll').height());
 
 		
 		window.schemaDefView.refresh();

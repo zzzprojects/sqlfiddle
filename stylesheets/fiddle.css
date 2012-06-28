@@ -65,7 +65,7 @@
 	z-index: 1001;
 	margin: 10px 20px;
 }
-
+	
 #browser, .browser_actions {
 	padding-left: 15px;
 	display: none;
@@ -83,7 +83,37 @@
 .tables .columns {
 	display: none;	
 }
+.popover .tables .columns {
+	display: block;	
+}
+	
+.resultSetWrapper, .schemaPreviewWrapper, .queryLog-hidden {
+	display: none;
+}
 
+.resultSetPreview {
+	list-style-type: none;
+	margin: 0;
+}
+
+.resultSetPreview li {
+	white-space: nowrap;		
+}
+
+.resultSetPreview pre {
+	margin-bottom: 2px;
+	overflow-x: hidden;		
+	max-height: 75px;
+	overflow-y: hidden;
+	background-color: white;
+}
+.resultSetPreview>pre, .schemaPreview>pre {
+	margin-bottom: 2px;
+	overflow-x: hidden;		
+	max-height: 200px;
+	overflow-y: hidden;
+	background-color: white;
+}
 .highlight {
 	border: solid thin blue;
 	margin: 5px;
@@ -104,7 +134,7 @@
 	text-align: right;	
 }	
 
-pre.results {
+pre.results, .resultSetPreview li pre {
 	font-family:monospace;
 	font-size: 10pt;	
 }
@@ -240,6 +270,16 @@ pre.results {
 .modal {
 	display: none;
 }
+
+#myFiddlesModal {
+	width: 800px;
+	margin: -250px 0 0 -420px;	
+}
+
+#myFiddlesModal .modal-body {
+	overflow-y: auto;	
+}
+
 #raw, #parseResults { 
 	width: 90%;
 }
@@ -380,6 +420,29 @@ pre.results {
   text-decoration: none;
   background-color: #0088cc;
 }
+
+.form-horizontal .control-group {
+  margin-bottom: 6px;
+}
+
+.modal form {
+	margin:0;
+}
+
+.popover-inner {
+  min-width: 280px;
+  width: auto;
+  overflow-x: visible;
+  overflow-y: hidden;
+  max-height: 400px;
+}
+
+.popover-inner .alert {
+	max-width: 400px;
+	overflow-x: hidden;	
+}
+
+
 #sidebar .well {
   padding: 8px 0;
 }
@@ -403,3 +466,21 @@ pre.results {
   height: 100%;
 }
 
+
+
+#openid_identifier {
+	width: 250px;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 20px;
+	vertical-align: middle;
+	background-image: url('http://www.idselector.com/images/openid.ico');
+	background-repeat: no-repeat;
+	background-position: 3px 2px;
+}
+
+#gravatar {
+	height: 20px;
+	width: 20px;
+	margin: 0 10px 0 5px;	
+}

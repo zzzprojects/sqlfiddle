@@ -209,12 +209,6 @@ $(function () {
 							});
 							window.query.trigger("reloaded");
 			
-							window.myFiddleHistory.insert(new UsedFiddle({
-								"fragment": frag,
-								"full_name": window.dbTypes.getSelectedType().get("full_name"),
-								"ddl": resp["ddl"],
-								"sql": resp["sql"] 
-							}));
 						}
 
 						$("body").unblock();
@@ -237,66 +231,7 @@ $(function () {
 	/***************
 		MODELS
 	 ***************/
-	
-	var UsedFiddle = Backbone.Model.extend({
-		defaults: {
-			"fragment": "",
-			"full_name": "",
-			"ddl": "",
-			"sql": "" 
-		},
-		initialize: function () {
-			this.set("last_used", new Date());
-		}
-	});
-	
-	var MyFiddleHistory = Backbone.Collection.extend({
-		model: UsedFiddle,
-		comparator: function (m1,m2) {
-			if (m1.get("last_used") == m2.get("last_used"))
-				return 0;
-			else if (m1.get("last_used") > m2.get("last_used"))
-				return -1;
-			else
-				return 1;
-		},
-		insert: function (uf) {
-			var existingFiddle = this.find(function (m){
-				return m.get("fragment") == uf.get("fragment");
-			});
-			
-			if (existingFiddle)
-			{
-				existingFiddle.set("last_used", uf.get("last_used"));
-				this.sort();
-			}
-			else
-			{
-				this.add(uf);
-			}
-			this.trigger("change");
-		},
-		initialize: function () {
-			try
-			{
-				if (localStorage)
-				{
-					var historyJSON = localStorage.getItem("fiddleHistory");
-					if (historyJSON && historyJSON.length)
-					{
-						this.add($.parseJSON(historyJSON));
-					}
-					
-				}
-			}
-			catch (e)
-			{
-				// I guess localStorage isn't available
-			}
-		}
-	});
-	
-	
+		
 	var DBType = Backbone.Model.extend({
 		defaults: {
 			"sample_fragment":"",
@@ -561,58 +496,6 @@ $(function () {
 		VIEWS
 	 ***************/
 
-	var MyFiddleHistoryView = Backbone.View.extend({
-		
-		initialize: function () {
-			this.compiledTemplate = Handlebars.compile(this.options.template.html()); 
-		},
-		events: {
-			"click a.fiddle": "viewFiddle",
-			"click a.btn": "closeModal",
-			"click a.delete": "deleteFiddle"
-		},
-		closeModal: function(e) {
-			e.preventDefault();
-			$(this.el).closest(".modal").modal("hide");
-		},
-		viewFiddle: function(e) {
-			$(this.el).closest(".modal").modal("hide");
-		},
-		deleteFiddle: function(e) {
-			e.preventDefault();			
-			var fragment = $(e.target).closest("tr").find(".fiddle").text();
-			this.collection.remove(this.collection.find(function (uf) {
-				if (uf.get("fragment") == fragment)
-					return true;
-			}));
-		},
-		render: function () {
-			
-			$(this.el).html(
-				this.compiledTemplate({
-					logs: this.collection.map(function (uf) {
-						var json = uf.toJSON();
-						
-						if (json.ddl.length > 60)
-						{
-							json.ddl = json.ddl.substring(0,56) + "...";
-						}
-						
-						if (json.sql.length > 60)
-						{
-							json.sql = json.sql.substring(0,56) + "...";
-						}
-						
-						json.last_used = dateFormat(json.last_used, "mm/dd/yyyy hh:MM:ss tt");
-						
-						return json;
-					})
-				})
-			);
-			return this;
-		}		
-		
-	});
 
 	var DBTypesListView = Backbone.View.extend({
 		initialize: function () {
@@ -830,22 +713,13 @@ $(function () {
 		sqljs: new SQLjs_driver() // see sqljs_driver.js
 	};
 	
-	window.myFiddleHistory = new MyFiddleHistory();
-	
 	window.dbTypes = new DBTypesList();
 	window.schemaDef = new SchemaDef();
 	
 	window.query = new Query({
 		"schemaDef": window.schemaDef
 	});
-	
-	window.myFiddleHistoryView = new MyFiddleHistoryView({
-		el: $("#historyModal")[0],
-		collection:  window.myFiddleHistory,
-		template: $("#historyLog-template")
-	});
-	window.myFiddleHistoryView.render();
-	
+		
 	window.dbTypesListView = new DBTypesListView({
 		el: $("#db_type_id")[0],
 		collection:  window.dbTypes,
@@ -1041,15 +915,6 @@ $(function () {
 		window.schemaDefView.render();
 		window.queryView.render();
 	});
-
-	window.myFiddleHistory.on("change reset remove", function () {
-		if (localStorage)
-		{
-			localStorage.setItem("fiddleHistory", JSON.stringify(this.toJSON()));
-		}
-		window.myFiddleHistoryView.render();
-	});
-
 	
 	/* Events which will trigger new route navigation */	
 	window.dbTypes.on("change", function () {
@@ -1070,25 +935,12 @@ $(function () {
 	});
 
 	window.schemaDef.on("built", function () {
-		
-		window.myFiddleHistory.insert(new UsedFiddle({
-			"fragment": "!" + this.get("dbType").id + "/" + this.get("short_code"),
-			"full_name": this.get("dbType").get("full_name"),
-			"ddl": this.get("ddl").substring(0,61) 
-		}));
-		
+				
 		window.router.navigate("!" + this.get("dbType").id + "/" + this.get("short_code"));
 	});
 	
 	window.query.on("executed", function () {
 		var schemaDef = this.get("schemaDef");
-
-		window.myFiddleHistory.insert(new UsedFiddle({
-			"fragment": "!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id,
-			"full_name": schemaDef.get("dbType").get("full_name"),
-			"ddl": schemaDef.get("ddl").substring(0,61),
-			"sql": this.get("sql").substring(0,61)
-		}));
 
 		window.router.navigate(
 			"!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id 

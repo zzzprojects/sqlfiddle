@@ -3,4 +3,4 @@
 	<cfset this.name = "MyAppName">
 --->
 
-<cfset This.sessionManagement="No">
+<cfset this.sessionTimeout = CreateTimeSpan(0,0,5,0)>
