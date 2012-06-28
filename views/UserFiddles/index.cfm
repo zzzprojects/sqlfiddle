@@ -16,11 +16,10 @@
 			<!---<td style="text-align:center"><cfif session.user.id IS owner_id><i class="icon-ok"></i><cfelse>&nbsp;</cfif></td>--->
 			<td>#DateFormat(schema_access, "mm/dd/yyyy")# #TimeFormat(schema_access, "hh:mm tt")#</td>
 			<td>
-				<cfif context IS "host">
+				<cfif IsJSON(structure_json)>
 					
 					<div class="schemaPreviewWrapper">
 						<cfset tableCount = 0>
-						<cfif IsJSON(structure_json)>
 							<cfset tables = deserializeJSON(structure_json)>
 	
 							<ul class="tables">
@@ -38,8 +37,6 @@
 								</cfloop>
 								
 							</ul>
-							
-						</cfif>
 					</div>	
 					<a href="##!#schema_fragment#" class="label label-info preview-schema popover-anchor">#tableCount# table<cfif tableCount IS NOT 1>s</cfif></a>
 			
@@ -75,7 +72,7 @@
 				<!---<td>&nbsp;</td>--->
 				<td>#DateFormat(query_access, "mm/dd/yyyy")# #TimeFormat(query_access, "hh:mm tt")#</td>
 				<td>
-					<cfif context IS "host">
+					<cfif IsJSON(structure_json)>
 				
 						<cfset numSets = 0>
 						<div class="resultSetWrapper">

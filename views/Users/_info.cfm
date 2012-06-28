@@ -6,7 +6,7 @@
 	
 	<span class="caret"></span>
 	</a>
-	<ul class="dropdown-menu">
+	<ul class="dropdown-menu" id="user_choices">
 		<li><a href="##" id="myFiddles">My Fiddles</a></li>
 		
 		<li><a href="index.cfm/Users/logout" id="logout">Logout</a></li>

@@ -71,7 +71,51 @@ $(function () {
 /* LOGIN/LOGOUT */
 
 	if ($.cookie('openid'))
-		$("#userInfo").load("index.cfm/Users/info");
+		$("#userInfo").load("index.cfm/Users/info", function () {
+			if ($("#user_choices", this).length) // simple way to detect if we are logged in
+			{
+				var fiddleArray = [];
+				try
+				{
+					fullHistory = $.parseJSON(localStorage.getItem("fiddleHistory"));
+					
+					if (fullHistory.length) {
+						
+						fiddleArray = _.map(fullHistory, function(val, key){
+							return [val.fragment, new Date(val.last_used)];
+						});
+						
+						$.post("index.cfm/UserFiddles/loadFromLocalStorage", {
+							localHistory: JSON.stringify(fiddleArray)
+						}, function(resp){
+							var loadedFiddles = $.parseJSON(resp);
+							
+							// remove all entries from the local list which have
+							// been reported as loaded up into the server.
+							fullHistory = _.reject(fullHistory, function(localFiddle){
+							
+								// look through all the fiddles which have been loaded into the server
+								return _.find(loadedFiddles, function(serverFiddle){
+								
+									// if we find a match for the current "localFiddle" amongst
+									// those loaded onto the server, then remove it from the local list
+									return serverFiddle[0] == localFiddle.fragment;
+								});
+								
+							});
+							console.log(fullHistory);
+							localStorage.setItem("fiddleHistory", JSON.stringify(fullHistory));
+							
+						});
+					}
+				}
+				catch (e)
+				{
+					console.log("Error caught!");
+					console.log(e);
+				}			
+			}
+		});
 	else
 		$("#userInfo a").toggle();
 

@@ -5,8 +5,9 @@
 		belongsTo(name="Query", foreignKey="query_id", joinType="outer");
 	}
 	
-	function logAccess(numeric schema_def_id, query_id = "") {
-			
+	function logAccess(numeric schema_def_id, query_id = "", last_accessed = now()) {
+		var succeeded = false;
+		
 		if (StructKeyExists(session, "user"))
 		{
 			if (IsNumeric(arguments.query_id))
@@ -16,17 +17,18 @@
 					local.alreadyExists = model("User_Fiddles").findOne(where="user_id=#session.user.id# AND schema_def_id=#arguments.schema_def_id# AND query_id=#arguments.query_id#");
 					if (IsObject(local.alreadyExists))
 					{
-						local.alreadyExists.last_accessed = now();
+						local.alreadyExists.last_accessed = arguments.last_accessed > local.alreadyExists.last_accessed ? arguments.last_accessed : local.alreadyExists.last_accessed;
 						local.alreadyExists.num_accesses++;
-						local.alreadyExists.save();
+						succeeded = local.alreadyExists.save();
 					}
 					else
 					{
-						model("User_Fiddles").create({
+						succeeded = ! model("User_Fiddles").create({
 							"user_id" = session.user.id,
 							"schema_def_id" = arguments.schema_def_id,
-							"query_id" = arguments.query_id
-						});
+							"query_id" = arguments.query_id,
+							"last_accessed" = arguments.last_accessed
+						}).hasErrors();
 					}
 				}
 			}
@@ -37,20 +39,23 @@
 					local.alreadyExists = model("User_Fiddles").findOne(where="user_id=#session.user.id# AND schema_def_id=#arguments.schema_def_id# AND query_id IS NULL");
 					if (IsObject(local.alreadyExists))
 					{
-						local.alreadyExists.last_accessed = now();
+						local.alreadyExists.last_accessed = arguments.last_accessed > local.alreadyExists.last_accessed ? arguments.last_accessed : local.alreadyExists.last_accessed;
 						local.alreadyExists.num_accesses++;
-						local.alreadyExists.save();
+						succeeded = local.alreadyExists.save();
 					}
 					else
 					{
-						model("User_Fiddles").create({
+						succeeded = ! model("User_Fiddles").create({
 							"user_id" = session.user.id,
-							"schema_def_id" = arguments.schema_def_id
-						});
+							"schema_def_id" = arguments.schema_def_id,
+							"last_accessed" = arguments.last_accessed
+						}).hasErrors();
 					}
 				}				
 			}
 		}
+	
+		return succeeded;
 		
 	}
 	
