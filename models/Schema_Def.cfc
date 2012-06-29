@@ -77,7 +77,7 @@
 
 		<cfif (db_type.context IS "host")><!--- if the context for this schema is anything other than "host", we don't do much on this end--->
 			
-			<cfif isJSON(this.structure_json)>
+			<cfif StructKeyExists(this, "structure_json") AND isJSON(this.structure_json)>
 				
 				<cfset schemaStruct = deserializeJSON(this.structure_json)>
 				
