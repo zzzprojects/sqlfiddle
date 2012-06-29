@@ -130,7 +130,7 @@
 				max(uf.show_in_history) = 1
 			ORDER BY
 				most_recent_schema_access DESC
-			LIMIT 50
+			LIMIT 20
 		) mySchemas
 			LEFT OUTER JOIN User_Fiddles uf ON
 				mySchemas.schema_def_id = uf.schema_def_id AND
