@@ -27,12 +27,12 @@
 	
 							<ul class="tables">
 								
-								<cfloop array="#tables#" index="this" >
+								<cfloop array="#tables#" index="thisTable" >
 								<cfset tableCount ++>
 								<li>
-									#this.table_name# (#this.table_type#)
+									#thisTable.table_name# (#thisTable.table_type#)
 									<ul class="columns">
-										<cfloop array="#this.columns#" index="col">
+										<cfloop array="#thisTable.columns#" index="col">
 										<li>#col.name# #col.type#</li>
 										</cfloop>
 									</ul>
