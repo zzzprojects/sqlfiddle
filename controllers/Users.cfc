@@ -94,9 +94,9 @@ component extends="Controller" {
 		}
 		
 		if (StructKeyExists(session, "prelogin_hash"))
-			location(url='..#session.prelogin_hash#', addtoken=false);
+			location(url='/#session.prelogin_hash#', addtoken=false);
 		else
-			location(url='..', addtoken=false);
+			location(url='/', addtoken=false);
 	}
 
 	function logout() {
@@ -105,9 +105,9 @@ component extends="Controller" {
 		
 		StructClear(session);
 		if (StructKeyExists(params, "hash"))
-			location(url='..#params.hash#', addtoken=false);
+			location(url='/#params.hash#', addtoken=false);
 		else
-			location(url='..', addtoken=false);
+			location(url='/', addtoken=false);
 	}
 
 }
