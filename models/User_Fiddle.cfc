@@ -115,7 +115,7 @@
 					INNER JOIN DB_Types d ON
 						sd.db_type_id = d.id
 			WHERE
-				uf.user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer"> AND
+				uf.user_id = 1 AND
 				uf.show_in_history = 1
 			GROUP BY
 				d.full_name,
@@ -147,7 +147,9 @@
 			
 		ORDER BY
 			most_recent_schema_access DESC,
+			schema_fragment,
 			most_recent_query_access DESC,
+			query_id,
 			qs.id
 		</cfquery>
 		
