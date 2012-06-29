@@ -114,7 +114,7 @@ $(function () {
 					if (fullHistory.length) {
 						
 						fiddleArray = _.map(fullHistory, function(val, key){
-							return [val.fragment, new Date(val.last_used)];
+							return [val.fragment, dateFormat(val.last_used, "mm/dd/yyyy HH:MM:ss")];
 						});
 						
 						$.post("index.cfm/UserFiddles/loadFromLocalStorage", {
