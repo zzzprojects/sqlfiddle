@@ -503,7 +503,8 @@ Specification:
 			<cfset Local.httpParameter = StructNew() />
 			<cfset Local.httpParameter["Type"] = "formfield" />
 			<cfset Local.httpParameter["Name"] = "openid.ns" />
-			<cfset Local.httpParameter["Value"] = UrlEncodedFormat(Arguments.Request['openid.ns']) />
+			<!---<cfset Local.httpParameter["Value"] = UrlEncodedFormat(Arguments.Request['openid.ns']) />--->
+			<cfset Local.httpParameter["Value"] = Arguments.Request['openid.ns'] />
 			<cfset Local.httpParameter["Encoded"] = false />
 			<cfset ArrayAppend(Local.data,Local.httpParameter) />
 		</cfif>
@@ -532,7 +533,8 @@ Specification:
 		<cfset Local.httpParameter = StructNew() />
 		<cfset Local.httpParameter["Type"] = "formfield" />
 		<cfset Local.httpParameter["Name"] = "openid.dh_consumer_public" />
-		<cfset Local.httpParameter["Value"] = UrlEncodedFormat(Local.cpub) />
+		<!---<cfset Local.httpParameter["Value"] = UrlEncodedFormat(Local.cpub) />--->
+		<cfset Local.httpParameter["Value"] = Local.cpub />
 		<cfset Local.httpParameter["Encoded"] = false />
 		<cfset ArrayAppend(Local.data,Local.httpParameter) />
 
