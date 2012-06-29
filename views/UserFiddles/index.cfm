@@ -46,7 +46,7 @@
 				<cfelse>
 					<div class="schemaPreviewWrapper">
 						<div class="schemaPreview">
-							#HTMLCodeFormat(ddl)#
+							#HTMLCodeFormat(Left(ddl, 400))#
 						</div>
 					</div>					
 					<a href="##!#schema_fragment#" class="label label-info preview-ddl popover-anchor">preview ddl</a>
@@ -97,7 +97,7 @@
 					<cfelse>
 						<div class="resultSetWrapper">
 							<div class="resultSetPreview">
-							#HTMLCodeFormat(full_sql)#
+							#HTMLCodeFormat(Left(full_sql, 400))#
 							</div>
 						</div>					
 						<a href="##!#schema_fragment#/#query_id#" class="label label-info preview-sql popover-anchor">preview sql</a>
