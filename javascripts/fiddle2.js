@@ -288,12 +288,6 @@ $(function () {
 $.blockUI.defaults.overlayCSS.cursor = 'auto';
 $.blockUI.defaults.css.cursor = 'auto';
 
-function renderTerminator(parentPanel, selectedTerminator){
-		var mainBtn = parentPanel.find('.terminator a.btn');
-		mainBtn.html(mainBtn.html().replace(/\[ .+ \]/, '[ ' + selectedTerminator + ' ]'));
-		parentPanel.find(".terminator").data("statement_separator", selectedTerminator);
-}
-
 function resizeLayout(){
 
 	var wheight = $(window).height() - 100;
@@ -344,64 +338,6 @@ function resizeLayout(){
 	}
 }
 
-
-
-    
-	Handlebars.registerHelper("result_display", function(value) {
-		if ($.isPlainObject(value))
-			return JSON.stringify(value);
-		else if (value == null)
-			return "(null)";
-		else if (value === false)
-			return "false";
-		else
-			return value;
-	});
-
-	
-	Handlebars.registerHelper("each_simple_value_with_index", function(array, fn) {
-		var buffer = "";
-		k=0;
-		for (var i = 0, j = array.length; i < j; i++) {
-			var item = {
-				value: array[i]
-			};
-	
-			// stick an index property onto the item, starting with 0
-			item.index = k;
-			
-			item.first = (k == 0);
-			item.last = (k == array.length);
-
-			// show the inside of the block
-			buffer += fn(item);
-
-			k++;
-		}
-
-		// return the finished buffer
-		return buffer;
-	
-	});		
-
-
-    
-	Handlebars.registerHelper("result_display_padded", function(colWidths) {
-		var padding = [];
-		
-		padding.length = colWidths[this.index] - this.value.toString().length + 1;
-		
-		return padding.join(' ') + this.value.toString();
-	});
-	
-	Handlebars.registerHelper("divider_display", function(colWidths) {
-		var padding = [];
-		
-		padding.length = colWidths[this.index] + 1;
-		
-		return padding.join('-');
-
-	});
 
 
 
