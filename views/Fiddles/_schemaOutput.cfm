@@ -1,0 +1,8 @@
+	<script id="schema-output-template" type="text/x-handlebars-template">
+		{{#if errorMessage}}
+		<div class="alert alert-error database-error database-messages"><i class="icon-remove"></i>{{errorMessage}}</div>	
+		{{else}}
+		<div class="alert alert-success database-messages"><i class="icon-ok"></i>Schema Ready</div>	
+		{{/if}}
+	
+	</script>

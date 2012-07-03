@@ -108,7 +108,7 @@
 		
 		loc.templateName = $generateRenderWithTemplatePath(argumentCollection=arguments, contentType=loc.contentType);
 		loc.templatePathExists = $formatTemplatePathExists($name=loc.templateName);	
-		
+
 		if (loc.templatePathExists)
 			loc.content = renderPage(argumentCollection=arguments, template=loc.templateName, returnAs="string", layout=false, hideDebugInformation=true);
 		
@@ -180,7 +180,7 @@
 		var loc = {};
 		loc.templatePath = $generateIncludeTemplatePath($type="page", $name=arguments.$name, $template=arguments.$name);
 		loc.templatePathExists = false;
-		
+
 		if (!ListFindNoCase(variables.$class.formats.existingTemplates, arguments.$name) && !ListFindNoCase(variables.$class.formats.nonExistingTemplates, arguments.$name))
 		{
 			if (FileExists(ExpandPath(loc.templatePath)))

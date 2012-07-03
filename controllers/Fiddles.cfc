@@ -1,12 +1,24 @@
 component extends="Controller" {
 
-	function index() {
-		location(url='../index.html', addtoken=false);
+	function init() {
+        provides("json,js");
+        caches(actions="index", time=30);
 	}
 
-	function db_types() {
-		db_types = model("DB_Type").findAll(select="id,full_name,sample_fragment,simple_name,notes,context,jdbc_class_name", order="full_name", cache="true");			
-		renderText(SerializeJSON(db_types));
+	function index() {
+		contentFor(handleBarsScripts=includePartial('schemaBrowser'));
+		contentFor(handleBarsScripts=includePartial('schemaOutput'));
+		contentFor(handleBarsScripts=includePartial('queryOutput'));
+		contentFor(handleBarsScripts=includePartial('dbType'));
+		
+		contentFor(utilityModals=includePartial('textToDDL'));
+		contentFor(utilityModals=includePartial('loginModal'));
+		contentFor(utilityModals=includePartial('myFiddlesModal'));
+	}
+
+	function dbTypes () {
+		db_types = model("DB_Type").findAll(select="id,full_name,sample_fragment,simple_name,notes,context,jdbc_class_name", order="full_name", cache="true");
+		renderWith(data="#db_types#", layout=false);			
 	}
 
 	function createSchema () {

@@ -252,7 +252,6 @@ $(function () {
 	
 	var DBTypesList = Backbone.Collection.extend({
 		model: DBType,
-		url: "index.cfm/fiddles/db_types",
 		getSelectedType: function () {
 			var selectedType = this.filter(function (dbType) { 
 				return dbType.get("selected");
@@ -268,33 +267,8 @@ $(function () {
 			});
 			if (! silentSelected)
 				this.trigger("change");
-		},
-		parse: function (resp) {
-			var result = [];
-			var columnIdx = {};
-			for (var i = 0; i < resp["COLUMNS"].length; i++)
-			{
-				columnIdx[resp["COLUMNS"][i]] = i;
-			}
-			
-			for (var i = 0; i < resp["DATA"].length; i++)
-			{
-				result.push({
-					"id": resp["DATA"][i][columnIdx["ID"]],				
-					"sample_fragment" : resp["DATA"][i][columnIdx["SAMPLE_FRAGMENT"]],
-					"notes": resp["DATA"][i][columnIdx["NOTES"]],
-					"simple_name": resp["DATA"][i][columnIdx["SIMPLE_NAME"]],
-					"full_name": resp["DATA"][i][columnIdx["FULL_NAME"]],
-					"context": resp["DATA"][i][columnIdx["CONTEXT"]],
-					"className": resp["DATA"][i][columnIdx["JDBC_CLASS_NAME"]]
-				});
-			}
-
-			return result;
-		},
-		initialize: function () {
-			this.fetch();
 		}
+				
 	});
 	
 	var SchemaDef = Backbone.Model.extend({
