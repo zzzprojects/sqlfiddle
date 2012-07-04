@@ -65,7 +65,7 @@
 								<!--- if we are looking at the first bit of executable code in this statement, we have to ignore comments --->
 								<cfset local.cleanStatement = ReReplaceNoCase(statement,"((--)|(##))(.*?)\n","","ALL")>
 								<cfset local.cleanStatement = ReReplaceNoCase(local.cleanStatement,"/\*(.*?)\*/","","ALL")>
-								<cfif NOT (ReFindNoCase("^\s*SELECT", local.cleanStatement))>	
+								<cfif NOT (ReFindNoCase("^\s*SELECT", local.cleanStatement)) AND NOT (ReFindNoCase("^\s*SET", local.cleanStatement))>	
 									<cfthrow message="DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel.">
 								</cfif>
 							</cfif>
