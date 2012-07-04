@@ -80,6 +80,8 @@
 		</cfloop>
 
 		<cfscript>
+			local.isMySQL = !this.db_type.simple_name IS 'MySQL';
+			
 			setDatasource(
 				adminPassword=get('CFAdminPassword'),
 				name="#this.db_type_id#_#arguments.datasourceName#",
@@ -90,13 +92,13 @@
 				customJDBCArguments=this.db_type.custom_jdbc_attributes,
 				timeout=0,
 			    allowed_select=true,
-			    allowed_insert=true,
-			    allowed_update=true,
-			    allowed_delete=true,
-			    allowed_alter=true,
-			    allowed_drop=true,
+			    allowed_insert=!local.isMySQL,
+			    allowed_update=!local.isMySQL,
+			    allowed_delete=!local.isMySQL,
+			    allowed_alter=!local.isMySQL,
+			    allowed_drop=!local.isMySQL,
 			    allowed_revoke=false,
-			    allowed_create=true,
+			    allowed_create=!local.isMySQL,
 			    allowed_grant=false,
 				pooling=false,
 				description = "Created on #DateFormat(Now(), 'mm/dd/yyyy')# #TimeFormat(Now(), 'hh:mm:ss tt')#"
