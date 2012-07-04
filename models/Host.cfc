@@ -80,7 +80,7 @@
 		</cfloop>
 
 		<cfscript>
-			local.isMySQL = !this.db_type.simple_name IS 'MySQL';
+			local.isMySQL = this.db_type.simple_name IS 'MySQL';
 			
 			setDatasource(
 				adminPassword=get('CFAdminPassword'),
