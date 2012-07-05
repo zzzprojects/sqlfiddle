@@ -193,7 +193,15 @@
 								errorMessage = "Explicit commits and DDL (ex: CREATE, DROP, RENAME, or ALTER) are not allowed within the query panel for Oracle.  Put DDL in the schema panel instead."
                                                         })>     
 
-						<cfelse>	
+						<cfelsif this.schema_def.db_type.simple_name IS "MySQL" AND
+								REFindNoCase("^access denied to execute", cfcatch.message)>	
+
+							<cfset ArrayAppend(returnVal["sets"], {
+								succeeded = false,
+								errorMessage = "DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel."
+                                                        })>     
+
+						<cfelse>
 
 							<cfset ArrayAppend(returnVal["sets"], {
 								succeeded = false,
