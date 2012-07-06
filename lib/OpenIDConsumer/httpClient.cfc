@@ -56,7 +56,7 @@
 		<cfloop index="local.i" from="1" to="#ArrayLen(arguments.data)#">
 			<cfset local.p = arguments.data[local.i] />
 			<cfif StructKeyExists(local.p,"Encoded")>
-				<cfhttpparam type="#local.p.type#" name="#local.p.name#" value="#local.p.value#" encoded="#local.p.encoded#" />
+				<cfhttpparam type="#local.p.type#" name="#local.p.name#" value="#URLDecode(local.p.value)#" />
 			<cfelse>
 				<cfhttpparam type="#local.p.type#" name="#local.p.name#" value="#local.p.value#" />
 			</cfif>
@@ -76,7 +76,7 @@
 		<cfloop index="local.i" from="1" to="#ArrayLen(arguments.data)#">
 			<cfset local.p = arguments.data[local.i] />
 			<cfif StructKeyExists(local.p,"Encoded")>
-				<cfhttpparam type="#local.p.type#" name="#local.p.name#" value="#local.p.value#" encoded="#local.p.encoded#" />
+				<cfhttpparam type="#local.p.type#" name="#local.p.name#" value="#URLDecode(local.p.value)#" />
 			<cfelse>
 				<cfhttpparam type="#local.p.type#" name="#local.p.name#" value="#local.p.value#" />
 			</cfif>
