@@ -17,7 +17,7 @@ requirejs.config({
 		'fiddle_backbone': ['backbone-min', 'mode/mysql/mysql', 'websql_driver', 'sqljs_driver', 'handlebars-1.0.0.beta.6', 'jquery.blockUI'],
 		'index.cfm/Fiddles/dbTypes?format=js': ['fiddle_backbone'],
 		'ddl_builder': ['jquery','handlebars-1.0.0.beta.6', 'date.format'],
-		'fiddle2': ['index.cfm/Fiddles/dbTypes?format=js', 'ddl_builder', 'jquery.cookie', 'bootstrap-collapse', 'bootstrap-dropdown', 'bootstrap-modal', 'bootstrap-tooltip', 'bootstrap-popover']
+		'fiddle2': ['index.cfm/Fiddles/dbTypes?format=js', 'ddl_builder', 'idselector', 'jquery.cookie', 'bootstrap-collapse', 'bootstrap-dropdown', 'bootstrap-modal', 'bootstrap-tooltip', 'bootstrap-popover']
 	}
 });		
 
