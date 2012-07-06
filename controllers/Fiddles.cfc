@@ -2,7 +2,7 @@ component extends="Controller" {
 
 	function init() {
         provides("json,js");
-        caches(actions="index", time=30);
+        caches(actions="index,dbTypes", time=30);
 	}
 
 	function index() {
@@ -18,6 +18,7 @@ component extends="Controller" {
 
 	function dbTypes () {
 		db_types = model("DB_Type").findAll(select="id,full_name,sample_fragment,simple_name,notes,context,jdbc_class_name", order="full_name", cache="true");
+		getPageContext().getResponse().addHeader("Cache-Control","max-age=86400"); // one day
 		renderWith(data="#db_types#", layout=false);			
 	}
 

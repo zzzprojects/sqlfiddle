@@ -11,6 +11,7 @@
 	})>
 </cfloop>
 <cfoutput>
+// generated from index.cfm/Fiddles/dbTypes?format=js on #Now()#
 $(function () {
 	window.dbTypes.reset(#SerializeJSON(dbObjects)#);
 });
