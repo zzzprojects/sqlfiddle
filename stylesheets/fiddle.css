@@ -25,7 +25,8 @@
 	
 		
 	.helpTip {
-		width: 100px !important;	
+		width: 70px !important;
+		height: 50% !important; 	
 	}
 
 	
@@ -143,6 +144,11 @@ pre.results, .resultSetPreview li pre {
 .database-error {
 	white-space: pre-wrap;
 }	
+
+
+#runQueryOptions {
+	width: 120px;	
+}
 
 #content .panel form textarea {
   display: block;
