@@ -117,5 +117,3 @@
   <h4 class="alert-heading">No Fiddles Found!</h4> Why not try a sample fiddle to get some wheels turning?
 </div>	
 </cfif>
-
-<cfdump var="#session.user#">
