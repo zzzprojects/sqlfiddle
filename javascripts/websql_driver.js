@@ -3,7 +3,7 @@ window.WebSQL_driver = function () {
 	var db = null;
 	var ddl = [];
 	
-	var nativeSQLite = (window.openDatabase !== undefined);
+	this.nativeSQLite = (window.openDatabase !== undefined);
 
 	var splitStatement = function (statements, separator)
 	{
@@ -17,7 +17,7 @@ window.WebSQL_driver = function () {
 	this.buildSchema = function (args) {
 		try {
 		
-			if (nativeSQLite)
+			if (this.nativeSQLite)
 			{
 				db = openDatabase(args["short_code"], '1.0', args["short_code"], args["ddl"].length * 1024);
 

@@ -76,6 +76,38 @@ $(function () {
 
 					if (selectedDBType.get("context") == "browser")
 					{
+						if (
+								selectedDBType.get("className") == "sqljs" &&
+								window.browserEngines["websql"].nativeSQLite
+							)
+						{
+							if (confirm("Fiddle originally built with SQL.js, but you have WebSQL available - would you like to use that instead (it'll be faster to load)?)"))
+							{
+								window.dbTypes.setSelectedType($("#db_type_id a:contains('WebSQL')").closest('li').attr('db_type_id'));
+								selectedDBType = window.dbTypes.getSelectedType();
+								window.schemaDef.set({
+									"ddl": resp["ddl"],
+									"dbType": selectedDBType,
+									"statement_separator": resp["schema_statement_separator"]
+								});
+								if (resp["sql"])
+								{
+									window.query.set({
+										"schemaDef": window.schemaDef, 
+										"sql":  resp["sql"],
+										"statement_separator": resp["query_statement_separator"]
+									});
+									window.schemaDef.on("built", _.once(function () {
+										window.query.execute();					
+									}));
+
+								}
+								window.schemaDef.build();
+
+								
+							}
+						}
+						
 						window.browserEngines[selectedDBType.get("className")].buildSchema({
 							
 							short_code: $.trim(resp["short_code"]),
