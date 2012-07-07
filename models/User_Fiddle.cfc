@@ -115,7 +115,7 @@
 					INNER JOIN DB_Types d ON
 						sd.db_type_id = d.id
 			WHERE
-				uf.user_id = 1 AND
+				uf.user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_bigint"> AND
 				uf.show_in_history = 1
 			GROUP BY
 				d.full_name,
