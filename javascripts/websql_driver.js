@@ -66,11 +66,12 @@ window.WebSQL_driver.prototype.buildSchema = function (args) {
 						return true; // roll back transaction
 					};
 					
-					tx.executeSql(statement, [], 
-						sequentiallyExecute, 
-						handleFailure
-					);
-					
+					if (statement) {
+						tx.executeSql(statement, [], sequentiallyExecute, handleFailure);
+					}
+					else {
+						args["success"]();
+					}
 				});
 				
 			}
