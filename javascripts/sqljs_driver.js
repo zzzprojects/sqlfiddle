@@ -1,17 +1,15 @@
 window.SQLjs_driver = function () {
 	
 	var db = null;
+	
+	return this;
+	
+}
 
-	var splitStatement = function (statements, separator)
-	{
-		if (! separator) separator = ";";
-		var escaped_separator = separator.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-		
-		var sArray = (statements ? statements.split(new RegExp(escaped_separator + "\s*\r?(\n|$)")) : []);
-		return sArray; 
-	}
+window.SQLjs_driver.prototype = new window.SQLite_driver;
+window.SQLjs_driver.constructor = window.SQLjs_driver;
 
-	this.buildSchema = function (args) {
+window.SQLjs_driver.prototype.buildSchema = function (args) {
 		
 		try {
 	
@@ -22,7 +20,7 @@ window.SQLjs_driver = function () {
 			var jsBuildSchema = function () {
 				
 				db = SQL.open();
-				$.each(splitStatement(args["ddl"],args["statement_separator"]), function (i, statement) {
+				$.each(window.SQLite_driver.prototype.splitStatement.call(this,args["ddl"],args["statement_separator"]), function (i, statement) {
 					db.exec(statement);
 				});				
 				
@@ -57,7 +55,7 @@ window.SQLjs_driver = function () {
 	}
 	
 	
-	this.executeQuery = function (args) {
+window.SQLjs_driver.prototype.executeQuery = function (args) {
 		
 		
 		try {
@@ -70,7 +68,7 @@ window.SQLjs_driver = function () {
 
 			db.exec("BEGIN TRANSACTION");
 
-			$.each(splitStatement(args["sql"],args["statement_separator"]), function (i, statement) {
+			$.each(window.SQLite_driver.prototype.splitStatement.call(this,args["sql"],args["statement_separator"]), function (i, statement) {
 				if ($.trim(statement).length) {
 					var startTime = new Date();
 					
@@ -157,9 +155,3 @@ window.SQLjs_driver = function () {
 		
 		
 	}
-	
-	return this;
-	
-}
-
-window.SQLjs_driver.prototype = new window.SQLite_driver();

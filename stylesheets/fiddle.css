@@ -147,7 +147,7 @@ pre.results, .resultSetPreview li pre {
 
 
 #runQueryOptions {
-	width: 120px;	
+	min-width: 120px;	
 }
 
 #content .panel form textarea {

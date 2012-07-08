@@ -1,6 +1,8 @@
 window.SQLite_driver = function () {
-	
-	this.getSchemaStructure = function (args) {
+	return this;
+}
+
+window.SQLite_driver.prototype.getSchemaStructure = function (args) {
 		/*
 			We are going to get the schema structure by running a special query to get back the table 
 			definitions.  We'll use that query to find the column names and types by parsing out the columns
@@ -54,6 +56,15 @@ window.SQLite_driver = function () {
 		this.executeQuery({sql: schema_sql, "success": localCallback});
 		
 	}
+
+
+window.SQLite_driver.prototype.splitStatement = function (statements, separator)
+	{
+		if (! separator) separator = ";";
+		var escaped_separator = separator.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+		
+		var sArray = (statements ? statements.split(new RegExp(escaped_separator + "\s*\r?(\n|$)")) : []);
+		return sArray; 
+	}
 	
-	return this;
-}
+

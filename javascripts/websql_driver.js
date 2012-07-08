@@ -1,20 +1,19 @@
-window.WebSQL_driver = function () {
+window.WebSQL_driver = function(){
 	
 	var db = null;
 	var ddl = [];
-	
-	this.nativeSQLite = (window.openDatabase !== undefined);
-
-	var splitStatement = function (statements, separator)
-	{
-		if (! separator) separator = ";";
-		var escaped_separator = separator.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
 		
-		var sArray = (statements ? statements.split(new RegExp(escaped_separator + "\s*\r?(\n|$)")) : []);
-		return sArray; 
-	}
+	return this;
+};
 
-	this.buildSchema = function (args) {
+
+window.WebSQL_driver.prototype = new window.SQLite_driver;
+window.WebSQL_driver.constructor = window.WebSQL_driver;
+
+window.WebSQL_driver.prototype.nativeSQLite = (window.openDatabase !== undefined);
+
+window.WebSQL_driver.prototype.buildSchema = function (args) {
+	
 		try {
 		
 			if (this.nativeSQLite)
@@ -23,7 +22,7 @@ window.WebSQL_driver = function () {
 
 				db.transaction(function(tx){
 					
-					var statements = splitStatement(args["ddl"],args["statement_separator"]);
+					var statements = window.SQLite_driver.prototype.splitStatement.call(this, args["ddl"],args["statement_separator"]);
 					ddl = statements;
 					
 					var currentStatement = 0;
@@ -89,7 +88,7 @@ window.WebSQL_driver = function () {
 	}
 	
 	
-	this.executeQuery = function (args) {
+window.WebSQL_driver.prototype.executeQuery = function (args) {
 		
 		try {
 			
@@ -241,7 +240,7 @@ window.WebSQL_driver = function () {
 
 				var statements = ddl.slice(0);
 
-				$.each(splitStatement(args["sql"],args["statement_separator"]), function (i, stmt) { statements.push(stmt); });
+				$.each(window.SQLite_driver.prototype.splitStatement.call(this, args["sql"],args["statement_separator"]), function (i, stmt) { statements.push(stmt); });
 
 				var currentStatement = 0;
 				var statement = statements[currentStatement];
@@ -266,8 +265,4 @@ window.WebSQL_driver = function () {
 		
 	}
 	
-	return this;
 	
-}
-
-window.WebSQL_driver.prototype = new window.SQLite_driver();
