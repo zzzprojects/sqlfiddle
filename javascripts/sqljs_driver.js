@@ -1,17 +1,13 @@
 window.SQLjs_driver = function () {
-	
-	var db = null;
+	this.db = null;
+	return this;
+}
 
-	var splitStatement = function (statements, separator)
-	{
-		if (! separator) separator = ";";
-		var escaped_separator = separator.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-		
-		var sArray = (statements ? statements.split(new RegExp(escaped_separator + "\s*\r?(\n|$)")) : []);
-		return sArray; 
-	}
+$.extend(window.SQLjs_driver.prototype,window.SQLite_driver.prototype); // inherit from parent class
 
-	this.buildSchema = function (args) {
+window.SQLjs_driver.prototype.buildSchema = function (args) {
+
+	var _this = this; // preserve reference to current object through local closures
 		
 		try {
 	
@@ -21,9 +17,9 @@ window.SQLjs_driver = function () {
 			 */
 			var jsBuildSchema = function () {
 				
-				db = SQL.open();
-				$.each(splitStatement(args["ddl"],args["statement_separator"]), function (i, statement) {
-					db.exec(statement);
+				_this.db = SQL.open();
+				$.each(window.SQLite_driver.prototype.splitStatement.call(this,args["ddl"],args["statement_separator"]), function (i, statement) {
+					_this.db.exec(statement);
 				});				
 				
 				args["success"]();
@@ -40,9 +36,9 @@ window.SQLjs_driver = function () {
 			}
 			else
 			{
-				if (db)
+				if (_this.db)
 				{
-					db.close();
+					_this.db.close();
 				}
 				
 				jsBuildSchema();
@@ -57,27 +53,28 @@ window.SQLjs_driver = function () {
 	}
 	
 	
-	this.executeQuery = function (args) {
-		
+window.SQLjs_driver.prototype.executeQuery = function (args) {
+
+	var _this = this; // preserve reference to current object through local closures
 		
 		try {
-			if (! db)
+			if (! _this.db)
 			{
 				throw ("Database Schema not available!");
 			}
 
 			var returnSets = [];
 
-			db.exec("BEGIN TRANSACTION");
+			_this.db.exec("BEGIN TRANSACTION");
 
-			$.each(splitStatement(args["sql"],args["statement_separator"]), function (i, statement) {
+			$.each(window.SQLite_driver.prototype.splitStatement.call(this,args["sql"],args["statement_separator"]), function (i, statement) {
 				if ($.trim(statement).length) {
 					var startTime = new Date();
 					
 					var setArray = [];
 					
 					try {
-						setArray = db.exec(statement);
+						setArray = _this.db.exec(statement);
 						
 						var thisSet = {
 							"SUCCEEDED": true,
@@ -108,7 +105,7 @@ window.SQLjs_driver = function () {
 						
 						try {
 						
-							exectionPlanArray = db.exec("EXPLAIN QUERY PLAN " + statement);
+							exectionPlanArray = _this.db.exec("EXPLAIN QUERY PLAN " + statement);
 							
 							if (exectionPlanArray.length) {
 								$.each(exectionPlanArray, function(rowNumber, row){
@@ -145,7 +142,7 @@ window.SQLjs_driver = function () {
 				}
 			});				
 			
-			db.exec("ROLLBACK TRANSACTION");
+			_this.db.exec("ROLLBACK TRANSACTION");
 			
 			args["success"](returnSets);
 
@@ -157,9 +154,3 @@ window.SQLjs_driver = function () {
 		
 		
 	}
-	
-	return this;
-	
-}
-
-window.SQLjs_driver.prototype = new window.SQLite_driver();

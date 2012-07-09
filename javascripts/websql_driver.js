@@ -1,30 +1,26 @@
-window.WebSQL_driver = function () {
-	
-	var db = null;
-	var ddl = [];
-	
-	var nativeSQLite = (window.openDatabase !== undefined);
+window.WebSQL_driver = function(){
+	this.db = null;
+	this.ddl = [];
+	this.nativeSQLite = (window.openDatabase !== undefined);
+	return this;
+};
 
-	var splitStatement = function (statements, separator)
-	{
-		if (! separator) separator = ";";
-		var escaped_separator = separator.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-		
-		var sArray = (statements ? statements.split(new RegExp(escaped_separator + "\s*\r?(\n|$)")) : []);
-		return sArray; 
-	}
+$.extend(window.WebSQL_driver.prototype,window.SQLite_driver.prototype); // inherit from parent class
 
-	this.buildSchema = function (args) {
+window.WebSQL_driver.prototype.buildSchema = function (args) {
+
+	var _this = this; // preserve reference to current object through local closures
+	
 		try {
 		
-			if (nativeSQLite)
+			if (_this.nativeSQLite)
 			{
-				db = openDatabase(args["short_code"], '1.0', args["short_code"], args["ddl"].length * 1024);
+				_this.db = openDatabase(args["short_code"], '1.0', args["short_code"], args["ddl"].length * 1024);
 
-				db.transaction(function(tx){
+				_this.db.transaction(function(tx){
 					
-					var statements = splitStatement(args["ddl"],args["statement_separator"]);
-					ddl = statements;
+					var statements = _this.splitStatement(args["ddl"],args["statement_separator"]);
+					_this.ddl = statements;
 					
 					var currentStatement = 0;
 					var statement = statements[currentStatement];
@@ -67,11 +63,12 @@ window.WebSQL_driver = function () {
 						return true; // roll back transaction
 					};
 					
-					tx.executeSql(statement, [], 
-						sequentiallyExecute, 
-						handleFailure
-					);
-					
+					if (statement) {
+						tx.executeSql(statement, [], sequentiallyExecute, handleFailure);
+					}
+					else {
+						args["success"]();
+					}
 				});
 				
 			}
@@ -89,17 +86,19 @@ window.WebSQL_driver = function () {
 	}
 	
 	
-	this.executeQuery = function (args) {
+window.WebSQL_driver.prototype.executeQuery = function (args) {
+
+	var _this = this; // preserve reference to current object through local closures
 		
 		try {
 			
-			if (db == null ) {
+			if (_this.db == null ) {
 				throw("You need to build the schema before you can run a query.");
 			}
 			
 			var returnSets = [];
 			
-			db.transaction(function(tx){
+			_this.db.transaction(function(tx){
 
 				var sequentiallyExecute = function(tx2, result) {
 							
@@ -161,7 +160,7 @@ window.WebSQL_driver = function () {
 							thisSet["EXECUTIONPLAN"]["DATA"].push(rowVals);
 						}
 					
-						if (currentStatement > ddl.length-1)
+						if (currentStatement > _this.ddl.length-1)
 							returnSets.push(thisSet);						
 						
 						// executeSQL runs asynchronously, so we have to make recursive calls to handle subsequent queries in order.
@@ -192,7 +191,7 @@ window.WebSQL_driver = function () {
 					function(tx3, executionPlanResult){
 						// if the explain failed, then just append the base set to the result and move on....
 
-						if (currentStatement > ddl.length-1)
+						if (currentStatement > _this.ddl.length-1)
 							returnSets.push(thisSet);						
 
 						// executeSQL runs asynchronously, so we have to make recursive calls to handle subsequent queries in order.
@@ -239,9 +238,9 @@ window.WebSQL_driver = function () {
 				
 				var setArray = [], k, stop = false;
 
-				var statements = ddl.slice(0);
+				var statements = _this.ddl.slice(0);
 
-				$.each(splitStatement(args["sql"],args["statement_separator"]), function (i, stmt) { statements.push(stmt); });
+				$.each(_this.splitStatement(args["sql"],args["statement_separator"]), function (i, stmt) { statements.push(stmt); });
 
 				var currentStatement = 0;
 				var statement = statements[currentStatement];
@@ -266,8 +265,4 @@ window.WebSQL_driver = function () {
 		
 	}
 	
-	return this;
 	
-}
-
-window.WebSQL_driver.prototype = new window.SQLite_driver();

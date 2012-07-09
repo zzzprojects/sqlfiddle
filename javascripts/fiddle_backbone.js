@@ -82,6 +82,38 @@ $(function () {
 
 					if (selectedDBType.get("context") == "browser")
 					{
+						if (
+								selectedDBType.get("className") == "sqljs" &&
+								window.browserEngines["websql"].nativeSQLite
+							)
+						{
+							if (confirm("Fiddle originally built with SQL.js, but you have WebSQL available - would you like to use that instead (it'll be faster to load)?"))
+							{
+								window.dbTypes.setSelectedType($("#db_type_id a:contains('WebSQL')").closest('li').attr('db_type_id'));
+								selectedDBType = window.dbTypes.getSelectedType();
+								window.schemaDef.set({
+									"ddl": resp["ddl"],
+									"dbType": selectedDBType,
+									"statement_separator": resp["schema_statement_separator"]
+								});
+								if (resp["sql"])
+								{
+									window.query.set({
+										"schemaDef": window.schemaDef, 
+										"sql":  resp["sql"],
+										"statement_separator": resp["query_statement_separator"]
+									});
+									window.schemaDef.on("built", _.once(function () {
+										window.query.execute();					
+									}));
+
+								}
+								window.schemaDef.build();
+
+								
+							}
+						}
+						
 						window.browserEngines[selectedDBType.get("className")].buildSchema({
 							
 							short_code: $.trim(resp["short_code"]),
@@ -102,13 +134,22 @@ $(function () {
 																
 								if (resp["sql"])
 								{
+									window.myFiddleHistory.insert(new UsedFiddle({
+										"fragment": "!" + db_type_id + "/" + resp["short_code"] + "/" + resp["id"]
+									}));
+		
 									window.query.set({
 										"id": resp["id"],
 										"sql":  resp["sql"],
 										"statement_separator": resp["query_statement_separator"]
 									});
 								}
-								
+								else
+								{
+									window.myFiddleHistory.insert(new UsedFiddle({
+										"fragment": "!" + db_type_id + "/" + resp["short_code"]
+									}));									
+								}				
 								
 								window.browserEngines[selectedDBType.get("className")].getSchemaStructure({
 										callback: function (schemaStruct) {
@@ -207,6 +248,10 @@ $(function () {
 						
 						if (resp["sql"])
 						{
+							window.myFiddleHistory.insert(new UsedFiddle({
+								"fragment": "!" + db_type_id + "/" + resp["short_code"] + "/" + resp["id"]
+							}));
+
 							window.query.set({
 								"id": resp["id"],
 								"sql": resp["sql"],
@@ -214,8 +259,13 @@ $(function () {
 								"statement_separator": resp["query_statement_separator"]
 							});
 							window.query.trigger("reloaded");
-			
 						}
+						else
+						{
+							window.myFiddleHistory.insert(new UsedFiddle({
+								"fragment": "!" + db_type_id + "/" + resp["short_code"]
+							}));									
+						}				
 
 						$("body").unblock();
 				
@@ -237,7 +287,69 @@ $(function () {
 	/***************
 		MODELS
 	 ***************/
-		
+	
+	var UsedFiddle = Backbone.Model.extend({
+		defaults: {
+			"fragment": "",
+			"full_name": "",
+			"ddl": "",
+			"sql": "" 
+		},
+		initialize: function () {
+			this.set("last_used", new Date());
+		}
+	});
+	
+	var MyFiddleHistory = Backbone.Collection.extend({
+		model: UsedFiddle,
+		comparator: function (m1,m2) {
+			if (m1.get("last_used") == m2.get("last_used"))
+				return 0;
+			else if (m1.get("last_used") > m2.get("last_used"))
+				return -1;
+			else
+				return 1;
+		},
+		insert: function (uf) {
+			if (! $("#user_choices", this).length) // simple way to detect if we are logged in
+			{
+				var existingFiddle = this.find(function (m){
+					return m.get("fragment") == uf.get("fragment");
+				});
+				
+				if (existingFiddle)
+				{
+					existingFiddle.set("last_used", uf.get("last_used"));
+					this.sort();
+				}
+				else
+				{
+					this.add(uf);
+				}
+				this.trigger("change");
+			}
+		},
+		initialize: function () {
+			try
+			{
+				if (localStorage)
+				{
+					var historyJSON = localStorage.getItem("fiddleHistory");
+					if (historyJSON && historyJSON.length)
+					{
+						this.add($.parseJSON(historyJSON));
+					}
+					
+				}
+			}
+			catch (e)
+			{
+				// I guess localStorage isn't available
+			}
+		}
+	});
+	
+	
 	var DBType = Backbone.Model.extend({
 		defaults: {
 			"sample_fragment":"",
@@ -693,6 +805,8 @@ $(function () {
 		sqljs: new SQLjs_driver() // see sqljs_driver.js
 	};
 	
+	window.myFiddleHistory = new MyFiddleHistory();
+	
 	window.dbTypes = new DBTypesList();
 	window.schemaDef = new SchemaDef();
 	
@@ -895,6 +1009,14 @@ $(function () {
 		window.schemaDefView.render();
 		window.queryView.render();
 	});
+
+	window.myFiddleHistory.on("change reset remove", function () {
+		if (localStorage)
+		{
+			localStorage.setItem("fiddleHistory", JSON.stringify(this.toJSON()));
+		}
+	});
+
 	
 	/* Events which will trigger new route navigation */	
 	window.dbTypes.on("change", function () {
@@ -915,12 +1037,20 @@ $(function () {
 	});
 
 	window.schemaDef.on("built", function () {
-				
+		
+		window.myFiddleHistory.insert(new UsedFiddle({
+			"fragment": "!" + this.get("dbType").id + "/" + this.get("short_code")
+		}));
+		
 		window.router.navigate("!" + this.get("dbType").id + "/" + this.get("short_code"));
 	});
 	
 	window.query.on("executed", function () {
 		var schemaDef = this.get("schemaDef");
+
+		window.myFiddleHistory.insert(new UsedFiddle({
+			"fragment": "!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id
+		}));
 
 		window.router.navigate(
 			"!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id 

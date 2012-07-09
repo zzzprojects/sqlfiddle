@@ -60,16 +60,6 @@
 	
 						<cfif Len(trim(statement))><!--- don't run empty queries --->
 
-							<!--- We're restricting MySQL to just select statements for the query panel, since we can't prevent commits any other way --->
-							<cfif this.schema_def.db_type.simple_name IS "MySQL">
-								<!--- if we are looking at the first bit of executable code in this statement, we have to ignore comments --->
-								<cfset local.cleanStatement = ReReplaceNoCase(statement,"((--)|(##))(.*?)\n","","ALL")>
-								<cfset local.cleanStatement = ReReplaceNoCase(local.cleanStatement,"/\*(.*?)\*/","","ALL")>
-								<cfif NOT (ReFindNoCase("^\s*SELECT", local.cleanStatement))>	
-									<cfthrow message="DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel.">
-								</cfif>
-							</cfif>
-
 							<!--- if there is an execution plan mechanism available for this db type --->
 							<cfif 		(
 										Len(this.schema_def.db_type.execution_plan_prefix) OR
@@ -94,14 +84,6 @@
 										
 									<!--- execution plan failed! Oh well, carry on.... --->
 									<cfset local.executionPlan = QueryNew("")>
-
-
-									<cfif this.schema_def.db_type.simple_name IS "MySQL">
-										<!--- since we only want to allow queries with valid execution plans for MySQL, 
-											queries that throw errors at the execution plan level should have those 
-											errors reported (otherwise they'd be trapped) --->
-										<cfrethrow>
-									</cfif>
 									
 									</cfcatch>
 								</cftry>								
@@ -138,17 +120,6 @@
 									</cfif><!--- end if xslt is/is not available for type --->
 
 								</cfif><!--- end if xml-based execution plan --->
-
-
-								<!--- We're restricting MySQL to just select statements for the query panel, since we can't prevent commits any other way --->
-								<cfif this.schema_def.db_type.simple_name IS "MySQL" AND 
-									NOT (
-										IsDefined("local.executionPlan") AND
-										IsQuery(local.executionPlan) AND
-										local.executionPlan.recordCount
-									)>	
-									<cfthrow message="DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel.">
-								</cfif>
 
 							</cfif> <!--- end if execution plan --->
 				
@@ -222,7 +193,15 @@
 								errorMessage = "Explicit commits and DDL (ex: CREATE, DROP, RENAME, or ALTER) are not allowed within the query panel for Oracle.  Put DDL in the schema panel instead."
                                                         })>     
 
-						<cfelse>	
+						<cfelseif this.schema_def.db_type.simple_name IS "MySQL" AND
+								REFindNoCase("^access denied to execute", cfcatch.message)>	
+
+							<cfset ArrayAppend(returnVal["sets"], {
+								succeeded = false,
+								errorMessage = "DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel."
+                                                        })>     
+
+						<cfelse>
 
 							<cfset ArrayAppend(returnVal["sets"], {
 								succeeded = false,
