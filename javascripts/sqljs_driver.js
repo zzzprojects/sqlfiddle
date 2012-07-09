@@ -1,15 +1,13 @@
 window.SQLjs_driver = function () {
-	
-	var db = null;
-	
+	this.db = null;
 	return this;
-	
 }
 
-window.SQLjs_driver.prototype = new window.SQLite_driver;
-window.SQLjs_driver.constructor = window.SQLjs_driver;
+$.extend(window.SQLjs_driver.prototype,window.SQLite_driver.prototype); // inherit from parent class
 
 window.SQLjs_driver.prototype.buildSchema = function (args) {
+
+	var _this = this; // preserve reference to current object through local closures
 		
 		try {
 	
@@ -19,9 +17,9 @@ window.SQLjs_driver.prototype.buildSchema = function (args) {
 			 */
 			var jsBuildSchema = function () {
 				
-				db = SQL.open();
+				_this.db = SQL.open();
 				$.each(window.SQLite_driver.prototype.splitStatement.call(this,args["ddl"],args["statement_separator"]), function (i, statement) {
-					db.exec(statement);
+					_this.db.exec(statement);
 				});				
 				
 				args["success"]();
@@ -38,9 +36,9 @@ window.SQLjs_driver.prototype.buildSchema = function (args) {
 			}
 			else
 			{
-				if (db)
+				if (_this.db)
 				{
-					db.close();
+					_this.db.close();
 				}
 				
 				jsBuildSchema();
@@ -56,17 +54,18 @@ window.SQLjs_driver.prototype.buildSchema = function (args) {
 	
 	
 window.SQLjs_driver.prototype.executeQuery = function (args) {
-		
+
+	var _this = this; // preserve reference to current object through local closures
 		
 		try {
-			if (! db)
+			if (! _this.db)
 			{
 				throw ("Database Schema not available!");
 			}
 
 			var returnSets = [];
 
-			db.exec("BEGIN TRANSACTION");
+			_this.db.exec("BEGIN TRANSACTION");
 
 			$.each(window.SQLite_driver.prototype.splitStatement.call(this,args["sql"],args["statement_separator"]), function (i, statement) {
 				if ($.trim(statement).length) {
@@ -75,7 +74,7 @@ window.SQLjs_driver.prototype.executeQuery = function (args) {
 					var setArray = [];
 					
 					try {
-						setArray = db.exec(statement);
+						setArray = _this.db.exec(statement);
 						
 						var thisSet = {
 							"SUCCEEDED": true,
@@ -106,7 +105,7 @@ window.SQLjs_driver.prototype.executeQuery = function (args) {
 						
 						try {
 						
-							exectionPlanArray = db.exec("EXPLAIN QUERY PLAN " + statement);
+							exectionPlanArray = _this.db.exec("EXPLAIN QUERY PLAN " + statement);
 							
 							if (exectionPlanArray.length) {
 								$.each(exectionPlanArray, function(rowNumber, row){
@@ -143,7 +142,7 @@ window.SQLjs_driver.prototype.executeQuery = function (args) {
 				}
 			});				
 			
-			db.exec("ROLLBACK TRANSACTION");
+			_this.db.exec("ROLLBACK TRANSACTION");
 			
 			args["success"](returnSets);
 
