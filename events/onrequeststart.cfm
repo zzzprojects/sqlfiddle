@@ -18,7 +18,7 @@
 	}
 	</cfscript>
 	
-	<cfhttp url="#getBase()#index.cfm/Fiddles/dbTypes?format=js" method="get"></cfhttp>
+	<cfhttp url="#getBase()#index.cfm/Fiddles/dbtypes" method="get"></cfhttp>
 	<cffile action="write" file="#GetDirectoryFromPath(GetBaseTemplatePath())#javascripts/dbTypes_cached.js" output="#cfhttp.filecontent#" >
 
 </cfif>
