@@ -13,7 +13,8 @@
 		<cfif ListFindNoCase("test,production", get("environment"))>
 			
 			<!--- if we're in test or production, and the app has just been reloaded, then we are going to rebuild this particular main config file --->
-			<cfif (StructKeyExists(URL, "reload") && (!StructKeyExists(application, "wheels") || !StructKeyExists(application.wheels, "reloadPassword") || !Len(application.wheels.reloadPassword) || (StructKeyExists(URL, "password") && URL.password IS application.wheels.reloadPassword)))>
+			<cfif (StructKeyExists(URL, "reload") && (!StructKeyExists(application, "wheels") || !StructKeyExists(application.wheels, "reloadPassword") || !Len(application.wheels.reloadPassword) || (StructKeyExists(URL, "password") && URL.password IS application.wheels.reloadPassword))) 
+					AND StructKeyExists(URL, "optimizeRequireJS")>
 				<cfset loc.jsEngine = createObject("java", "org.mozilla.javascript.tools.shell.Main")>
 				<cfset loc.jsEngine.exec(["#GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/r.js","-o","#GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/build.js"])>
 			</cfif>
