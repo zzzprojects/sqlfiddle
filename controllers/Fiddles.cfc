@@ -1,6 +1,7 @@
 component extends="Controller" {
 
 	function init() {
+		super.init();
         provides("json,js");
         caches(actions="index,dbTypes", time=30);
 	}
