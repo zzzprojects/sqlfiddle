@@ -104,12 +104,11 @@ $(function () {
 			if ($("#user_choices", this).length) // simple way to detect if we are logged in
 			{
 				var fiddleArray = [];
-				try
-				{
+				try {
 					fullHistory = $.parseJSON(localStorage.getItem("fiddleHistory"));
 					
 					if (fullHistory.length) {
-						
+					
 						fiddleArray = _.map(fullHistory, function(val, key){
 							return [val.fragment, dateFormat(val.last_used, "mm/dd/yyyy HH:MM:ss")];
 						});
@@ -137,12 +136,12 @@ $(function () {
 							localStorage.setItem("fiddleHistory", JSON.stringify(fullHistory));
 						});
 					}
+				} 
+				catch (e) {
+				// something went wrong with our attempt to access localStorage.  Maybe it's not available?
 				}
-				catch (e)
-				{
-					// something went wrong with our attempt to access localStorage.  Maybe it's not available?
-				}			
-
+			}
+			
 	$("#loginModal form").submit(function () {
 		$("#hash", this).val(window.location.hash);
 	});
