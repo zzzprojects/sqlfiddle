@@ -3,3 +3,4 @@ WEB-INF
 .DS_Store
 config/production/settings.cfm
 config/environment.cfm
+/javascripts_min

@@ -3,3 +3,6 @@
 	A variable set in this file will override the one in "config/settings.cfm".
 	Example: <cfset set(dataSourceName="devDB")>
 --->
+
+
+	<cfset set(CFAdminPassword="admin")> 

@@ -121,8 +121,7 @@
 	</div>
 
 	<cfoutput>#includeContent('utilityModals')#</cfoutput>
-
-	<script data-main="javascripts/main" src="javascripts/require-jquery.js"></script>
+	<cfoutput>#requirejsTag()#</cfoutput>
 
 
   </body>
