@@ -100,9 +100,6 @@ $(function () {
 
 /* LOGIN/LOGOUT */
 
-	if ($.cookie('openid'))
-		$("#userInfo").load("index.cfm/Users/info", function () {
-			
 			// Upload localStorage fiddle history to server to use new mechanism
 			if ($("#user_choices", this).length) // simple way to detect if we are logged in
 			{
@@ -145,10 +142,6 @@ $(function () {
 				{
 					// something went wrong with our attempt to access localStorage.  Maybe it's not available?
 				}			
-			}
-		});
-	else
-		$("#userInfo a").toggle();
 
 	$("#loginModal form").submit(function () {
 		$("#hash", this).val(window.location.hash);

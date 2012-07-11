@@ -62,7 +62,13 @@
 						</li>
 												
 						<li class="dropdown" id="userInfo">
-							<a href="#loginModal" data-toggle="modal" style="display:none"><i class="icon-user"></i>Login</a>
+							<cfoutput>
+							<cfif !StructKeyExists(session, "user")>
+							#includePartial("/Users/_login")#
+							<cfelse>
+							#includePartial("/Users/_info")#
+							</cfif>
+							</cfoutput>
 						</li>
 					</ul>
 
