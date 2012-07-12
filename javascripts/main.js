@@ -27,7 +27,7 @@ requirejs.config({
 
 require([	'jquery','underscore','json2','codemirror','bootstrap-tooltip','sqlite_driver',
 			'backbone','mode/mysql/mysql','websql_driver','sqljs_driver','handlebars-1.0.0.beta.6','jquery.blockUI',
-			'fiddle_backbone','date.format','dbTypes_cached','ddl_builder','jquery.cookie','idselector', 
+			'fiddle_backbone','date.format','dbTypes_cached','ddl_builder','jquery.cookie','idselector','oracle_xplan/flashver','oracle_xplan/loadswf', 
 			'bootstrap-collapse','bootstrap-dropdown','bootstrap-modal','bootstrap-popover','fiddle2'
 		], function($) {
 	
