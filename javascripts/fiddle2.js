@@ -9,7 +9,7 @@ $(function () {
 		$('#myFiddlesModal').modal('show');
 		$('#myFiddlesModal .modal-body').block({ message: "Loading..."});
 
-		$("#myFiddlesModal .modal-body").load("index.cfm/UserFiddles", {tz: (new Date()).getTimezoneOffset()/60}, function () {
+		var setupModal = function () {
 			var thisModal = $(this);
 			
 			// make sure the active tab content is shown
@@ -23,7 +23,7 @@ $(function () {
 				title: "Schema Structure",
 				content: function () {
 					return $(this).closest('td').find('.schemaPreviewWrapper').html();
-				}				
+				}
 			});
 			
 			$(".preview-ddl").popover({
@@ -31,15 +31,15 @@ $(function () {
 				title: "Schema DDL",
 				content: function () {
 					return $(this).closest('td').find('.schemaPreviewWrapper').html();
-				}				
+				}
 			});
 
 			$(".result-sets").popover({
 				placement: "left",
 				title: "Query Results",
-				content: function () {
+				content: function(){
 					return $(this).closest('td').find('.resultSetWrapper').html();
-				}				
+				}
 			});
 
 			$(".preview-sql").popover({
@@ -47,7 +47,7 @@ $(function () {
 				title: "SQL Statements",
 				content: function () {
 					return $(this).closest('td').find('.resultSetWrapper').html();
-				}				
+				}
 			});
 			
 			$(".showAll", this).click(function (e) {
@@ -60,7 +60,7 @@ $(function () {
 				e.preventDefault();
 				var thisA = this;
 				var containing_row = $(this).closest("tr.queryLog");
-				$.post(	"index.cfm/UserFiddles/favorite", 
+				$.post(	"index.cfm/UserFiddles/setFavorite", 
 						{
 							schema_def_id: $(this).attr('schema_def_id'),
 							query_id: $(this).attr('query_id'),
@@ -80,6 +80,13 @@ $(function () {
 									.attr('title', 'Add to favorites');
 							}
 							$("i", thisA).toggleClass("icon-star-empty icon-star");
+
+							if ($(thisA).closest('.tab-pane').attr("id") == 'favorites') {
+								$(".queryLog[schema_def_id=" + $(thisA).attr('schema_def_id') + "][query_id=" + $(thisA).attr('query_id') + "] a.favorite").replaceWith(thisA);
+							}
+
+							$("#favorites").load("index.cfm/UserFiddles/getFavorites", {tz: (new Date()).getTimezoneOffset()/60}, setupModal);
+							
 						});
 			});
 
@@ -117,7 +124,9 @@ $(function () {
 						});
 			});
 			
-		});
+		}
+
+		$("#myFiddlesModal .modal-body").load("index.cfm/UserFiddles", {tz: (new Date()).getTimezoneOffset()/60}, setupModal);
 	});
 	
 
