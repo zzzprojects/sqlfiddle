@@ -10,10 +10,15 @@ $(function () {
 		$('#myFiddlesModal .modal-body').block({ message: "Loading..."});
 
 		$("#myFiddlesModal .modal-body").load("index.cfm/UserFiddles", {tz: (new Date()).getTimezoneOffset()/60}, function () {
-			var thisModal = $(this); 
+			var thisModal = $(this);
+			
+			// make sure the active tab content is shown
+			$(".tab-pane", this).removeClass("active");
+			$($("#myFiddlesTabs li.active a").attr("href")).addClass("active");
+			
 			thisModal.unblock();
 			
-			$(".schemaLog .preview-schema").popover({
+			$(".preview-schema").popover({
 				placement: "left",
 				title: "Schema Structure",
 				content: function () {
@@ -21,7 +26,7 @@ $(function () {
 				}				
 			});
 			
-			$(".schemaLog .preview-ddl").popover({
+			$(".preview-ddl").popover({
 				placement: "left",
 				title: "Schema DDL",
 				content: function () {
@@ -29,7 +34,7 @@ $(function () {
 				}				
 			});
 
-			$(".queryLog .result-sets").popover({
+			$(".result-sets").popover({
 				placement: "left",
 				title: "Query Results",
 				content: function () {
@@ -37,7 +42,7 @@ $(function () {
 				}				
 			});
 
-			$(".queryLog .preview-sql").popover({
+			$(".preview-sql").popover({
 				placement: "left",
 				title: "SQL Statements",
 				content: function () {
@@ -49,6 +54,33 @@ $(function () {
 				e.preventDefault();
 				$("tr.for-schema-" + $(this).closest("tr").attr("id")).show("fast");
 				$(this).hide();
+			});
+
+			$(".favorite", this).click(function (e) {
+				e.preventDefault();
+				var thisA = this;
+				var containing_row = $(this).closest("tr.queryLog");
+				$.post(	"index.cfm/UserFiddles/favorite", 
+						{
+							schema_def_id: $(this).attr('schema_def_id'),
+							query_id: $(this).attr('query_id'),
+							favorite: $(this).attr('href') == '#addFavorite' ? 1 : 0
+						}, 
+						function () {
+							if ($(thisA).attr('href') == '#addFavorite')
+							{
+								$(thisA)
+									.attr('href', '#removeFavorite')
+									.attr('title', 'Remove from favorites');
+							}
+							else
+							{
+								 $(thisA)
+									.attr('href', '#addFavorite')
+									.attr('title', 'Add to favorites');
+							}
+							$("i", thisA).toggleClass("icon-star-empty icon-star");
+						});
 			});
 
 			$(".forgetSchema", this).click(function (e) {
@@ -89,8 +121,14 @@ $(function () {
 	});
 	
 
-	$("#myFiddlesModal").on("click", "a", function (e) {
-			$('#myFiddlesModal').modal('hide');
+	$("#myFiddlesTabs a").on("click", function (e) {
+		e.preventDefault();
+		$(this).tab('show');
+	});
+
+	$("#myFiddlesModal .modal-body").on("click", 'a', function (e) {
+			if (!$(this).hasClass('favorite'))
+				$('#myFiddlesModal').modal('hide');
 	});
 
 	$("#myFiddlesModal").on("hidden", function () {

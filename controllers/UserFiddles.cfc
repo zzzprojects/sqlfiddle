@@ -9,6 +9,7 @@ component extends="Controller" {
 
 	function index() {
 		fiddles = model("User_Fiddle").findFiddles(session.user.id);
+		favorites = model("User_Fiddle").findFavorites(session.user.id);
 		renderPage(layout=false);
 	}
 	
@@ -27,6 +28,10 @@ component extends="Controller" {
 		renderNothing();
 	}
 	
+	function favorite() {
+		model("User_Fiddle").updateAll(where="user_id=#session.user.id# AND schema_def_id = #params.schema_def_id# AND query_id = #params.query_id#", favorite = params.favorite);
+		renderNothing();		
+	}
 	
 	function loadFromLocalStorage() {
 		

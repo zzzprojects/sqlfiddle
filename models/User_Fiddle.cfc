@@ -84,6 +84,7 @@
 			mySchemas.structure_json,
 			
 			uf.last_accessed as most_recent_query_access,
+			uf.favorite,
 			uf.query_id,
 			
 			q.sql as full_sql,
@@ -156,4 +157,53 @@
 		<cfreturn local.fiddles>
 	</cffunction>
 	
+	<cffunction name="findFavorites">
+		<cfargument name="user_id" type="numeric" required="true">
+		
+		<cfquery name="local.fiddles" datasource="#get('dataSourceName')#">
+		SELECT
+			uf.schema_def_id,
+			uf.query_id,
+			uf.last_accessed,
+			uf.num_accesses,
+		
+			db.full_name,
+			db.context,
+			db.id as db_type_id,
+
+			cast(sd.db_type_id as varchar) || '/' || sd.short_code as schema_fragment,
+			sd.short_code,
+			sd.owner_id,
+			sd.structure_json,
+			sd.ddl,
+			
+			q.sql as full_sql,
+			
+			qs.id as set_id,
+			qs.row_count,
+			qs.succeeded,
+			qs.sql,
+			qs.error_message,
+			qs.columns_list
+		FROM
+			User_Fiddles uf
+				INNER JOIN Queries q ON
+					uf.query_id = q.id AND
+					uf.schema_def_id = q.schema_def_id
+				LEFT OUTER JOIN Query_Sets qs ON
+					q.schema_def_id = qs.schema_def_id AND
+					q.id = qs.query_id
+				INNER JOIN Schema_Defs sd ON
+					uf.schema_def_id = sd.id
+				INNER JOIN DB_Types db ON
+					sd.db_type_id = db.id
+		WHERE
+			uf.user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_bigint"> AND
+			uf.favorite = 1
+		ORDER BY
+			uf.last_accessed DESC
+		</cfquery>
+		
+		<cfreturn local.fiddles>
+	</cffunction>	
 </cfcomponent>

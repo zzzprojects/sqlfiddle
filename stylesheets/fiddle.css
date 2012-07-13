@@ -285,7 +285,9 @@ pre.results, .resultSetPreview li pre {
 #myFiddlesModal .modal-body {
 	overflow-y: auto;	
 }
-
+#myFiddlesTabs {
+	margin-bottom: 0;
+}
 #raw, #parseResults { 
 	width: 90%;
 }

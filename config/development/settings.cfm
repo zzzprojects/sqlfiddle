@@ -6,3 +6,5 @@
 
 
 	<cfset set(CFAdminPassword="admin")> 
+
+	<cfset set(showDebugInformation=false)>
