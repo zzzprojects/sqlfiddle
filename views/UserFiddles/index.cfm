@@ -226,7 +226,7 @@
 	<cfelse>
 		
 	<div class="alert">
-	  <h4 class="alert-heading">No Fiddles Found!</h4> Why not try a sample fiddle to get some wheels turning?
+	  <h4 class="alert-heading">No Favorites Found!</h4> Use the "Fiddle History" tab to find those you've used recently, then click on the star for queries you'd like to save as a favorite.
 	</div>	
 	</cfif>
 
