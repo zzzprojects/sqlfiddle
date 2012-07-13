@@ -9,10 +9,12 @@ requirejs.config({
 		'jquery.blockUI': ['jquery'],
 		'jquery.cookie': ['jquery'],
 		'bootstrap-collapse': ['jquery'],
+		'bootstrap-tab': ['jquery'],
 		'bootstrap-dropdown': ['jquery'],
 		'bootstrap-modal': ['jquery'],
 		'bootstrap-tooltip': ['jquery'],
 		'bootstrap-popover': ['jquery','bootstrap-tooltip'],
+		'oracle_xplan/loadswf': ['oracle_xplan/flashver'],
 		
 		/* Jake's code starts here: */
 		'websql_driver': ['jquery', 'sqlite_driver'],
@@ -28,7 +30,7 @@ requirejs.config({
 require([	'jquery','underscore','json2','codemirror','bootstrap-tooltip','sqlite_driver',
 			'backbone','mode/mysql/mysql','websql_driver','sqljs_driver','handlebars-1.0.0.beta.6','jquery.blockUI',
 			'fiddle_backbone','date.format','dbTypes_cached','ddl_builder','jquery.cookie','idselector','oracle_xplan/flashver','oracle_xplan/loadswf', 
-			'bootstrap-collapse','bootstrap-dropdown','bootstrap-modal','bootstrap-popover','fiddle2'
+			'bootstrap-collapse','bootstrap-dropdown','bootstrap-modal','bootstrap-popover','bootstrap-tab','fiddle2'
 		], function($) {
 	
 });
