@@ -649,6 +649,8 @@ $(function () {
 				});
 
 				$(".schema .helpTip").css("display",  thisView.model.get("ddl").length ? "none" : "block");
+				$(".sql .helpTip").css("display",  (!thisView.model.get("ready") || thisView.model.get("loading")) ? "none" : "block");
+
 			}
 			
 		},
