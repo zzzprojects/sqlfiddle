@@ -371,7 +371,27 @@ function resizeLayout(){
 
 		$('#browser').height($('#fiddleFormDDL .CodeMirror-scroll').height());
 
-		
+		var adjustBlockMsg = function (blockedObj) {
+			var msgSize = 
+				{
+					"height": $(".blockMsg", blockedObj).height(), 
+					"width": $(".blockMsg", blockedObj).width()
+				};
+			var objSize = 
+				{
+					"height": $(blockedObj).height(), 
+					"width": $(blockedObj).width()
+				};
+			
+			$(".blockMsg", blockedObj)
+				.css("top", (objSize.height-msgSize.height)/2)
+				.css("left", (objSize.width-msgSize.width)/2);
+			
+		}
+
+		adjustBlockMsg($("div.sql.panel"));
+		adjustBlockMsg($("#output"));
+			
 		window.schemaDefView.refresh();
 		window.queryView.refresh();
 	}
