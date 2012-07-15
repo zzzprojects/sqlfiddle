@@ -37,18 +37,25 @@ If you want to get this app running on your environment, here's how you do it.
 10. Run the database restore scripts db/schema.sql and db/data.sql in your new sqlfiddle database
 
 11. Create new datasource connections from Railo to postgresql:
+
     Browse to http://localhost/railo-context/admin/web.cfm, login (if needed) and navigate to Services->Datasource
+    
     Add a datasource named "sqlfiddle" of type "PostgreSQL".  Use the credentials you defined for your sqlfiddle database.
+    
     Add another datasource named "sqlfiddle_pg1" of type "PostgreSQL". Use an account with admin privileges (such as "postgres"), connecting to the "postgres" database.
     
 12. Setup a mail server for Railo:
+
     Browse to http://localhost/railo-context/admin/web.cfm, login (if needed) and navigate to Services->Mail
+    
     Add an entry under Mail servers for an SMTP server you have access to. Don't worry if it doesn't actually work; it only matters that there is some defined here.
     
 13. You should now have a minimally-functional copy of the app available at http://localhost/ (or, if you used a different port when you installed Railo/tomcat, then use that)
+
     *The only database type options that will be functional are PostgreSQL and SQLite; you'll have to install and configure the other backend database servers and add datasource connections (like sqlfiddle_mysql1) for each of those. I suggest just ignoring them unless you really want to work on something relating to them specifically.*
     
 14. If you want to use the "View Sample Fiddle" option, you'll have to define your own samples.  Build them as normal, then when you have it ready copy the URL fragment (everything after the #!) and set it in the database table "sqlfiddle.db_types", under the column "sample_fragment".
+
     After you set this value, you'll have to reload the app to clear the cache: http://localhost/?reload=true
     
 This should get you going! Good luck, and feel free to create an issue on my [GitHub repo](https://github.com/jakefeasel/sqlfiddle) if these instructions need work.
