@@ -14,7 +14,7 @@ If you want to get this app running on your environment, here's how you do it.
 
         cd [your railo install base]/tomcat/webapps/ROOT
 
-        ls -d * | grep -v WEB-INF | sudo xargs rm -rf
+        ls -d * | grep -v WEB-INF | xargs rm -rf
 
 3. Clone your fork of this repository into some temporary, empty folder
 
