@@ -1,89 +1,39 @@
-About SQLFiddle.com
+#SQL Fiddle
 
-What am I supposed to do here?
+##About
 
-	SQL Fiddle is a tool for database developers to test out their SQL queries.  If you do not know SQL or basic database concepts, this site is not going to be very useful to you.  However, if you are a database developer, there are a few different use-cases of SQL Fiddle intended for you:
-			
-			You want help with a tricky query, and you'd like to post a question to a Q/A site like StackOverflow.  Build a representative database (schema and data) and post a link to it in your question.  Unique URLs for each database (and each query) will be generated as you use the site; just copy and paste the URL that you want to share, and it will be available for anyone who wants to take a look.  They will then be able to use your DDL and your SQL as a starting point for answering your question.  When they have something they'd like to share with you, they can then send you a link back to their query.
-					
-			You want to compare and contrast SQL statements in different database backends.  SQLFiddle easily lets you switch which database provider (MySQL, PostgreSQL, MS SQL Server, and Oracle) your queries run against.  This will allow you to quickly evaluate query porting efforts, or language options available in each environment.
-			
-			You do not have a particular database platform readily available, but you would like to see what a given query would look like in that environment.  Using SQL Fiddle, you don't need to bother spinning up a whole installation for your evaluation; just creating your database and queries here!
-		
-	Vince Pergolizzi wrote a great blog post about the site, providing an overview for how to use it when you ask SQL questions at places like StackOverflow. See it here: http://www.vincepergolizzi.com/2012/04/how-to-use-sql-fiddle-or-help-us-to-help-you/ 
-	
-	Para falantes do português, Dickson S. Guedes fez um vídeo instrutivo: http://www.youtube.com/watch?v=ednxTEGyfV8
+See [the SQL Fiddle about page](http://sqlfiddle.com/about.html) page for background on the site.
 
+## Getting the project up and running
 
-How does it work?
+If you want to get this app running on your environment, here's how you do it.
 
-	The Schema DDL that is provided is used to generate a private database on the fly.  If anything is changed in your DDL (even a single space!), then you will be prompted to generate a new schema and will be operating in a new database.
-	
+1. Download and install the latest stable [Railo Server with Tomcat](http://www.getrailo.org/index.cfm/download/) for your environment
+2. Remove the unneeded default files from the Railo ROOT folder:
+    > cd [your railo install base]/tomcat/webapps/ROOT
+    > ls -d * | grep -v WEB-INF | sudo xargs rm -rf
+3. Clone your fork of this repository into some temporary, empty folder
+4. Put this code into the Railo ROOT folder:
+    > cp -R sqlfiddle/* sqlfiddle/.git* sqlfiddle/.htaccess [your railo install base]/tomcat/webapps/ROOT/
+5. Copy the file config/environment.cfm.example to config/environment.cfm
+6. Copy the file config/design/settings.cfm.example to config/design/settings.cfm
+7. Edit config/design/settings.cfm and update the CFAdminPassword value to be whatever you used for your Railo admin password (if you aren't using an Admin password, then it shouldn't matter what this is set to)
+8. Download and install the latest [PostgreSQL server](http://www.postgresql.org/download/) for your environment
+9. Create a new PostgreSQL database named sqlfiddle:
+    > createdb -U postgres -E UTF8 sqlfiddle
+10. Run the database restore scripts db/schema.sql and db/data.sql in your new sqlfiddle database
+11. Create new datasource connections from Railo to postgresql:
+    Browse to http://localhost/railo-context/admin/web.cfm, login (if needed) and navigate to Services->Datasource
+    Add a datasource named "sqlfiddle" of type "PostgreSQL".  Use the credentials you defined for your sqlfiddle database.
+    Add another datasource named "sqlfiddle_pg1" of type "PostgreSQL". Use an account with admin privileges (such as "postgres"), connecting to the "postgres" database.
+12. Setup a mail server for Railo:
+    Browse to http://localhost/railo-context/admin/web.cfm, login (if needed) and navigate to Services->Mail
+    Add an entry under Mail servers for an SMTP server you have access to. Don't worry if it doesn't actually work; it only matters that there is some defined here.
+13. You should now have a minimally-functional copy of the app available at http://localhost/ (or, if you used a different port when you installed Railo/tomcat, then use that)
+    *The only database type options that will be functional are PostgreSQL and SQLite; you'll have to install and configure the other backend database servers and add datasource connections (like sqlfiddle_mysql1) for each of those. I suggest just ignoring them unless you really want to work on something relating to them specifically.*
+14. If you want to use the "View Sample Fiddle" option, you'll have to define your own samples.  Build them as normal, then when you have it ready copy the URL fragment (everything after the #!) and set it in the database table "sqlfiddle.db_types", under the column "sample_fragment".
+    After you set this value, you'll have to reload the app to clear the cache: http://localhost/?reload=true
+    
+This should get you going! Good luck, and feel free to create an issue on my [GitHub repo](https://github.com/jakefeasel/sqlfiddle) if these instructions need work.
 
-	
-	All SQL queries are run within a transaction that gets immediately rolled-back after the SQL executes.  This is so that the underlying database structure does not change from query to query, which makes it possible to share anonymously online with any number of users (each of whom may be writing queries in the same shared database, potentially modifying the structure and thus -- if not for the rollback -- each other's results).
-
-	
-	As you create schemas and write queries, unique URLs that refer to your particular schema and query will be visible in your address bar.  You can share these with anyone, and they will be able to see what you've done so far.  You will also be able to use your normal browser functions like 'back', 'forward', and 'reload', and you will see the various stages of your work, as you would expect.
-	
-
-Why are there two strange-looking options for SQLite?
-	
-	SQLite is something of a special case amongst the various database types I support. I could have implemented it the same way as the others, with a backend host doing the query execution, but what fun is that? SQLite's "lite" nature allowed for some interesting alternatives.
-	
-	First, I found the very neat project SQL.js, which is an implementation of the engine translated into javascript. This means that instead of using my servers (and my limited memory), I could offload the work onto your browser! Great for me, but unfortunately SQL.js does have a few drawbacks. One is that it taxes the browser a bit when it is first loaded into memory. The other is that it doesn't work in all browsers (so far I've seen it fail in IE9 and mobile Safari).
-	
-	The other option is "WebSQL." This option makes use of the SQLite implementation that a few browsers come with built-in (I've seen it work in Chrome and Safari; supposedly Opera supports this too). This feature was considered part of the W3C working draft for HTML5, but they depricated it in favor of IndexedDB. Despite this, a few browsers (particularlly mobile browsers) still have it available, so I figured that this would be a useful feature to grab onto. The advantage over SQL.js is that it is quite a bit faster to load the schema and run the queries. The disadvantage is that it isn't widely supported, and likely not long for this world.
-	
-	Together, these two options allow SQLite to run within any decent browser *cough*IE*cough*. If someone links you to a SQLite fiddle that your browser doesn't support, just switch over to the other option and build it using that one.
-
-
-Who should I contact for help/feedback?
-
-	There are two ways you can get in contact:
-		
-			Email : admin&lt;at&gt;sqlfiddle&lt;dot&gt;com
-			Twitter: @sqlfiddle
-		
-
-Who built this site, and why?
-
-	
-	SQLFiddle.com was built by me, Jake Feasel, a web developer from Anchorage, Alaska.  I started developing the site around the middle of January, 2012.
-	
-	I had been having fun answering questions on StackOverflow, particularly related to a few main categories: ColdFusion, jQuery, and SQL.
-
-	I found JS Fiddle to be a great tool for answering javascript / jQuery questions, but I also found that there was nothing available that offered similar functionality for the SQL questions. So, that was my inspiration to build this site.  Basically, I built this site as a tool for developers like me to be more effective in assisting other developers.
-	
-	Ramon Roche helped me to get the UI moved to Bootstrap, and just generally helping to make it look better. This has been my first time using Bootstrap, and without his assistance getting started I'm sure it would have been a lot rougher. Thanks Ramon!
-
-
-What platform is it running on?
-	
-	This site uses many different technologies.  The primary ones, in order from client to server are these:
-		
-	CodeMirror - for browser-based SQL editing with text highlighting.
-	Bootstrap - Twitter's CSS framework.
-	Backbone.js - MVC JavaScript framework.
-	Handlebars.js - JavaScript templating engine.
-	jQuery - AJAX, plus misc JS goodness. (Also jq plugin Block UI).
-	html-query-plan - XSLT for building rich query plans for SQL Server
-	Date.format.js - date formatting JavaScript library
-	jQuery - AJAX, plus misc JS goodness. (Also jq plugin Block UI).
-	ColdFusion on Wheels - ColdFusion framework modeled after Ruby on Rails.
-	Railo - Open Source CFML Application server.
-	Tomcat - Open Source Java Servlet Engine
-	Apache HTTPD - Open Source HTTP Server
-	PostgreSQL - Among others, of course, but PG is the central database host for this platform.
-	CentOS - Free, stable Linux distribution.
-	GeoNorth - Hosting and Consulting Company (who I work for), generously setting aside resources for this site.
-	StrataScale - VPS Cloud Hosting Provider
-		
-
-	
-	We also have a Windows 2008 VPS running SQL Server and Oracle.
-	
-	
-	
-	If you are interested in the fine details of the code behind SQL Fiddle, it is all available on github.
-	
+-- Jake Feasel, 07/15/2012
