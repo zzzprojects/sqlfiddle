@@ -8,45 +8,53 @@
 	<cffunction name="requirejsTag">
 		<cfargument name="src" type="string" default="plugins/RequireJS/require.js">
 		<cfargument name="main" type="string" default="main">
+		<cfargument name="build" type="string" default="plugins/RequireJS/build.js">
 		
 		<cfset var loc = {}>
 		<cfif ListFindNoCase("test,production", get("environment"))>
 
-			<cfdirectory action="list" directory="#GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS" name="local.thisPluginDir" filter="*.txt">
-			<cfset local.startDatestamp = DateAdd("d", -1, now())>
-			<cfset local.outputDatestamp = now()>
-			
-			<cfloop query="local.thisPluginDir">
-				<cfif name IS "optimize_start.txt">
-					<cfset local.startDatestamp = dateLastModified>
-				<cfelseif name IS "optimize_output.txt">
-					<cfset local.outputDatestamp = dateLastModified>
-				</cfif>
-			</cfloop>
+			<cfdirectory action="list" directory="#GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS" name="local.hasLock" filter="optimize_lock.txt">
 
-			<cfif DateCompare(local.outputDatestamp,local.startDatestamp) IS 1>
+			<cfif not local.hasLock.recordCount>
 				<cfset loc.basePath = "javascripts_min/">
 			<cfelse>
 				<!--- use the non-optimized javascript while the optimized version is being built --->
 				<cfset loc.basePath = "javascripts/">
 			</cfif>
+			
 			<!--- if we're in test or production, and the app has just been reloaded, then we are going to rebuild this particular main config file --->
 			<cfif (StructKeyExists(URL, "reload") && (!StructKeyExists(application, "wheels") || !StructKeyExists(application.wheels, "reloadPassword") || !Len(application.wheels.reloadPassword) || (StructKeyExists(URL, "password") && URL.password IS application.wheels.reloadPassword))) 
 					AND StructKeyExists(URL, "optimizeRequireJS")>
 				
 				<!--- only attempt to rebuild the JS code when the start file is dated before the output file --->
-				<cfif DateCompare(local.outputDatestamp,local.startDatestamp) IS 1>
+				<cfif not local.hasLock.recordCount>
 
 					<cfset loc.basePath = "javascripts/">
+					<cfset loc.build = arguments.build>
 					
-					<cffile action="append" file="#GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/optimize_start.txt" output="#now()#" addNewLine="yes" >
-					
-					<cfset loc.javaHome = createobject("java", "java.lang.System").getProperty("java.home")>
-					<cfexecute 
-						name="#loc.javaHome#/bin/java" 
-						arguments="-classpath #GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/js.jar org.mozilla.javascript.tools.shell.Main #GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/r.js -o #GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/build.js" 
-						outputfile="#GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/optimize_output.txt"></cfexecute>
+					<cfthread name="optimizer" action="run" loc="#loc#">
+						
+						<cffile action="write" file="#GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/optimize_lock.txt" output="#now()#">
+						
+						<cfset loc.javaHome = createobject("java", "java.lang.System").getProperty("java.home")>
+						<cftry>
+						
+							<cfexecute 
+								name="#loc.javaHome#/bin/java" 
+								arguments="-classpath #GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/js.jar org.mozilla.javascript.tools.shell.Main #GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/r.js -o #GetDirectoryFromPath(GetBaseTemplatePath())##loc.build#" 
+								outputfile="#GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/optimize_output.txt"
+								timeout="600"></cfexecute>
+
+							<cfcatch type="any">
+								<cffile action="write" file="#GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/optimize_output.txt" output="#cfcatch.message#">
+							</cfcatch>
 							
+						</cftry>
+							
+						<cffile action="delete" file="#GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/optimize_lock.txt">
+							
+					</cfthread>
+					
 				</cfif>
 			</cfif>
 			
