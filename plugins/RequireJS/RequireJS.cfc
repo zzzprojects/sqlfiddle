@@ -1,4 +1,4 @@
-<cfcomponent output="false" mixin="global" hint="Normalizes Admin API usage for creating and deleting datasources between Adobe CF and Railo">
+<cfcomponent output="false" mixin="global" hint="Simplify your RequireJS usage and optimization process">
 
     <cffunction name="init">
         <cfset this.version = "1.1.7,1.1.8">
