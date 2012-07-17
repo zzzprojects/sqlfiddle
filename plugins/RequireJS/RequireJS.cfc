@@ -38,9 +38,13 @@
 						
 						<cfset loc.javaHome = createobject("java", "java.lang.System").getProperty("java.home")>
 						<cftry>
-						
+							<cfif FileExists("#loc.javaHome#/bin/java.exe")>
+								<cfset loc.javaBin = "#loc.javaHome#/bin/java.exe">
+							<cfelse>
+								<cfset loc.javaBin = "#loc.javaHome#/bin/java">
+							</cfif>
 							<cfexecute 
-								name="#loc.javaHome#/bin/java" 
+								name="#loc.javaBin#" 
 								arguments="-classpath #GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/js.jar org.mozilla.javascript.tools.shell.Main #GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/r.js -o #GetDirectoryFromPath(GetBaseTemplatePath())##loc.build#" 
 								outputfile="#GetDirectoryFromPath(GetBaseTemplatePath())#plugins/RequireJS/optimize_output.txt"
 								timeout="600"></cfexecute>
