@@ -126,7 +126,7 @@
 		<cfset lowestSalary = model("employee").minimum("salary")>
 		
 		<!--- Get the amount of the lowest salary for employees in a given department --->
-		<cfset lowestSalary = model("employee").minimum(property="salary", where="departmentId=##params.id##")>
+		<cfset lowestSalary = model("employee").minimum(property="salary", where="departmentId=##params.key##")>
 		
 		<!--- Make sure a numeric amount is always returned, even when there were no records analyzed by the query --->
 		<cfset lowestSalary = model("employee").minimum(property="salary", where="salary BETWEEN ##params.min## AND ##params.max##", ifNull=0)>

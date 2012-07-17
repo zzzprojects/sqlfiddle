@@ -121,9 +121,12 @@
 	categories="view-helper,text" functions="autoLink,excerpt,simpleFormat,titleize,truncate">
 	<cfargument name="text" type="string" required="true" hint="Text to search.">
 	<cfargument name="phrases" type="string" required="true" hint="List of phrases to highlight.">
-	<cfargument name="class" type="string" required="false" default="highlight" hint="Class to use in `span` tags surrounding highlighted phrase(s).">
+	<cfargument name="delimiter" type="string" required="false" hint="Delimiter to use in `phrases` argument.">
+	<cfargument name="tag" type="string" required="false" hint="HTML tag to use to wrap the highlighted phrase(s).">
+	<cfargument name="class" type="string" required="false" hint="Class to use in the tags wrapping highlighted phrase(s).">
 	<cfscript>
 		var loc = {};
+		$args(name="highlight", args=arguments);
 		if (!Len(arguments.text) || !Len(arguments.phrases))
 		{
 			loc.returnValue = arguments.text;
@@ -131,11 +134,11 @@
 		else
 		{
 			loc.origText = arguments.text;
-			loc.iEnd = ListLen(arguments.phrases);
+			loc.iEnd = ListLen(arguments.phrases, arguments.delimiter);
 			for (loc.i=1; loc.i <= loc.iEnd; loc.i=loc.i+1)
 			{
 				loc.newText = "";
-				loc.phrase = Trim(ListGetAt(arguments.phrases, loc.i));
+				loc.phrase = Trim(ListGetAt(arguments.phrases, loc.i, arguments.delimiter));
 				loc.pos = 1;
 				while (FindNoCase(loc.phrase, loc.origText, loc.pos))
 				{
@@ -143,7 +146,7 @@
 					loc.prevText = Mid(loc.origText, loc.pos, loc.foundAt-loc.pos);
 					loc.newText = loc.newText & loc.prevText;
 					if (Find("<", loc.origText, loc.foundAt) < Find(">", loc.origText, loc.foundAt) || !Find(">", loc.origText, loc.foundAt))
-						loc.newText = loc.newText & "<span class=""" & arguments.class & """>" & Mid(loc.origText, loc.foundAt, Len(loc.phrase)) & "</span>";
+						loc.newText = loc.newText & "<" & arguments.tag & " class=""" & arguments.class & """>" & Mid(loc.origText, loc.foundAt, Len(loc.phrase)) & "</" & arguments.tag & ">";
 					else
 						loc.newText = loc.newText & Mid(loc.origText, loc.foundAt, Len(loc.phrase));
 					loc.pos = loc.foundAt + Len(loc.phrase);

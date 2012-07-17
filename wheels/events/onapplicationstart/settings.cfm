@@ -155,6 +155,7 @@
 	application.wheels.functions.hasMany = {joinType="outer", dependent=false};
 	application.wheels.functions.hasOne = {joinType="outer", dependent=false};
 	application.wheels.functions.hiddenField = {};
+	application.wheels.functions.highlight = {delimiter=",", tag="span", class="highlight"};
 	application.wheels.functions.hourSelectTag = {label="", labelPlacement="around", prepend="", append="", prependToLabel="", appendToLabel="", includeBlank=false};
 	application.wheels.functions.imageTag = {};
 	application.wheels.functions.includePartial = {layout="", spacer="", dataFunction=true};
@@ -184,7 +185,7 @@
 	application.wheels.functions.sendFile = {disposition="attachment"};
 	application.wheels.functions.startFormTag = {onlyPath=true, host="", protocol="", port=0, method="post", multipart=false, spamProtection=false};
 	application.wheels.functions.styleSheetLinkTag = {type="text/css", media="all", head=false};
-	application.wheels.functions.submitTag = {value="Save changes", image="", disable=""};
+	application.wheels.functions.submitTag = {value="Save changes", image="", disable="", prepend="", append=""};
 	application.wheels.functions.sum = {distinct=false, parameterize=true, ifNull=""};
 	application.wheels.functions.textArea = {label="useDefaultLabel", labelPlacement="around", prepend="", append="", prependToLabel="", appendToLabel="", errorElement="span", errorClass="fieldWithErrors"};
 	application.wheels.functions.textAreaTag = {label="", labelPlacement="around", prepend="", append="", prependToLabel="", appendToLabel=""};

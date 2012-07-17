@@ -43,6 +43,7 @@
 		<cfargument name="$primaryKey" type="string" required="false" default="">
 		<cfscript>
 			var loc = {};
+			arguments = $convertMaxRowsToLimit(arguments);
 			arguments.sql = $removeColumnAliasesInOrderClause(arguments.sql);
 			loc.returnValue = $performQuery(argumentCollection=arguments);
 		</cfscript>

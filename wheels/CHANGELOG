@@ -1,3 +1,33 @@
+WHEELS VERSION 1.1.8 (UNRELEASE)
+
+Model Enhancements
+==================
+
+* Add boolean type to validatesFormatOf() - [Andy Bellenie]
+
+View Enhancements
+=================
+
+* Add delimiter parameter to the highlight() function - #826 [Per Djurner, Tony Petruzzi]
+* Use mark tag in highlight - #836 [Per Djurner, Tony Petruzzi]
+* add parameters append and prepend to the submitTag() - #593 [Per Djurner, Tony Petruzzi]
+
+Bug Fixes
+=========
+
+* Turned off URL rewriting in IIS 7 by default - [Per Djurner, Tony Petruzzi]
+* Add CFFileServlet to the pattern list, of the rewrite rules file, to…be able to display an image when using <cfimage action='writeToBrowser'> - [ellor1138]
+* radioButtonTag() checked attribute is ignored if value attribute is empty - #733 [Per Djurner, Tony Petruzzi]
+* make cached queries respect the 'maxrows' argument (findAll) - #824 [Per Djurner, Tony Petruzzi]
+
+Other Enhancements
+==================
+
+* update web.config, htaccess to ignore favicon.ico - [Cathy Shapiro, Tony Petruzzi]
+* route with only format specified was throwing error - [jjallen, Tony Petruzzi]
+ 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 WHEELS VERSION 1.1.7 (12/11/2011)
 
 Bug Fixes

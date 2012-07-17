@@ -75,17 +75,18 @@
 		for (loc.i=1; loc.i <= loc.iEnd; loc.i++)
 		{
 			loc.format = "";
-			if (StructKeyExists(application.wheels.routes[loc.i], "format"))
-				loc.format = application.wheels.routes[loc.i].format;
+			loc.route = application.wheels.routes[loc.i];
+			if (StructKeyExists(loc.route, "format"))
+				loc.format = loc.route.format;
 				
-			loc.currentRoute = application.wheels.routes[loc.i].pattern;
+			loc.currentRoute = loc.route.pattern;
 			if (loc.currentRoute == "*") {
-				loc.returnValue = application.wheels.routes[loc.i];
+				loc.returnValue = loc.route;
 				break;
 			} 
 			else if (arguments.path == "" && loc.currentRoute == "")
 			{
-				loc.returnValue = application.wheels.routes[loc.i];
+				loc.returnValue = loc.route;
 				break;
 			}
 			else if (ListLen(arguments.path, "/") gte ListLen(loc.currentRoute, "/") && loc.currentRoute != "")
@@ -96,13 +97,13 @@
 				{
 					loc.item = ListGetAt(loc.currentRoute, loc.j, "/");
 					loc.thisRoute = ReplaceList(loc.item, "[,]", "");
-					loc.thisURL = ListGetAt(arguments.path, loc.j, "/");
+					loc.thisURL = ListFirst(ListGetAt(arguments.path, loc.j, "/"), '.');
 					if (Left(loc.item, 1) != "[" && loc.thisRoute != loc.thisURL)
 						loc.match = false;
 				}
 				if (loc.match)
 				{
-					loc.returnValue = application.wheels.routes[loc.i];
+					loc.returnValue = loc.route;
 					if (len(loc.format))
 					{
 						loc.returnValue[ReplaceList(loc.format, "[,]", "")] = $getFormatFromRequest(pathInfo=arguments.path);
@@ -368,6 +369,7 @@
 	<cfargument name="params" type="struct" required="true">
 	<cfargument name="route" type="struct" required="true">
 	<cfscript>
+
 		if (!StructKeyExists(arguments.params, "controller"))
 		{
 			arguments.params.controller = arguments.route.controller;
@@ -384,6 +386,7 @@
 		// convert controller to upperCamelCase and action to normal camelCase
 		arguments.params.controller = REReplace(arguments.params.controller, "(^|-)([a-z])", "\u\2", "all");
 		arguments.params.action = REReplace(arguments.params.action, "-([a-z])", "\u\1", "all");
+
 	</cfscript>
 	<cfreturn arguments.params>
 </cffunction>

@@ -1,4 +1,4 @@
-<cffunction name="verifies" returntype="void" access="public" output="false" hint="Instructs Wheels to verify that some specific criterias are met before running an action."
+<cffunction name="verifies" returntype="void" access="public" output="false" hint="Instructs Wheels to verify that some specific criterias are met before running an action. NOTE: All undeclared arguments will be passed to `redirectTo()` call if a handler is not specified."
 	examples=
 	'
 		<!--- Tell Wheels to verify that the `handleForm` action is always a `POST` request when executed --->
@@ -7,8 +7,11 @@
 		<!--- Make sure that the edit action is a `GET` request, that `userId` exists in the `params` struct, and that it''s an integer --->
 		<cfset verifies(only="edit", get=true, params="userId", paramsTypes="integer")>
 
-		<!--- Just like above, only this time we want to redirect the visitor to the index page of the controller if the request is invalid and show an error in The Flash --->
-		<cfset verifies(only="edit", get=true, params="userId", paramsTypes="integer", handler="index", error="Invalid userId")>
+		<!--- Just like above, only this time we want to invoke a custom method in our controller to handle the request when it is invalid --->
+		<cfset verifies(only="edit", get=true, params="userId", paramsTypes="integer", handler="myCustomMethod")>
+		
+		<!--- Just like above, only this time instead of specifying a handler, we want to `redirect` the visitor to the index action of the controller and show an error in The Flash when the request is invalid --->
+		<cfset verifies(only="edit", get=true, params="userId", paramsTypes="integer", action="index", error="Invalid userId")>
 	'
 	categories="controller-initialization,verification" chapters="filters-and-verification" functions="verificationChain,setVerificationChain">
 	<cfargument name="only" type="string" required="false" default="" hint="List of action names to limit this verification to.">

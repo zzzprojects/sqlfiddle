@@ -280,4 +280,17 @@
 		</cfscript>
 	</cffunction>
 
+	<cffunction name="$convertMaxRowsToLimit" returntype="struct" access="public" output="false">
+		<cfargument name="argScope" type="struct" required="true">
+		<cfscript>
+		if (StructKeyExists(arguments.argScope, "maxrows") AND arguments.argScope.maxrows gt 0){
+			if (arguments.argScope.maxrows gt 0){
+				arguments.argScope.limit = arguments.argScope.maxrows;
+			}
+			StructDelete(arguments.argScope, "maxrows");
+		}
+		return arguments.argScope;
+		</cfscript>
+	</cffunction>
+
 </cfcomponent>

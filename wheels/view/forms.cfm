@@ -92,9 +92,13 @@
 	<cfargument name="value" type="string" required="false" hint="Message to display in the button form control.">
 	<cfargument name="image" type="string" required="false" hint="File name of the image file to use in the button form control.">
 	<cfargument name="disable" type="any" required="false" hint="Whether or not to disable the button upon clicking. (prevents double-clicking.)">
+	<cfargument name="prepend" type="string" required="false" hint="See documentation for @textField">
+	<cfargument name="append" type="string" required="false" hint="See documentation for @textField">
 	<cfscript>
 		var loc = {};
 		$args(name="submitTag", reserved="type,src", args=arguments);
+		loc.returnValue = arguments.prepend;
+		loc.append = arguments.append;
 		if (Len(arguments.disable))
 		{
 			loc.onclick = "this.disabled=true;";
@@ -111,14 +115,17 @@
 			StructDelete(arguments, "value");
 			StructDelete(arguments, "image");
 			StructDelete(arguments, "disable");
-			loc.returnValue = imageTag(argumentCollection=arguments);
+			StructDelete(arguments, "append");
+			StructDelete(arguments, "prepend");
+			loc.returnValue &= imageTag(argumentCollection=arguments);
 			loc.returnValue = Replace(loc.returnValue, "<img", "<input");
 		}
 		else
 		{
 			arguments.type = "submit";
-			loc.returnValue = $tag(name="input", close=true, skip="image,disable", attributes=arguments);
+			loc.returnValue &= $tag(name="input", close=true, skip="image,disable,append,prepend", attributes=arguments);
 		}
+		loc.returnValue &= loc.append;
 	</cfscript>
 	<cfreturn loc.returnValue>
 </cffunction>

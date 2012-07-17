@@ -45,8 +45,13 @@
 		<cfargument name="$primaryKey" type="string" required="false" default="">
 		<cfscript>
 			var loc = {};
-	
-			if (arguments.limit + arguments.offset gt 0)
+			if (StructKeyExists(arguments, "maxrows") AND arguments.maxrows gt 0){
+				if (arguments.maxrows gt 0){
+					arguments.sql [1] = ReplaceNoCase(arguments.sql[1], "select ", "select top #arguments.maxrows# ", "one");
+				}
+				StructDelete(arguments, "maxrows");
+			}
+			else if (arguments.limit + arguments.offset gt 0)
 			{
 				loc.containsGroup = false;
 				loc.afterWhere = "";
