@@ -1,12 +1,99 @@
 $(function () {
 	
-	function renderTerminator(parentPanel, selectedTerminator){
+	var renderTerminator = function(parentPanel, selectedTerminator){
 		var mainBtn = parentPanel.find('.terminator a.btn');
 		mainBtn.html(mainBtn.html().replace(/\[ .+ \]/, '[ ' + selectedTerminator + ' ]'));
 		parentPanel.find(".terminator").data("statement_separator", selectedTerminator);
 	}
+	
+	var fiddleEditor = function (domID, changeHandler) {
+		this.codeMirrorSupported = !( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) );
+		
+		if (this.codeMirrorSupported)
+			this.codeMirror = CodeMirror.fromTextArea(document.getElementById(domID), {
+		        mode: "mysql",
+				extraKeys: {Tab: "indentMore"},
+		        lineNumbers: true,
+		        onChange: changeHandler
+		      });			
+		else
+		{
+			this.textArea = document.getElementById(domID);
+			$(this.textArea).on('change', changeHandler);
+			$(this.textArea).on('keyup', changeHandler);
+			$(this.textArea).attr('fullscreen',false);
+		}
+		
+		return this;
+	};
+	fiddleEditor.prototype.getValue = function () {
+		if (this.codeMirrorSupported) return this.codeMirror.getValue();
+		else return this.textArea.value;
+	}
+	fiddleEditor.prototype.setValue = function(val) {
+		if (this.codeMirrorSupported) this.codeMirror.setValue(val);
+		else { 
+			this.textArea.value = val;
+			$(this.textArea).trigger('change');
+		}
+	}
+	fiddleEditor.prototype.refresh = function() {
+		if (this.codeMirrorSupported) this.codeMirror.refresh();
+		else { /* NOOP */ }
+	}
+	fiddleEditor.prototype.somethingSelected = function() {
+		if (this.codeMirrorSupported) return this.codeMirror.somethingSelected();
+		else { return false }
+	}
+	fiddleEditor.prototype.getSelection = function() {
+		if (this.codeMirrorSupported) return this.codeMirror.getSelection();
+		else { return this.textArea.value }
+	}
+	fiddleEditor.prototype.getScrollerElement = function () {
+		if (this.codeMirrorSupported) return this.codeMirror.getScrollerElement();
+		else { return null }
+	}
+	fiddleEditor.prototype.getGutterElement = function () {
+		if (this.codeMirrorSupported) return this.codeMirror.getGutterElement();
+		else { return null }
+	}
+	fiddleEditor.prototype.isFullscreen = function () {
+		if (this.codeMirrorSupported) return $(this.codeMirror.getScrollerElement()).hasClass('CodeMirror-fullscreen')
+		else { return  $(this.textArea).attr('fullscreen') == true; }
+	}
+	fiddleEditor.prototype.setFullscreen = function (fullscreenMode) {
+		if (fullscreenMode)
+		{
+			var wHeight = $(window).height() - 40;
+			if (this.codeMirrorSupported)
+			{
+				$(this.codeMirror.getScrollerElement()).addClass('CodeMirror-fullscreen').height(wHeight);
+				$(this.codeMirror.getGutterElement()).height(wHeight);
+			}
+			else
+			{	
+				$(this.textArea).addClass('fullscreen');
+				$(this.textArea).height(wHeight);
+				$(this.textArea).attr('fullscreen', fullscreenMode);
+			}
+		}
+		else
+		{
+			if (this.codeMirrorSupported)
+			{
+				$(this.codeMirror.getScrollerElement()).removeClass('CodeMirror-fullscreen');
+			}
+			else
+			{
+				$(this.textArea).removeClass('fullscreen');
 
-
+				$(this.textArea).height(100);
+				$(this.textArea).attr('fullscreen', fullscreenMode);				
+			}
+		}
+	}
+	
+	
 	/***************
 		ROUTER
 	 ***************/	
@@ -623,13 +710,8 @@ $(function () {
 	var SchemaDefView = Backbone.View.extend({
 	
 		initialize: function () {
-		
-			this.editor = CodeMirror.fromTextArea(document.getElementById(this.id), {
-		        mode: "mysql",
-				extraKeys: {Tab: "indentMore"},
-		        lineNumbers: true,
-		        onChange: this.handleSchemaChange
-		      });
+
+			this.editor = new fiddleEditor(this.id,this.handleSchemaChange);
 
 		    this.compiledOutputTemplate = Handlebars.compile(this.options.outputTemplate.html());
 			
@@ -699,12 +781,7 @@ $(function () {
 	
 		initialize: function () {
 		
-			this.editor = CodeMirror.fromTextArea(document.getElementById(this.id), {
-				mode: "mysql",
-				extraKeys: {Tab: "indentMore"},
-				lineNumbers: true,
-				onChange: this.handleQueryChange
-			});
+			this.editor = new fiddleEditor(this.id,this.handleQueryChange);
 			this.outputType = "tabular";
 			this.compiledOutputTemplate = {};
 			this.compiledOutputTemplate["tabular"] = Handlebars.compile(this.options.tabularOutputTemplate.html()); 

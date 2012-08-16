@@ -5,6 +5,8 @@
 	#exit_fullscreen span, .helpTip {
 		display: none !important;	
 	}
+
+	
 }
 
 @media (min-width:768px) and (max-width:1020px) { .nav-collapse .pull-right { display: none; } }
@@ -29,7 +31,11 @@
 		height: 50% !important; 	
 	}
 
-	
+	textarea.fullscreen {
+		top: 52px !important;
+	}
+
+
 }
 
 @media (min-width:480px) and (max-width:768px)
@@ -75,6 +81,23 @@
 #browser {
 	overflow: auto;	
 	border: solid thin lightgray;
+}
+
+#sql, #schema_ddl {
+	width: 98%;
+	font-family: monospace;
+	white-space: nowrap;
+	overflow: auto;
+	font-size: 10pt;
+}
+
+textarea.fullscreen {
+	z-index: 10000;
+	height: 100%;
+	width: 100%;
+	position: fixed;
+	top: 40px;
+	left: 0;
 }
 
 .tables, .columns {
