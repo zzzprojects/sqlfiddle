@@ -57,6 +57,7 @@
 	              	<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
 						<cfset local.ret = QueryNew("")>
 						<cfset local.executionPlan = QueryNew("")>
+						<cfset local.executionPlanRaw = QueryNew("")>
 	
 						<cfif Len(trim(statement))><!--- don't run empty queries --->
 
@@ -88,6 +89,8 @@
 									</cfcatch>
 								</cftry>								
 								</cfloop>
+
+								<cfset local.executionPlanRaw = Duplicate(local.executionPlan)>
 	
 								<!--- Some db types offer XML for the execution plan, which can allow for customized output --->
 								<cfif 	
@@ -95,7 +98,7 @@
 									IsQuery(local.executionPlan) AND 
 									local.executionPlan.recordCount AND
 									IsXML(local.executionPlan[ListFirst(local.executionPlan.columnList)][1])>
-
+									
 									<!--- This is pretty much only for SQL Server, since only SQL Server reports when explicit commits occur. --->
 									<cfif len(this.schema_def.db_type.execution_plan_check)>
 										<cfset local.checkResult = XMLSearch(local.executionPlan[ListFirst(local.executionPlan.columnList)][1], this.schema_def.db_type.execution_plan_check)>       
@@ -163,7 +166,8 @@
 									succeeded = true,
 									results = Duplicate(ret),
 									ExecutionTime = (IsDefined("resultInfo.ExecutionTime") ? resultInfo.ExecutionTime : 0),
-									ExecutionPlan = ((IsDefined("local.executionPlan") AND IsQuery(local.executionPlan) AND local.executionPlan.recordCount) ? Duplicate(local.executionPlan) : [])
+									ExecutionPlan = ((IsDefined("local.executionPlan") AND IsQuery(local.executionPlan) AND local.executionPlan.recordCount) ? Duplicate(local.executionPlan) : []),
+									ExecutionPlanRaw = ((IsDefined("local.executionPlanRaw") AND IsQuery(local.executionPlanRaw) AND local.executionPlanRaw.recordCount) ? Duplicate(local.executionPlanRaw) : [])
 									})>
 
 							<cfelse>
@@ -171,7 +175,8 @@
 									succeeded = true,
 									results = {"DATA" = []},
 									ExecutionTime = (IsDefined("resultInfo.ExecutionTime") ? resultInfo.ExecutionTime : 0),
-									ExecutionPlan = ((IsDefined("local.executionPlan") AND IsQuery(local.executionPlan) AND local.executionPlan.recordCount) ? Duplicate(local.executionPlan) : [])
+									ExecutionPlan = ((IsDefined("local.executionPlan") AND IsQuery(local.executionPlan) AND local.executionPlan.recordCount) ? Duplicate(local.executionPlan) : []),
+									ExecutionPlanRaw = ((IsDefined("local.executionPlanRaw") AND IsQuery(local.executionPlanRaw) AND local.executionPlanRaw.recordCount) ? Duplicate(local.executionPlanRaw) : [])
 									})>
 							</cfif>
 	
@@ -239,7 +244,7 @@
 						schema_def_id = this.schema_def_id,
 						row_count = (StructKeyExists(returnVal["sets"][i], "results") AND IsQuery(returnVal["sets"][i].results)) ? returnVal["sets"][i].results.recordCount : 0,
 						execution_time = StructKeyExists(returnVal["sets"][i], "ExecutionTime") ? returnVal["sets"][i].ExecutionTime : 0,
-						execution_plan = StructKeyExists(returnVal["sets"][i], "ExecutionPlan") ? SerializeJSON(returnVal["sets"][i].ExecutionPlan) : "",
+						execution_plan = StructKeyExists(returnVal["sets"][i], "ExecutionPlanRaw") ? SerializeJSON(returnVal["sets"][i].ExecutionPlanRaw) : "",
 						succeeded = returnVal["sets"][i].succeeded ? 1 : 0,
 						error_message = StructKeyExists(returnVal["sets"][i], "errorMessage") ? returnVal["sets"][i].errorMessage : "",
 						sql = statementArray[i],

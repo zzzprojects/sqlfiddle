@@ -4,6 +4,7 @@
 	function init() {
 		belongsTo(name="DB_Type", foreignKey="db_type_id");		
 		belongsTo(name="Host", foreignKey="current_host_id", joinType="outer");		
+		property(name="dbSimpleName", sql="(select simple_name from db_types where id = db_type_id)");
 	}
 	
 	

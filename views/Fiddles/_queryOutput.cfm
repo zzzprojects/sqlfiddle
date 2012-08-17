@@ -42,6 +42,13 @@
 						{{/each}}
 					</tr>
 					{{/each}}
+
+				{{#if ../../../schemaDef/dbType/isSQLServer}}
+					<tr>
+						<td><a href="index.cfm/Fiddles/getSQLPlan?db_type_id={{../../../../schemaDef/dbType/id}}&short_code={{../../../../schemaDef/short_code}}&query_id={{../../../../id}}&id={{index}}">Download .sqlplan</a></td>
+					</tr>
+				{{/if}}
+
 				</table>
 			{{/if}}
 			
@@ -87,6 +94,13 @@
 						{{/each}}
 					</tr>
 					{{/each}}
+
+					{{#if ../../../schemaDef/dbType/isSQLServer}}
+						<tr>
+							<td><a href="index.cfm/Fiddles/getSQLPlan?db_type_id={{../../../../schemaDef/dbType/id}}&short_code={{../../../../schemaDef/short_code}}&query_id={{../../../../id}}&id={{index}}">Download .sqlplan</a></td>
+						</tr>
+					{{/if}}
+	
 				</table>
 			{{/if}}
 			

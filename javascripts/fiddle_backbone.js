@@ -832,7 +832,8 @@ $(function () {
 			});
 			inspectedData["schemaDef"] = this.model.get("schemaDef").toJSON();
 			inspectedData["schemaDef"]["dbType"] = this.model.get("schemaDef").get("dbType").toJSON();
-			
+			inspectedData["schemaDef"]["dbType"]["isSQLServer"] = this.model.get("schemaDef").get("dbType").get("simple_name") == "SQL Server";
+
 			this.options.output_el.html(
 				this.compiledOutputTemplate[this.outputType](inspectedData)
 			);		

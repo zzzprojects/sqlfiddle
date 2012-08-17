@@ -229,5 +229,31 @@ component extends="Controller" {
 		renderText(SerializeJSON(returnVal));
 		
 	}
+	
+	
+	function getSQLPlan() {
+		query_set = model("Query_Set").findOne(where="id=#params.id+1# AND query_id = #params.query_id# AND short_code = '#params.short_code#' AND db_type_id = #params.db_type_id#", include="Schema_Def");
+		
+		if (IsObject(query_set) && IsJSON(query_set.execution_plan))
+		{
+			xplan = DeserializeJSON(query_set.execution_plan);
+			if (ArrayLen(xplan.data))
+			{
+				if (query_set.schema_def.dbSimpleName IS "SQL Server")
+				{
+					header name="content-disposition" value="attachment; filename=sqlfiddle_#params.db_type_id#_#params.short_code#_#params.query_id#_#params.id#.sqlplan";
+					renderText(xplan.data[1][1]);
+				}
+				else
+				{
+					renderText("This function is only available for SQL Server");
+				}					
+			}
+			else
+				renderText("No Execution Plan Found");
+		}
+		else
+			renderText("No Execution Plan Found");
+	}
 
 }
