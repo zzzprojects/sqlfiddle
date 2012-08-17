@@ -281,11 +281,10 @@ pre.results, .resultSetPreview li pre {
 
 #hostingPartners a {
 	display: inline-block;
-	width: 200px;
 	float: left;
 }
 #hostingPartners img {
-	height: 50px;
+	height: 90px;
 	margin: 0 auto;
 	text-align: center;
 	display: block;

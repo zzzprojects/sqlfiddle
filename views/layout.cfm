@@ -120,8 +120,7 @@
 
 	<div id="hosting">
 		<ul id="hostingPartners">
-			<li id="gn"><a href="http://www.geonorth.com"><img src="images/geonorth.png" alt="GeoNorth, LLC"></a><span>Need more direct, hands-on assistance with your database problems? Contact GeoNorth.  We're database experts.</span></li>
-			<li id="strata"><a href="http://www.stratascale.com"><img src="images/stratascale.png"></a><span>Looking for a great cloud hosting environment for your database? Contact Stratascale.</span></li>
+			<li id="sqlsentry"><a href="http://www.sqlsentry.net/download-trial/landing/complete.asp?ad=201208-sqlfiddle" target="_new"><img src="images/sqlsentry/000<cfoutput>#RandRange(0,3)#</cfoutput>.jpg" alt="SQL Sentry"></a></li>
 		</ul>
 	</div>
 

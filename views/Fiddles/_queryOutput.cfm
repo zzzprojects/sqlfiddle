@@ -45,7 +45,7 @@
 
 				{{#if ../../../schemaDef/dbType/isSQLServer}}
 					<tr>
-						<td><a href="index.cfm/Fiddles/getSQLPlan?db_type_id={{../../../../schemaDef/dbType/id}}&short_code={{../../../../schemaDef/short_code}}&query_id={{../../../../id}}&id={{index}}">Download .sqlplan</a></td>
+						<td><a href="index.cfm/Fiddles/getSQLPlan?db_type_id={{../../../../schemaDef/dbType/id}}&short_code={{../../../../schemaDef/short_code}}&query_id={{../../../../id}}&id={{index}}">Download .sqlplan</a> | <a href="http://www.sqlsentry.net/plan-explorer/sql-server-query-view.asp?ad=201208-sqlfiddle-pe" target="_new">Download SQL Sentry Plan Explorer (free)</a></td>
 					</tr>
 				{{/if}}
 
