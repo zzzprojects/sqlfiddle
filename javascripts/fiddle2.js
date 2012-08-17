@@ -331,7 +331,7 @@ $.blockUI.defaults.css.cursor = 'auto';
 
 function resizeLayout(){
 
-	var wheight = $(window).height() - 140;
+	var wheight = $(window).height() - 150;
 	if (wheight > 400) {
 		var container_width = $("#schema-output").width();
 		
