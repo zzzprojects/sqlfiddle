@@ -120,7 +120,7 @@
 
 	<div id="hosting">
 		<ul id="hostingPartners">
-			<li id="sqlsentry"><a href="http://www.sqlsentry.net/download-trial/landing/complete.asp?ad=201208-sqlfiddle" target="_new"><img src="images/sqlsentry/000<cfoutput>#RandRange(0,3)#</cfoutput>.jpg" alt="SQL Sentry"></a></li>
+			<li id="sqlsentry"><a href="http://www.sqlsentry.net/download-trial/landing/complete.asp?ad=201208-sqlfiddle" target="_new"><img src="images/sqlsentry/0<cfoutput>#RandRange(0,4)#</cfoutput>.jpg" alt="SQL Sentry"></a></li>
 		</ul>
 	</div>
 
