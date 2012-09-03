@@ -18,7 +18,7 @@ component extends="Controller" {
 	}
 
 	function dbTypes () {
-		db_types = model("DB_Type").findAll(select="id,full_name,sample_fragment,simple_name,notes,context,jdbc_class_name", order="full_name", cache="true");
+		db_types = model("DB_Type").findAll(select="id,full_name,sample_fragment,simple_name,notes,context,jdbc_class_name", order="simple_name, is_latest_stable desc, full_name desc", cache="true");
 		getPageContext().getResponse().addHeader("Cache-Control","max-age=86400"); // one day
 		renderWith(data="#db_types#", layout=false);			
 	}
