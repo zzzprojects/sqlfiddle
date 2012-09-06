@@ -1153,7 +1153,7 @@ $(function () {
 			return "(null)";
 		else if (value === false)
 			return "false";
-		else if (value.match(urlRegexp) && Handlebars.Utils.escapeExpression(value) == value)
+		else if (typeof value === "string" && value.match(urlRegexp) && Handlebars.Utils.escapeExpression(value) == value)
 			return new Handlebars.SafeString(value.replace(urlRegexp, "<a href='$1' target='_new'>$1</a>"));
 		else
 			return value;
