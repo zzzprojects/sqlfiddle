@@ -9,6 +9,13 @@
 	<meta name="description" content="Application for testing and sharing SQL queries.">
 	<meta name="author" content="Jake Feasel">
 	
+	<meta property="og:title" content="SQL Fiddle | A tool for easy online testing and sharing of database problems and their solutions." />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="http://sqlfiddle.com/" />
+	<meta property="og:image" content="http://sqlfiddle.com/images/fiddle_transparent.png" />
+	<meta property="og:site_name" content="SQL Fiddle" />
+	<!-- <meta property="fb:admins" content="_FBID_or_APPID_" /> -->
+	
 	<link rel="icon" href="favicon.ico?20120504" type="image/x-icon">
 	<link rel="shortcut icon" href="favicon.ico?20120504" type="image/x-icon">
 
