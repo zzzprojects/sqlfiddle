@@ -50,12 +50,12 @@
 		
 		this.ddlTemplate = "\
 CREATE TABLE {{{tablePrefix}}}{{tableName}}{{{tableSuffix}}}\n\
-	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}} {{db_type}}{{/each_with_index}});\n\n\
+	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}} {{db_type}}{{/each_with_index}})\n{{separator}}\n\n\
 INSERT INTO {{{tablePrefix}}}{{tableName}}{{{tableSuffix}}}\n\
 	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}}{{/each_with_index}})\n\
 VALUES\n\
 	{{#each_with_index data}}{{#if index}},\n\
-	{{/if}}({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}}){{/each_with_index}};";
+	{{/if}}({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}}){{/each_with_index}}\n{{separator}}";
 
 		this.compiledTemplate = Handlebars.compile(this.ddlTemplate);
 		this.setup(args);
@@ -77,12 +77,13 @@ VALUES\n\
 		return this;
 	}
 	
-	ddl_builder.prototype.setupForDBType = function (type) {
+	ddl_builder.prototype.setupForDBType = function (type,separator) {
 		
 		switch (type)
 		{
 			case 'SQL Server':
-				this.setup({ 
+				this.setup({
+								statement_separator: separator,
 								fieldPrefix: '[',
 								fieldSuffix: ']',
 								tablePrefix: '[',
@@ -92,6 +93,7 @@ VALUES\n\
 
 			case 'MySQL':
 				this.setup({ 
+								statement_separator: separator,
 								fieldPrefix: '`',
 								fieldSuffix: '`',
 								tablePrefix: '`',
@@ -100,6 +102,7 @@ VALUES\n\
 			break;
 			case 'PostgreSQL':
 				this.setup({ 
+								statement_separator: separator,
 								fieldPrefix: '"',
 								fieldSuffix: '"'
 							});	
@@ -108,7 +111,7 @@ VALUES\n\
 			case 'Oracle':	
 				var template = 
 "CREATE TABLE {{{tablePrefix}}}{{tableName}}{{{tableSuffix}}}\n\
-	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}} {{db_type}}{{/each_with_index}})\n/\n\
+	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}} {{db_type}}{{/each_with_index}})\n{{separator}}\n\
 INSERT ALL\
 {{#each_with_index data}}\n\
 	INTO \
@@ -117,10 +120,11 @@ INSERT ALL\
 	     VALUES \
 ({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}})\
 {{/each_with_index}}\n\
-SELECT * FROM dual";
+SELECT * FROM dual\n{{separator}}";
 												
 					this.setup({ 
 					
+								statement_separator: separator,
 								ddlTemplate: template,
 								dateType: 'timestamp',
 								charType: 'varchar2',
@@ -134,18 +138,19 @@ SELECT * FROM dual";
 			case 'SQLite':	
 				var template = 
 "CREATE TABLE {{tablePrefix}}{{tableName}}{{tableSuffix}}\n\
-	({{#each_with_index columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}} {{db_type}}{{/each_with_index}});\n\n\
+	({{#each_with_index columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}} {{db_type}}{{/each_with_index}})\n{{separator}}\n\n\
 {{#each_with_index data}}\
 INSERT INTO {{tablePrefix}}{{../tableName}}{{tableSuffix}}\n\
 	({{#each_with_index ../columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}}{{/each_with_index}})\n\
 VALUES\n\
-	({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}});\
+	({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}})\n{{../separator}}\
 \n\
 {{/each_with_index}}\
 ";
 
 												
 					this.setup({ 
+								statement_separator: separator,
 								ddlTemplate: template,
 								dateType: 'TEXT',
 								charType: 'TEXT',
@@ -382,5 +387,5 @@ VALUES\n\
 	
 	
 	ddl_builder.prototype.render = function () {
-		return this.compiledTemplate(this.definition);		
+		return this.compiledTemplate($.extend(this.definition, {"separator": this.statement_separator}));		
 	}

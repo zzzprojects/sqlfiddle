@@ -218,7 +218,7 @@ $(function () {
 		var builder = new ddl_builder({
 				tableName: $("#tableName").val()
 			})
-			.setupForDBType(window.dbTypes.getSelectedType().get("simple_name"));
+			.setupForDBType(window.dbTypes.getSelectedType().get("simple_name"), window.schemaDef.get('statement_separator'));
 		
 		var ddl = builder.parse($("#raw").val());
 		
