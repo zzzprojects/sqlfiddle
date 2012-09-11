@@ -23,14 +23,27 @@ requirejs.config({
 		'dbTypes_cached': ['jquery','fiddle_backbone'],
 		'ddl_builder': ['jquery','handlebars-1.0.0.beta.6','date.format'],
 		'fiddle2': ['dbTypes_cached', 'ddl_builder', 'jquery.cookie', 'idselector', 'bootstrap-collapse', 'bootstrap-dropdown', 'bootstrap-modal', 'bootstrap-tooltip', 'bootstrap-popover']
+	},
+	paths: {
+		jQuery: 'libs/jquery/jquery',
+		Underscore: 'libs/underscore',
+		Backbone: 'libs/backbone',
+		Bootstrap: 'libs/bootstrap',
+		Handlebars: 'libs/handlebars-1.0.0.beta.6',
+		DateFormat: 'libs/date.format',
+		BrowserEngines: 'libs/browser_engines/engines'	
 	}
+	
 });		
-
-
-require([	'jquery','underscore','json2','codemirror','bootstrap-tooltip','sqlite_driver',
+/*
+[	'jquery','underscore','json2','codemirror','bootstrap-tooltip','sqlite_driver',
 			'backbone','mode/mysql/mysql','websql_driver','sqljs_driver','handlebars-1.0.0.beta.6','jquery.blockUI',
 			'fiddle_backbone','date.format','dbTypes_cached','ddl_builder','jquery.cookie','idselector','oracle_xplan/flashver','oracle_xplan/loadswf', 
 			'bootstrap-collapse','bootstrap-dropdown','bootstrap-modal','bootstrap-popover','bootstrap-tab','fiddle2'
-		], function($) {
+		]
+*/		
+
+
+require(['fiddle_backbone/app'], function(App) {
 	
 });
