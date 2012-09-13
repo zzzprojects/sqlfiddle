@@ -1,4 +1,4 @@
-define(["jQuery", "sqlite_driver"], function ($, SQLite_driver) {
+define(["jQuery","BrowserEngines/sqlite_driver"], function ($,SQLite_driver) {
 	
 	var SQLjs_driver = function () {
 		this.db = null;
@@ -6,7 +6,6 @@ define(["jQuery", "sqlite_driver"], function ($, SQLite_driver) {
 	}
 
 	$.extend(SQLjs_driver.prototype,SQLite_driver.prototype); // inherit from parent class
-	
 	
 	SQLjs_driver.prototype.buildSchema = function (args) {
 

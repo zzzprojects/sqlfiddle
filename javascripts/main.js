@@ -1,29 +1,5 @@
 
 requirejs.config({
-    shim: {
-        'backbone': {
-			deps: ['underscore', 'jquery', 'json2'],
-			exports: 'Backbone'
-		},
-		'mode/mysql/mysql': ['codemirror'],		
-		'jquery.blockUI': ['jquery'],
-		'jquery.cookie': ['jquery'],
-		'bootstrap-collapse': ['jquery'],
-		'bootstrap-tab': ['jquery'],
-		'bootstrap-dropdown': ['jquery'],
-		'bootstrap-modal': ['jquery'],
-		'bootstrap-tooltip': ['jquery'],
-		'bootstrap-popover': ['jquery','bootstrap-tooltip'],
-		'oracle_xplan/loadswf': ['oracle_xplan/flashver'],
-		
-		/* Jake's code starts here: */
-		'websql_driver': ['jquery', 'sqlite_driver'],
-		'sqljs_driver': ['jquery', 'sqlite_driver'],
-		'fiddle_backbone': ['backbone', 'mode/mysql/mysql', 'websql_driver', 'sqljs_driver', 'handlebars-1.0.0.beta.6', 'jquery.blockUI'],
-		'dbTypes_cached': ['jquery','fiddle_backbone'],
-		'ddl_builder': ['jquery','handlebars-1.0.0.beta.6','date.format'],
-		'fiddle2': ['dbTypes_cached', 'ddl_builder', 'jquery.cookie', 'idselector', 'bootstrap-collapse', 'bootstrap-dropdown', 'bootstrap-modal', 'bootstrap-tooltip', 'bootstrap-popover']
-	},
 	paths: {
 		jQuery: 'libs/jquery/jquery',
 		Underscore: 'libs/underscore',
@@ -31,11 +7,49 @@ requirejs.config({
 		Bootstrap: 'libs/bootstrap',
 		Handlebars: 'libs/handlebars-1.0.0.beta.6',
 		DateFormat: 'libs/date.format',
-		BrowserEngines: 'libs/browser_engines/engines'	
+		BrowserEngines: 'libs/browserEngines',
+		FiddleEditor: 'libs/fiddleEditor',
+		CodeMirror: 'libs/codemirror/codemirror',
+		MySQLCodeMirror: 'libs/codemirror/mode/mysql/mysql',
+		XPlans: 'libs/xplans'
+	},
+	
+    shim: {
+        Backbone: {
+			deps: ['Underscore', 'jQuery', 'libs/json2'],
+			exports: 'Backbone'
+		},
+        jQuery: {
+			exports: '$'
+		},
+		CodeMirror: {
+			exports: 'CodeMirror'
+		},
+		Handlebars: {
+			exports: 'Handlebars'
+		},
+		
+		MySQLCodeMirror : ['CodeMirror'],		
+		'jQuery/jquery.blockUI': ['jQuery'],
+		'jQuery/jquery.cookie': ['jQuery'],
+		'Bootstrap/bootstrap-collapse': ['jQuery'],
+		'Bootstrap/bootstrap-tab': ['jQuery'],
+		'Bootstrap/bootstrap-dropdown': ['jQuery'],
+		'Bootstrap/bootstrap-modal': ['jQuery'],
+		'Bootstrap/bootstrap-tooltip': ['jQuery'],
+		'Bootstrap/bootstrap-popover': ['jQuery','Bootstrap/bootstrap-tooltip'],
+		'XPlans/oracle/loadswf': ['XPlans/oracle/flashver'],
 	}
 	
 });		
 /*
+		'websql_driver': ['jquery', 'sqlite_driver'],
+		'sqljs_driver': ['jquery', 'sqlite_driver'],
+		'fiddle_backbone': ['backbone', 'mode/mysql/mysql', 'websql_driver', 'sqljs_driver', 'handlebars-1.0.0.beta.6', 'jquery.blockUI'],
+		'dbTypes_cached': ['jquery','fiddle_backbone'],
+		'ddl_builder': ['jquery','handlebars-1.0.0.beta.6','date.format'],
+		'fiddle2': ['dbTypes_cached', 'ddl_builder', 'jquery.cookie', 'idselector', 'bootstrap-collapse', 'bootstrap-dropdown', 'bootstrap-modal', 'bootstrap-tooltip', 'bootstrap-popover']
+
 [	'jquery','underscore','json2','codemirror','bootstrap-tooltip','sqlite_driver',
 			'backbone','mode/mysql/mysql','websql_driver','sqljs_driver','handlebars-1.0.0.beta.6','jquery.blockUI',
 			'fiddle_backbone','date.format','dbTypes_cached','ddl_builder','jquery.cookie','idselector','oracle_xplan/flashver','oracle_xplan/loadswf', 
@@ -43,7 +57,6 @@ requirejs.config({
 		]
 */		
 
-
 require(['fiddle_backbone/app'], function(App) {
-	
+	App.initialize();
 });

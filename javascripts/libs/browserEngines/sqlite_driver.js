@@ -1,4 +1,5 @@
 define(function () {
+	
 	var SQLite_driver = function () {
 		return this;
 	}
