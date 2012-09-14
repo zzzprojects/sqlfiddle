@@ -1,6 +1,6 @@
 define(["CodeMirror", "MySQLCodeMirror"], function (CodeMirror, myMode){ 
 	
-	var fiddleEditor = function (domID, changeHandler) {
+	var fiddleEditor = function (domID, changeHandler, viewRef) {
 		this.codeMirrorSupported = !( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) );
 		
 		if (this.codeMirrorSupported)
@@ -8,13 +8,13 @@ define(["CodeMirror", "MySQLCodeMirror"], function (CodeMirror, myMode){
 		        mode: "mysql",
 				extraKeys: {Tab: "indentMore"},
 		        lineNumbers: true,
-		        onChange: changeHandler
+		        onChange: function(){ changeHandler.call(viewRef) }
 		      });			
 		else
 		{
 			this.textArea = document.getElementById(domID);
-			$(this.textArea).on('change', changeHandler);
-			$(this.textArea).on('keyup', changeHandler);
+			$(this.textArea).on('change', function(){ changeHandler.call(viewRef) });
+			$(this.textArea).on('keyup', function(){ changeHandler.call(viewRef) });
 			$(this.textArea).attr('fullscreen',false);
 		}
 		

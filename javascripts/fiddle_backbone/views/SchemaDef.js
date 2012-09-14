@@ -4,7 +4,7 @@ define (["jQuery", "Backbone", "Handlebars", "FiddleEditor", "libs/renderTermina
 	
 		initialize: function () {
 
-			this.editor = new fiddleEditor(this.id,this.handleSchemaChange);
+			this.editor = new fiddleEditor(this.id,this.handleSchemaChange, this);
 
 		    this.compiledOutputTemplate = Handlebars.compile(this.options.outputTemplate.html());
 			
@@ -13,19 +13,16 @@ define (["jQuery", "Backbone", "Handlebars", "FiddleEditor", "libs/renderTermina
 		},
 		handleSchemaChange: function () {
 			
-			// how to handle this following refactoring???
-			var thisView = window.schemaDefView; // kludge to handle the context limitations on CodeMirror change events
-			
-			if (thisView.model.get("ddl") != thisView.editor.getValue() || thisView.model.get("statement_separator") != $(".panel.schema .terminator").data("statement_separator")) 
+			if (this.model.get("ddl") != this.editor.getValue() || this.model.get("statement_separator") != $(".panel.schema .terminator").data("statement_separator")) 
 			{
-				thisView.model.set({
-					"ddl":thisView.editor.getValue(),
+				this.model.set({
+					"ddl":this.editor.getValue(),
 					"statement_separator":$(".panel.schema .terminator").data("statement_separator"),
 					"ready": false
 				});
 
-				$(".schema .helpTip").css("display",  thisView.model.get("ddl").length ? "none" : "block");
-				$(".sql .helpTip").css("display",  (!thisView.model.get("ready") || thisView.model.get("loading")) ? "none" : "block");
+				$(".schema .helpTip").css("display",  this.model.get("ddl").length ? "none" : "block");
+				$(".sql .helpTip").css("display",  (!this.model.get("ready") || this.model.get("loading")) ? "none" : "block");
 
 			}
 			
@@ -57,7 +54,7 @@ define (["jQuery", "Backbone", "Handlebars", "FiddleEditor", "libs/renderTermina
 				$(".needsReadySchema").unblock();
 				$("#schemaBrowser").attr("disabled", false);
 				$(".schema .helpTip").css("display",  "none");				
-				$(".sql .helpTip").css("display",  (this.model.get('loading') || window.query.get("sql").length) ? "none" : "block");
+				//$(".sql .helpTip").css("display",  (this.model.get('loading') || window.query.get("sql").length) ? "none" : "block");
 			}
 			else
 			{

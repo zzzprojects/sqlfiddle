@@ -1,4 +1,5 @@
-	
+define(["jQuery", "Handlebars", "DateFormat"], function ($, Handlebars, dateFormat) {
+
 	ddl_builder = function (args) {
 
 		// output settings
@@ -389,3 +390,7 @@ VALUES\n\
 	ddl_builder.prototype.render = function () {
 		return this.compiledTemplate($.extend(this.definition, {"separator": this.statement_separator}));		
 	}
+	
+	return ddl_builder;
+	
+});	

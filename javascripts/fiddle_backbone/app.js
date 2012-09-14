@@ -12,7 +12,17 @@ define([
 	'fiddle_backbone/views/SchemaDef',
 	'fiddle_backbone/views/Query',
 	 
-	'fiddle_backbone/router'
+	'fiddle_backbone/router',
+	
+	'libs/jquery/jquery.blockUI',
+	'libs/jquery/jquery.cookie',
+	'Bootstrap/bootstrap-collapse',
+	'Bootstrap/bootstrap-tab',
+	'Bootstrap/bootstrap-dropdown',
+	'Bootstrap/bootstrap-modal',
+	'Bootstrap/bootstrap-tooltip',
+	'Bootstrap/bootstrap-popover'
+	
 ], function (
 		browserEngines, 
 		MyFiddleHistory, DBTypesList, SchemaDef, Query, 
@@ -20,7 +30,9 @@ define([
 		Router
 		) {
 	
-  var initialize = function() {
+  var initialize = function(dbTypesData) {
+
+	var router = {};
 	
 	var myFiddleHistory = new MyFiddleHistory();
 		
@@ -190,13 +202,11 @@ define([
 			return "Warning! You have made changes to your query which will be lost. Continue?'";
 	});
 
-	
 	/* Data loading */
 	dbTypes.on("reset", function () {
 		// When the dbTypes are loaded, everything else is ready to go....
-		
-		Backbone.history.start({pushState: false});
-		
+		router = Router.initialize(dbTypes, schemaDef, query, myFiddleHistory, dbTypesListView);
+
 		if (this.length && !this.getSelectedType())
 		{
 			this.setSelectedType(this.first().id, true);
@@ -215,7 +225,6 @@ define([
 		}
 	});
 
-	var router = Router.initialize(dbTypes, schemaDef, query, myFiddleHistory, dbTypesListView);
 	
 	/* Events which will trigger new route navigation */
 			
@@ -268,6 +277,18 @@ define([
 			"!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id 
 		);
 	});
+	
+	
+	
+	dbTypes.reset(dbTypesData);
+
+
+	return {
+		dbTypes: dbTypes,
+		schemaDef: schemaDef,
+		schemaDefView: schemaDefView,
+		queryView: queryView
+	}
 
   };
 

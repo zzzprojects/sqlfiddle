@@ -1,8 +1,10 @@
 define([
 	'jQuery',
 	'Underscore',
-	'Backbone'
-], function($, _, Backbone ){
+	'Backbone',
+	"libs/renderTerminator",
+	"fiddle_backbone/models/UsedFiddle"
+], function($, _, Backbone, renderTerminator, UsedFiddle){
 
 	var initialize = function(dbTypes, schemaDef, query, myFiddleHistory, dbTypesListView) {
 		
