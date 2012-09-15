@@ -3,6 +3,7 @@
 define([
 	'BrowserEngines/engines',
 	
+	'fiddle_backbone/models/UsedFiddle', 
 	'fiddle_backbone/models/MyFiddleHistory', 
 	'fiddle_backbone/models/DBTypesList', 
 	'fiddle_backbone/models/SchemaDef', 
@@ -12,7 +13,8 @@ define([
 	'fiddle_backbone/views/SchemaDef',
 	'fiddle_backbone/views/Query',
 	 
-	'fiddle_backbone/router',
+	'fiddle_backbone/router', 
+	'libs/renderTerminator',
 	
 	'libs/jquery/jquery.blockUI',
 	'libs/jquery/jquery.cookie',
@@ -25,9 +27,10 @@ define([
 	
 ], function (
 		browserEngines, 
-		MyFiddleHistory, DBTypesList, SchemaDef, Query, 
+		UsedFiddle, MyFiddleHistory, DBTypesList, SchemaDef, Query, 
 		DBTypesListView, SchemaDefView, QueryView,
-		Router
+		Router,
+		renderTerminator
 		) {
 	
   var initialize = function(dbTypesData) {
@@ -134,7 +137,7 @@ define([
 		$button.data("originalValue", $button.html());
 		$button.prop('disabled', true).text('Building Schema...');
 		
-		schemaDef.build();
+		schemaDef.build(dbTypes);
 	});	
 	
 	var handleRunQuery = function (e) {

@@ -105,7 +105,7 @@ define([
 										}));
 	
 									}
-									schemaDef.build();
+									schemaDef.build(dbTypes);
 	
 									
 								}

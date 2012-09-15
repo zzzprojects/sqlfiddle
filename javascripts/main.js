@@ -22,6 +22,9 @@ requirejs.config({
         jQuery: {
 			exports: '$'
 		},
+        Underscore: {
+			exports: '_'
+		},
 		CodeMirror: {
 			exports: 'CodeMirror'
 		},
@@ -50,33 +53,20 @@ requirejs.config({
 		'Bootstrap/bootstrap-popover': ['jQuery','Bootstrap/bootstrap-tooltip']		
 	}
 	
-});		
-/*
-		'websql_driver': ['jquery', 'sqlite_driver'],
-		'sqljs_driver': ['jquery', 'sqlite_driver'],
-		'fiddle_backbone': ['backbone', 'mode/mysql/mysql', 'websql_driver', 'sqljs_driver', 'handlebars-1.0.0.beta.6', 'jquery.blockUI'],
-		'dbTypes_cached': ['jquery','fiddle_backbone'],
-		'ddl_builder': ['jquery','handlebars-1.0.0.beta.6','date.format'],
-		'fiddle2': ['dbTypes_cached', 'ddl_builder', 'jquery.cookie', 'idselector', 'bootstrap-collapse', 'bootstrap-dropdown', 'bootstrap-modal', 'bootstrap-tooltip', 'bootstrap-popover']
-
-[	'jquery','underscore','json2','codemirror','bootstrap-tooltip','sqlite_driver',
-			'backbone','mode/mysql/mysql','websql_driver','sqljs_driver','handlebars-1.0.0.beta.6','jquery.blockUI',
-			'fiddle_backbone','date.format','dbTypes_cached','ddl_builder','jquery.cookie','idselector','oracle_xplan/flashver','oracle_xplan/loadswf', 
-			'bootstrap-collapse','bootstrap-dropdown','bootstrap-modal','bootstrap-popover','bootstrap-tab','fiddle2'
-		]
-*/		
+});	
 
 require([
 		'dbTypes_cached', 
 		'fiddle_backbone/app',
-		'libs/ddl_builder'
+		'libs/ddl_builder',
+		'libs/idselector'
 	], 
 	function(dbTypesData, App, ddl_builder) {
-		
-	fiddleBackbone = App.initialize(dbTypesData);
 	
 	$.blockUI.defaults.overlayCSS.cursor = 'auto';
 	$.blockUI.defaults.css.cursor = 'auto';
+		
+	fiddleBackbone = App.initialize(dbTypesData);
 	
 	function resizeLayout(){
 	

@@ -42,7 +42,7 @@ define(["Backbone"], function (Backbone) {
 					{
 						if (selectedDBType.get("context") == "browser")
 						{
-							this.get("browserEngines")[selectedDBType.get("className")].buildSchema({
+							thisModel.get("browserEngines")[selectedDBType.get("className")].buildSchema({
 								
 								short_code: $.trim(data["short_code"]),
 								statement_separator: thisModel.get('statement_separator'),
@@ -55,7 +55,7 @@ define(["Backbone"], function (Backbone) {
 										"errorMessage": ""
 									});
 									
-									this.get("browserEngines")[selectedDBType.get("className")].getSchemaStructure({
+									thisModel.get("browserEngines")[selectedDBType.get("className")].getSchemaStructure({
 											callback: function (schemaStruct) {
 												thisModel.set({
 													"schema_structure": schemaStruct
