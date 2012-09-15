@@ -6,13 +6,15 @@ define ([
 		"libs/renderTerminator",
 		'XPlans/oracle/loadswf',
 		'XPlans/mssql',
+		"text!fiddle_backbone/templates/queryTabularOutput.html",
+		"text!fiddle_backbone/templates/queryPlaintextOutput.html",
 		'HandlebarsHelpers/divider_display',
 		'HandlebarsHelpers/each_simple_value_with_index',
 		'HandlebarsHelpers/each_with_index',
 		'HandlebarsHelpers/result_display_padded',
 		'HandlebarsHelpers/result_display'
 	], 
-	function ($,Backbone,Handlebars,fiddleEditor,renderTerminator,loadswf,QP) {
+	function ($,Backbone,Handlebars,fiddleEditor,renderTerminator,loadswf,QP,tabTemplate,plainTemplate) {
 
 	
 	var QueryView = Backbone.View.extend({
@@ -22,8 +24,8 @@ define ([
 			this.editor = new fiddleEditor(this.id,this.handleQueryChange, this);
 			this.outputType = "tabular";
 			this.compiledOutputTemplate = {};
-			this.compiledOutputTemplate["tabular"] = Handlebars.compile(this.options.tabularOutputTemplate.html()); 
-			this.compiledOutputTemplate["plaintext"] = Handlebars.compile(this.options.plaintextOutputTemplate.html()); 
+			this.compiledOutputTemplate["tabular"] = Handlebars.compile(tabTemplate); 
+			this.compiledOutputTemplate["plaintext"] = Handlebars.compile(plainTemplate); 
 		      
 		},
 		setOutputType: function (type) {

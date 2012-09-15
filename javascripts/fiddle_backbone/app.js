@@ -49,24 +49,19 @@ define([
 			
 	var dbTypesListView = new DBTypesListView({
 		el: $("#db_type_id")[0],
-		collection:  dbTypes,
-		template: $("#db_type_id-template")
+		collection:  dbTypes
 	});
 	
 	var schemaDefView = new SchemaDefView({
 		id: "schema_ddl",
 		model: schemaDef,
-		outputTemplate: $("#schema-output-template"),
 		output_el: $("#output"),
-		schemaBrowserTemplate: $("#schema-browser-template"),
 		browser_el: $("#browser")
 	});
 
 	var queryView = new QueryView({
 		id: "sql",
 		model: query,
-		tabularOutputTemplate: $("#query-tabular-output-template"),
-		plaintextOutputTemplate: $("#query-plaintext-output-template"),
 		output_el: $("#output")
 	});
 

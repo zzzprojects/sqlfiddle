@@ -28,8 +28,6 @@
 
 	<link href="stylesheets/print.css?20120512" media="print" rel="stylesheet" type="text/css" />
 
-	<cfoutput>#includeContent('handleBarsScripts')#</cfoutput>
-
 </head>
 <body>
 
