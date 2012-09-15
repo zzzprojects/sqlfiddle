@@ -6,6 +6,7 @@ requirejs.config({
 		Backbone: 'libs/backbone',
 		Bootstrap: 'libs/bootstrap',
 		Handlebars: 'libs/handlebars-1.0.0.beta.6',
+		HandlebarsHelpers: 'libs/handlebarsHelpers',
 		DateFormat: 'libs/date.format',
 		BrowserEngines: 'libs/browserEngines',
 		FiddleEditor: 'libs/fiddleEditor',

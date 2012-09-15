@@ -1,4 +1,11 @@
-define(["jQuery", "Handlebars", "DateFormat"], function ($, Handlebars, dateFormat) {
+define(
+	[
+	 "jQuery", 
+	 "Handlebars", 
+	 "DateFormat", 
+	 'HandlebarsHelpers/each_with_index'
+	 ],
+	function ($, Handlebars, dateFormat) {
 
 	ddl_builder = function (args) {
 
