@@ -1,0 +1,1 @@
+define(["Backbone"],function(e){var t=e.Model.extend({defaults:{sample_fragment:"",notes:"",simple_name:"",full_name:"",selected:!1,context:"host",className:""}});return t})

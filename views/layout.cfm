@@ -19,12 +19,15 @@
 	<link rel="icon" href="favicon.ico?20120504" type="image/x-icon">
 	<link rel="shortcut icon" href="favicon.ico?20120504" type="image/x-icon">
 
-	<link href="stylesheets/codemirror.css?20120504" media="all" rel="stylesheet" type="text/css" />
-	<link href="stylesheets/bootstrap.css?20120504" media="all" rel="stylesheet" type="text/css" />
-	<link href="stylesheets/bootstrap-responsive.min.css?20120504" media="all" rel="stylesheet" type="text/css" />
-	<link href="stylesheets/fiddle.css?20120627" media="all" rel="stylesheet" type="text/css" />
-
-	<link href="stylesheets/qp.css?20120504" media="all" rel="stylesheet" type="text/css" />
+	<cfoutput>
+		#requireStyleTags([
+			"codemirror.css",
+			"bootstrap.css",
+			"bootstrap-responsive.min.css",
+			"fiddle.css",
+			"qp.css"	
+		])#
+	</cfoutput>
 
 	<link href="stylesheets/print.css?20120512" media="print" rel="stylesheet" type="text/css" />
 

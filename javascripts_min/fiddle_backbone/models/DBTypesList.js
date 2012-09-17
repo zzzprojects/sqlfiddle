@@ -1,0 +1,1 @@
+define(["Backbone","fiddle_backbone/models/DBType"],function(e,t){var n=e.Collection.extend({model:t,getSelectedType:function(){var e=this.filter(function(e){return e.get("selected")});return e.length?e[0]:!1},setSelectedType:function(e,t){this.each(function(t){t.set({selected:t.id==e},{silent:!0})}),t||this.trigger("change")}});return n})
