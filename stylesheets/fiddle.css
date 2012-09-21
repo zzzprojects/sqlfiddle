@@ -9,7 +9,8 @@
 	
 }
 
-@media (min-width:768px) and (max-width:1020px) { .nav-collapse .pull-right { display: none; } }
+@media (min-width:820px) and (max-width:1024px) { .nav-collapse .pull-right { display: none; } }
+@media (min-width:820px) and (max-width:1100px) { .nav-collapse .pull-right .optional { display: none; } }
 
 .navbar .nav.pull-right { margin-left: 2px; }
 
@@ -19,7 +20,7 @@
 	padding-left: 10px;	
 }
 
-@media (max-width:768px)
+@media (max-width:820px)
 {
 	body {
 	  padding-top: 0px !important;
@@ -42,7 +43,7 @@
 
 }
 
-@media (min-width:480px) and (max-width:768px)
+@media (min-width:480px) and (max-width:820px)
 {
 	#db_type_label_collapsed {
 		display: inline !important;	
