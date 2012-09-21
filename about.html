@@ -53,6 +53,9 @@
 								<li class="">
 									<a href="#dbNotes">What differences are there between the various database options?</a>
 								</li>
+								<li>
+									<a href="#terminators">What's up with that [ ; ] button under each panel?</a>
+								</li>
 								<li class="">
 									<a href="#sqlite">Why are there two strange-looking options for SQLite?</a>
 								</li>
@@ -226,7 +229,7 @@
 					
 					<p>
 						MySQL only supports queries which read from the schema (selects, basically).  This is necessary due to some limitations in MySQL that make it impossible for
-						me to ensure a consistent schema while various people are fiddling with it (like I do for the other options).
+						me to ensure a consistent schema while various people are fiddling with it.  The other database options allow the full range of queries that the back-end supports.
 					</p>
 					
 					<p>
@@ -241,6 +244,29 @@
 					
 				</div>
 				
+				<a name="terminators"></a>
+
+				<div class="span12 pull-left hr-bar">
+					<hr>
+				</div>
+				<div class="span12 panel">
+					<h2>What's up with that [ ; ] button under each panel?</h2>	
+					<p>
+						This obscure little button determines how the queries in each of the panels get broken up before they
+						are sent off to the database.  This button pops open a dropdown that lists different "query terminators."  
+						Query terminators are used as a flag to indicate (when present at the end of a line) that the current statement
+						has ended.  The terminator does not get sent to the database; instead, it merely idicates how I should parse the
+						text before I execute the query. 
+					</p>
+					<p>
+						Oftentimes, you won't need to touch this button; the main value this feature will have is in defining stored procedures.  
+						This is because it is often the case that within a stored procedure's body definition, you might want to end a line with a 
+						semicolon (this is often the case). Since my default query terminator is also a semicolon, there is no obvious way for me to 
+						see that your stored procedure's semicolon isn't actually the end of the query.  Left with the semicolon terminator, I would break up your procedure
+						definition into incorrect parts, and errors would certainly result.  Changing the query terminator to something other
+						than a semicolon avoids this problem.
+					</p>
+				</div>
 
 				<a name="sqlite"></a>
 
