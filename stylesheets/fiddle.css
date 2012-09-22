@@ -7,12 +7,6 @@
 	}
 }
 
-@media (max-width:767px)
-{
-	div.sql {
-		width: 100% !important;
-	}
-}
 
 @media (min-width:820px) and (max-width:1024px) { .nav-collapse .pull-right { display: none; } }
 @media (min-width:820px) and (max-width:1100px) { .nav-collapse .pull-right .optional { display: none; } }
@@ -25,6 +19,27 @@
 	padding-left: 10px;	
 }
 
+
+@media (max-width:767px)
+{
+	div.sql {
+		width: 100% !important;
+	}
+
+	.helpTip {
+		width: 180px !important;
+		height: 50% !important; 	
+	}
+
+}
+@media (min-width:768px) and (max-width:979px)
+{
+	.helpTip {
+		width: 100px !important;
+		height: 50% !important; 	
+	}
+}
+
 @media (max-width:979px)
 {
 	body {
@@ -32,11 +47,6 @@
 	}
 	
 		
-	.helpTip {
-		width: 70px !important;
-		height: 50% !important; 	
-	}
-
 	textarea.fullscreen {
 		top: 52px !important;
 	}
