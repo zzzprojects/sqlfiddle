@@ -339,8 +339,8 @@ require([
 		fiddleBackbone.schemaDefView.editor.setFullscreen(false);
 		fiddleBackbone.queryView.editor.setFullscreen(false);
 		
-		resizeLayout();
 		toggleFullscreenNav('');
+		resizeLayout();
 	});
 	
 	$("#schemaFullscreen").on('click', function (e) {

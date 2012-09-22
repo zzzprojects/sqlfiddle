@@ -76,6 +76,8 @@ define(["CodeMirror", "MySQLCodeMirror"], function (CodeMirror, myMode){
 			if (this.codeMirrorSupported)
 			{
 				$(this.codeMirror.getScrollerElement()).removeClass('CodeMirror-fullscreen');
+				$(this.codeMirror.getGutterElement()).css('height', 'auto');
+				$(this.codeMirror.getScrollerElement()).css('height', '200px');
 			}
 			else
 			{
