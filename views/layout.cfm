@@ -24,7 +24,7 @@
 			"codemirror.css",
 			"bootstrap-2.0.4/bootstrap.less",
 			"bootstrap-2.0.4/responsive.less",
-			"fiddle.css",
+			"fiddle.less",
 			"qp.css"	
 		])#
 	</cfoutput>
