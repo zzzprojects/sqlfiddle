@@ -8,7 +8,7 @@ define(
 	function ($, Handlebars, dateFormat) {
 
 	ddl_builder = function (args) {
-
+		if (!args) args = {};
 		// output settings
 		this.fieldPrefix = '';
 		this.fieldSuffix = '';
