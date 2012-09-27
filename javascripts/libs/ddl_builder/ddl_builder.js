@@ -164,7 +164,7 @@ VALUES\n\
 								tableSuffix: '"',
 								statement_separator: separator,
 								ddlTemplate: template,
-								dateType: 'TEXT',
+								dateType: 'DATE',
 								charType: 'TEXT',
 								intType: 'INTEGER',
 								floatType: 'REAL'
@@ -371,35 +371,6 @@ VALUES\n\
 	Handlebars.registerHelper("column_name_for_index", function(root) {		
 		return root.columns[this.index].name;
 	});
-	
-	
-	
-	Handlebars.registerHelper("each_with_index", function(array, fn) {
-		var buffer = "";
-		k=0;
-		for (var i = 0, j = array.length; i < j; i++) {
-			if (array[i])
-			{
-				var item = array[i];
-		
-				// stick an index property onto the item, starting with 0
-				item.index = k;
-				
-				item.first = (k == 0);
-				item.last = (k == array.length);
-	
-				// show the inside of the block
-				buffer += fn(item);
-
-				k++;
-			}
-		}
-
-		// return the finished buffer
-		return buffer;
-	
-	});		
-
 	
 	
 	ddl_builder.prototype.render = function () {

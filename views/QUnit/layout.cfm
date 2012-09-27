@@ -4,6 +4,7 @@
 		<title>QUnit Tests</title>
 		<base href="#application.wheels.webPath#">
 		#stylesheetLinkTag("qunit-1.10.0.css")#
+<!--- 
 		<script type="text/javascript" src="plugins/RequireJS/require.js"></script>
 		<script type="text/javascript">
 			
@@ -70,6 +71,7 @@
 		});
 		</script>	
 	</head>
+ --->
 	
 	<body>
 		<div id="qunit"></div>
