@@ -29,31 +29,31 @@ define(
 		this.column_count = 0;
 		this.definition = { 
 				tableName: "Table1",
-			    columns: [/* sample column structure
-			    			{
-			    				name: 'id',
-			    				type: 'int',
-			    				length: '',
-			    				db_type: 'int4'
-			    			},
-			    			{
-			    				name: 'name',
-			    				type: 'char',
-			    				length: 20,
-			    				db_type: 'varchar(20)'
-			    			}			    	
-			     			*/],
-			    data: [/* sample data structure
-			    			 // r for "row", v for "value"
-			    			{r:[{v:1},{v:'Jake'}]},
-			    			{r:[{v:2},{v:'Rachel'}]},
-			    			{r:[{v:3},{v:'Andrew'}]},
-			    			{r:[{v:4},{v:'Ada'}]},
-			    			{r:[{v:5},{v:'Lucy O\'Malley'}]}
-			    
-			    
-			     		*/]
-		    };
+				columns: [/* sample column structure
+							{
+								name: 'id',
+								type: 'int',
+								length: '',
+								db_type: 'int4'
+							},
+							{
+								name: 'name',
+								type: 'char',
+								length: 20,
+								db_type: 'varchar(20)'
+							}					
+				 			*/],
+				data: [/* sample data structure
+							 // r for "row", v for "value"
+							{r:[{v:1},{v:'Jake'}]},
+							{r:[{v:2},{v:'Rachel'}]},
+							{r:[{v:3},{v:'Andrew'}]},
+							{r:[{v:4},{v:'Ada'}]},
+							{r:[{v:5},{v:'Lucy O\'Malley'}]}
+				
+				
+				 		*/]
+			};
 
 		
 		this.ddlTemplate = "\
@@ -125,7 +125,7 @@ INSERT ALL\
 	INTO \
 {{{../tablePrefix}}}{{../tableName}}{{{../tableSuffix}}} \
 ({{#each_with_index r}}{{#if index}}, {{/if}}{{{../../fieldPrefix}}}{{column_name_for_index ../..}}{{{../../fieldSuffix}}}{{/each_with_index}})\n\
-	     VALUES \
+		 VALUES \
 ({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}})\
 {{/each_with_index}}\n\
 SELECT * FROM dual\n{{separator}}";
@@ -137,7 +137,7 @@ SELECT * FROM dual\n{{separator}}";
 								dateType: 'timestamp',
 								charType: 'varchar2',
 								fieldPrefix: '"',
-								fieldSuffix: '"'								
+								fieldSuffix: '"'
 							});	
 			break;
 
@@ -194,55 +194,59 @@ VALUES\n\
 	ddl_builder.prototype.guessValueSeparator = function (raw) {
 		
 
-	    var lines = raw.split("\n");
-	    var header_found = false, column_count = 0, found_separator = '';
-	    
-	    for (var i = 0; i<lines.length; i++)
-    	{
-	    	if (lines[i].search(/[A-Z0-9_]/i) != -1 && !header_found) // if this line contains letters/numbers/underscores, then we can assume we've hit the header row 
-	    	{
-	    		var chunks = $.trim(lines[i]).match(/[A-Z0-9_]+([^A-Z0-9_]*)/gi);
+		var lines = raw.split("\n");
+		var header_found = false, column_count = 0, found_separator = '';
+		
+		for (var i = 0; i<lines.length; i++)
+		{
+			if (lines[i].search(/[A-Z0-9_]/i) != -1 && !header_found) // if this line contains letters/numbers/underscores, then we can assume we've hit the header row 
+			{
+				var chunks = $.trim(lines[i]).match(/([A-Z0-9_]+ ?)+([^A-Z0-9_]*)/gi);
 
-	    		header_found = true;
-	    		
-	    		for (var j = 0; j < chunks.length; j++)
-	    		{
-	    			var this_separator = chunks[j].match(/[A-Z0-9_]+([^A-Z0-9_]*)$/i)[1];
-	    			
-	    			if (this_separator.search(/^\s+$/) != -1)
-	    				this_separator = new RegExp("\\s+");
-	    			else
-	    				this_separator = $.trim(this_separator);
+				header_found = true;
+				
+				for (var j = 0; j < chunks.length; j++)
+				{
+					var this_separator = chunks[j].match(/[A-Z0-9_]+([^A-Z0-9_]*)$/i).pop(); // gets the last returned value from regexp
+					
+					if (this_separator.search(/^\s\s+$/) != -1)
+						this_separator = new RegExp("\\s\\s+");
+					else if (this_separator.search(/^\t+$/) != -1)
+						this_separator = new RegExp("\\t+");
+					else if (this_separator.search(/^\s+$/) != -1)
+						this_separator = new RegExp("\\s+");
+					else
+						this_separator = $.trim(this_separator);
 
 					if (this_separator instanceof RegExp || this_separator.length)
 					{
-		    			if (!(found_separator instanceof RegExp) && !found_separator.length)
-		    				found_separator = this_separator;
-		    			else if (found_separator.toString() != this_separator.toString())
-		    				return {status: false, message: 'Unable to find consistent column separator in header row'}; // different separators founds?
-	    			}
-	    			else if (! (this_separator instanceof RegExp) && !(found_separator instanceof RegExp) && !found_separator.length)	
-	    			{
-	    				found_separator = "\n";
-	    			}
-	    			
-	    		}
+						if (!(found_separator instanceof RegExp) && !found_separator.length)
+							found_separator = this_separator;
+						else if (found_separator.toString() != this_separator.toString())
+							return {status: false, message: 'Unable to find consistent column separator in header row'}; // different separators founds?
+					}
+					else if (! (this_separator instanceof RegExp) && !(found_separator instanceof RegExp) && !found_separator.length)	
+					{
+						found_separator = "\n";
+					}
+					
+				}
 				if (found_separator instanceof RegExp || found_separator.length)
-	    			column_count = lines[i].split(found_separator).length;
-	    		else
-	    			column_count = 1;
-	    		
-	    		
-	    	}
-	    	else if (lines[i].search(/[A-Z0-9_]/i) != -1)
-    		{
-	    		if (lines[i].split(found_separator).length != column_count)
-	    			return {status: false, message: 'Line ' + i + ' does not have the same number of columns as the header, based on separator "' + found_separator + '".'};
-    		
-    		}
-    	
-    	}
-	    return {status: true, separator: found_separator, column_count: column_count};
+					column_count = $.trim(lines[i]).split(found_separator).length;
+				else
+					column_count = 1;
+				
+				
+			}
+			else if (lines[i].search(/[A-Z0-9_]/i) != -1)
+			{
+				if ($.trim(lines[i]).split(found_separator).length != column_count)
+					return {status: false, message: 'Line ' + i + ' does not have the same number of columns as the header, based on separator "' + found_separator + '".'};
+			
+			}
+		
+		}
+		return {status: true, separator: found_separator, column_count: column_count};
 	}
 	
 	ddl_builder.prototype.parse = function (raw) {
@@ -261,77 +265,77 @@ VALUES\n\
 			}
 		}
 		
-	    var lines = raw.split("\n");
-	    
-	    for (var i=0;i<lines.length;i++)
-	    {
-            if ($.trim(lines[i]).length && lines[i].split(this.valueSeparator).length == this.column_count)
-            {
-	    		
-	            	var elements = $.trim(lines[i]).split(this.valueSeparator);
-	            	
-
-	            	if (! this.definition.columns.length)
-	            	{	
-		        	    for (var j = 0; j < elements.length; j++)
-		        	    {	
-		        	            var value = $.trim(elements[j]);
-		        	            if (value.length)
-		        	            	this.definition.columns.push({"name": value});
-		        	            else
-		        	            	this.definition.columns.push(false);
-		        	    }
-	            	}
-	            	else
-	            	{
-	            	
-			            var tmpRow = [];
-			            for (var j = 0; j < elements.length; j++)
-			            {
-			            	if (this.definition.columns[j] !== false)
-			            	{
-			                    var value = $.trim(elements[j]).replace(/'/g, "''");
+		var lines = raw.split("\n");
 		
-			                    // if the current field is not a number, or if we have previously decided that this one of the non-numeric field types...
-			                    if (isNaN(value) || this.definition.columns[j].type == 'dateType' || this.definition.columns[j].type == 'charType')
-			                    {
-			                    	
-			                    	// if we haven't previously decided that this is a character field, and it can be cast as a date, then declare it a date 
-			                    	if (this.definition.columns[j].type != 'charType' && !isNaN(Date.parse(value)) ) 
-			                    		this.definition.columns[j].type = "dateType";
-			                    	else
-			                    		this.definition.columns[j].type = "charType";
-			                    }
-			                    else // this must be some kind of number field
-			                    {
-			                    	if (this.definition.columns[j].type != 'floatType' && value % 1 != 0)
-			                    		this.definition.columns[j].type = 'floatType';
-			                    	else
-			                    		this.definition.columns[j].type = 'intType';
-			                    }
-			                    
-			                    if (!this.definition.columns[j].length || value.length > this.definition.columns[j].length)
-			                    {
-			                    	this.definition.columns[j].length = value.length;
-			                    }
-			                    
-			                    tmpRow.push({v:value});
-			            	}
-			                    
-			            }
-			            this.definition.data.push({r: tmpRow});
-            		
-	            	}
-		            
-            }
-	    }
-	    this.populateDBTypes();
-	    this.populateWrappers();
-	    return this.render();		
+		for (var i=0;i<lines.length;i++)
+		{
+			if ($.trim(lines[i]).length && lines[i].split(this.valueSeparator).length == this.column_count)
+			{
+				
+					var elements = $.trim(lines[i]).split(this.valueSeparator);
+					
+
+					if (! this.definition.columns.length)
+					{	
+						for (var j = 0; j < elements.length; j++)
+						{	
+								var value = $.trim(elements[j]);
+								if (value.length)
+									this.definition.columns.push({"name": value});
+								else
+									this.definition.columns.push(false);
+						}
+					}
+					else
+					{
+					
+						var tmpRow = [];
+						for (var j = 0; j < elements.length; j++)
+						{
+							if (this.definition.columns[j] !== false)
+							{
+								var value = $.trim(elements[j]).replace(/'/g, "''");
+		
+								// if the current field is not a number, or if we have previously decided that this one of the non-numeric field types...
+								if (isNaN(value) || this.definition.columns[j].type == 'dateType' || this.definition.columns[j].type == 'charType')
+								{
+									
+									// if we haven't previously decided that this is a character field, and it can be cast as a date, then declare it a date 
+									if (this.definition.columns[j].type != 'charType' && !isNaN(Date.parse(value)) ) 
+										this.definition.columns[j].type = "dateType";
+									else
+										this.definition.columns[j].type = "charType";
+								}
+								else // this must be some kind of number field
+								{
+									if (this.definition.columns[j].type != 'floatType' && value % 1 != 0)
+										this.definition.columns[j].type = 'floatType';
+									else
+										this.definition.columns[j].type = 'intType';
+								}
+								
+								if (!this.definition.columns[j].length || value.length > this.definition.columns[j].length)
+								{
+									this.definition.columns[j].length = value.length;
+								}
+								
+								tmpRow.push({v:value});
+							}
+								
+						}
+						this.definition.data.push({r: tmpRow});
+					
+					}
+					
+			}
+		}
+		this.populateDBTypes();
+		this.populateWrappers();
+		return this.render();		
 	}
 
 	/* HandlebarsJS-using code below */
-    
+	
 	Handlebars.registerHelper("formatted_field", function(root) {
 	
 		var colType = '';
