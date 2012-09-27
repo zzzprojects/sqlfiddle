@@ -1,3 +1,4 @@
+<!doctype html>
 <cfoutput>
 <html>
 	<head>

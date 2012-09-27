@@ -1,3 +1,11 @@
+/*
+ * DDL Builder
+ * Copyright Jake Feasel, 2012
+ * Released under MIT license
+ * For questions email admin at sqlfiddle dot com
+ * http://github.com/jakefeasel/DDLBuilder
+ */
+
 define(
 	[
 	 "jQuery", 

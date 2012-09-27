@@ -1,4 +1,4 @@
-"CREATE TABLE {{tablePrefix}}{{tableName}}{{tableSuffix}}
+CREATE TABLE {{tablePrefix}}{{tableName}}{{tableSuffix}}
 	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}} {{db_type}}{{/each_with_index}})
 {{separator}}
 
