@@ -1,4 +1,4 @@
-require(["jQuery","QUnit", "DDLBuilder"], function ($,test,DDLBuilder) {
+require(["jQuery","QUnit", "DDLBuilder/ddl_builder"], function ($,test,DDLBuilder) {
 	
 	test("ddl_builder.recordCount", function () {
 		var countTest = function (id,count) {

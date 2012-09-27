@@ -13,7 +13,7 @@ requirejs.config({
 		CodeMirror: 'libs/codemirror/codemirror',
 		MySQLCodeMirror: 'libs/codemirror/mode/mysql/mysql',
 		XPlans: 'libs/xplans',
-		DDLBuilder: 'libs/ddl_builder/ddl_builder',
+		DDLBuilder: 'libs/ddl_builder',
 		QUnit: 'libs/qunit-1.10.0'
 	},
 	

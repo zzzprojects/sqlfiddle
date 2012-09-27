@@ -8,10 +8,10 @@ define([
 		$("#qunit-fixture").append(fixtureContent);
 	
 		require([	
-			"libs/ddl_builder/qunit/columnTypes",
-			"libs/ddl_builder/qunit/headerNames",
-			"libs/ddl_builder/qunit/guessValueSeparators",
-			"libs/ddl_builder/qunit/recordCount"
+			"DDLBuilder/qunit/columnTypes",
+			"DDLBuilder/qunit/headerNames",
+			"DDLBuilder/qunit/guessValueSeparators",
+			"DDLBuilder/qunit/recordCount"
 		]);
 	
 	}

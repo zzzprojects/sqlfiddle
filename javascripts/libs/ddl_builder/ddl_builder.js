@@ -3,9 +3,12 @@ define(
 	 "jQuery", 
 	 "Handlebars", 
 	 "DateFormat", 
+	 'text!./templates/generic.sql',
+	 'text!./templates/oracle.sql',
+	 'text!./templates/sqlite.sql',
 	 'HandlebarsHelpers/each_with_index'
 	 ],
-	function ($, Handlebars, dateFormat) {
+	function ($, Handlebars, dateFormat, generic_template, oracle_template, sqlite_template) {
 
 	ddl_builder = function (args) {
 		if (!args) args = {};
@@ -56,14 +59,7 @@ define(
 			};
 
 		
-		this.ddlTemplate = "\
-CREATE TABLE {{{tablePrefix}}}{{tableName}}{{{tableSuffix}}}\n\
-	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}} {{db_type}}{{/each_with_index}})\n{{separator}}\n\n\
-INSERT INTO {{{tablePrefix}}}{{tableName}}{{{tableSuffix}}}\n\
-	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}}{{/each_with_index}})\n\
-VALUES\n\
-	{{#each_with_index data}}{{#if index}},\n\
-	{{/if}}({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}}){{/each_with_index}}\n{{separator}}";
+		this.ddlTemplate = generic_template;
 
 		this.compiledTemplate = Handlebars.compile(this.ddlTemplate);
 		this.setup(args);
@@ -117,18 +113,7 @@ VALUES\n\
 			break;
 
 			case 'Oracle':	
-				var template = 
-"CREATE TABLE {{{tablePrefix}}}{{tableName}}{{{tableSuffix}}}\n\
-	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}} {{db_type}}{{/each_with_index}})\n{{separator}}\n\
-INSERT ALL\
-{{#each_with_index data}}\n\
-	INTO \
-{{{../tablePrefix}}}{{../tableName}}{{{../tableSuffix}}} \
-({{#each_with_index r}}{{#if index}}, {{/if}}{{{../../fieldPrefix}}}{{column_name_for_index ../..}}{{{../../fieldSuffix}}}{{/each_with_index}})\n\
-		 VALUES \
-({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}})\
-{{/each_with_index}}\n\
-SELECT * FROM dual\n{{separator}}";
+				var template = oracle_template;
 												
 					this.setup({ 
 					
@@ -144,17 +129,7 @@ SELECT * FROM dual\n{{separator}}";
 
 
 			case 'SQLite':	
-				var template = 
-"CREATE TABLE {{tablePrefix}}{{tableName}}{{tableSuffix}}\n\
-	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}} {{db_type}}{{/each_with_index}})\n{{separator}}\n\n\
-{{#each_with_index data}}\
-INSERT INTO {{tablePrefix}}{{../tableName}}{{tableSuffix}}\n\
-	({{#each_with_index ../columns}}{{#if index}}, {{/if}}{{{../../fieldPrefix}}}{{name}}{{{../../fieldSuffix}}}{{/each_with_index}})\n\
-VALUES\n\
-	({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}})\n{{../separator}}\
-\n\
-{{/each_with_index}}\
-";
+				var template = sqlite_template;
 
 												
 					this.setup({ 

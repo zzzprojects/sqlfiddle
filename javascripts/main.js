@@ -12,8 +12,8 @@ requirejs.config({
 		FiddleEditor: 'libs/fiddleEditor',
 		CodeMirror: 'libs/codemirror/codemirror',
 		MySQLCodeMirror: 'libs/codemirror/mode/mysql/mysql',
-		XPlans: 'libs/xplans'
-		DDLBuilder: 'libs/ddl_builder/ddl_builder'
+		XPlans: 'libs/xplans',
+		DDLBuilder: 'libs/ddl_builder'
 	},
 	
     shim: {
@@ -62,7 +62,7 @@ require([
 		'Underscore',
 		'dbTypes_cached', 
 		'fiddle_backbone/app',
-		'DDLBuilder',
+		'DDLBuilder/ddl_builder',
 		'libs/idselector'
 	], 
 	function($, _, dbTypesData, App, ddl_builder) {
