@@ -67,7 +67,7 @@ define(
 	}
 	
 	ddl_builder.prototype.setup = function (settings) {
-		for (opt in settings)
+		for (var opt in settings)
 		{
 			this[opt] = settings[opt];
 		}

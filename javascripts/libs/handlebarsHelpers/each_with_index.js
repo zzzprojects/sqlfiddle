@@ -2,7 +2,7 @@ define(["Handlebars"], function (Handlebars) {
 	
 	Handlebars.registerHelper("each_with_index", function(array, fn) {
 		var buffer = "";
-		k=0;
+		var k=0;
 		for (var i = 0, j = array.length; i < j; i++) {
 			if (array[i])
 			{
