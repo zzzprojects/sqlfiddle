@@ -20,6 +20,14 @@ require(["jQuery","QUnit", "javascripts/libs/ddl_builder"], function ($,test,DDL
 		sepTest("pipedColumns","|");
 	});
 
+	test("ddl_builder.headerNames", function () {
+		// template is just a csv list of names
+		var ddl_builder = new DDLBuilder({ddlTemplate: "{{#each_with_index columns}}{{#if index}},{{/if}}{{name}}{{/each_with_index}}}"});
+		equal(ddl_builder.parse($("#fixedWidthWithSpaces").html()), "Cul 1,Cul 2");
+		
+			
+	});
+
 });
 </script>
 

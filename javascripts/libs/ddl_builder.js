@@ -146,10 +146,10 @@ SELECT * FROM dual\n{{separator}}";
 			case 'SQLite':	
 				var template = 
 "CREATE TABLE {{tablePrefix}}{{tableName}}{{tableSuffix}}\n\
-	({{#each_with_index columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}} {{db_type}}{{/each_with_index}})\n{{separator}}\n\n\
+	({{#each_with_index columns}}{{#if index}}, {{/if}}{{{../fieldPrefix}}}{{name}}{{{../fieldSuffix}}} {{db_type}}{{/each_with_index}})\n{{separator}}\n\n\
 {{#each_with_index data}}\
 INSERT INTO {{tablePrefix}}{{../tableName}}{{tableSuffix}}\n\
-	({{#each_with_index ../columns}}{{#if index}}, {{/if}}{{../fieldPrefix}}{{name}}{{../fieldSuffix}}{{/each_with_index}})\n\
+	({{#each_with_index ../columns}}{{#if index}}, {{/if}}{{{../../fieldPrefix}}}{{name}}{{{../../fieldSuffix}}}{{/each_with_index}})\n\
 VALUES\n\
 	({{#each_with_index r}}{{#if index}}, {{/if}}{{formatted_field ../..}}{{/each_with_index}})\n{{../separator}}\
 \n\
@@ -158,6 +158,10 @@ VALUES\n\
 
 												
 					this.setup({ 
+								fieldPrefix: '"',
+								fieldSuffix: '"',
+								tablePrefix: '"',
+								tableSuffix: '"',
 								statement_separator: separator,
 								ddlTemplate: template,
 								dateType: 'TEXT',
@@ -269,7 +273,7 @@ VALUES\n\
 		
 		for (var i=0;i<lines.length;i++)
 		{
-			if ($.trim(lines[i]).length && lines[i].split(this.valueSeparator).length == this.column_count)
+			if ($.trim(lines[i]).length && $.trim(lines[i]).split(this.valueSeparator).length == this.column_count)
 			{
 				
 					var elements = $.trim(lines[i]).split(this.valueSeparator);
