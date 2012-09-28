@@ -115,6 +115,7 @@ define(
 			case 'PostgreSQL':
 				this.setup({ 
 								statement_separator: separator,
+								dateType: 'timestamp',
 								fieldPrefix: '"',
 								fieldSuffix: '"'
 							});	
