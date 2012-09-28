@@ -9,7 +9,7 @@
 			<th colspan="3">&nbsp;</th>
 		</thead>
 		<tbody>		
-		<cfoutput query="favorites">
+		<cfoutput query="favorites" group="schema_fragment">
 			<cfset query_access = DateAdd('h', #getTimeZoneInfo().utcHourOffset#-#params.tz#, last_accessed)>
 				
 			<tr>

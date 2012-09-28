@@ -5,102 +5,17 @@ define ([
 		"FiddleEditor", 
 		"libs/renderTerminator",
 		'XPlans/oracle/loadswf',
-		'XPlans/mssql'
+		'XPlans/mssql',
+		"text!fiddle_backbone/templates/queryTabularOutput.html",
+		"text!fiddle_backbone/templates/queryPlaintextOutput.html",
+		'HandlebarsHelpers/divider_display',
+		'HandlebarsHelpers/each_simple_value_with_index',
+		'HandlebarsHelpers/each_with_index',
+		'HandlebarsHelpers/result_display_padded',
+		'HandlebarsHelpers/result_display'
 	], 
-	function ($,Backbone,Handlebars,fiddleEditor,renderTerminator,loadswf,QP) {
+	function ($,Backbone,Handlebars,fiddleEditor,renderTerminator,loadswf,QP,tabTemplate,plainTemplate) {
 
-
-
-    
-	Handlebars.registerHelper("result_display", function(value) {
-		// thanks to John Gruber for this regexp http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-		// also to "Searls" for his port to JS https://gist.github.com/1033143
-		var urlRegexp = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?������]))/ig;
-		
-		if ($.isPlainObject(value))
-			return JSON.stringify(value);
-		else if (value == null)
-			return "(null)";
-		else if (value === false)
-			return "false";
-		else if (typeof value === "string" && value.match(urlRegexp) && Handlebars.Utils.escapeExpression(value) == value)
-			return new Handlebars.SafeString(value.replace(urlRegexp, "<a href='$1' target='_new'>$1</a>"));
-		else
-			return value;
-	});
-
-	
-	Handlebars.registerHelper("each_simple_value_with_index", function(array, fn) {
-		var buffer = "";
-		k=0;
-		for (var i = 0, j = array.length; i < j; i++) {
-			var item = {
-				value: array[i]
-			};
-	
-			// stick an index property onto the item, starting with 0
-			item.index = k;
-			
-			item.first = (k == 0);
-			item.last = (k == array.length);
-
-			// show the inside of the block
-			buffer += fn(item);
-
-			k++;
-		}
-
-		// return the finished buffer
-		return buffer;
-	
-	});		
-
-
-    
-	Handlebars.registerHelper("result_display_padded", function(colWidths) {
-		var padding = [];
-		
-		padding.length = colWidths[this.index] - this.value.toString().length + 1;
-		
-		return padding.join(' ') + this.value.toString();
-	});
-	
-	Handlebars.registerHelper("divider_display", function(colWidths) {
-		var padding = [];
-		
-		padding.length = colWidths[this.index] + 1;
-		
-		return padding.join('-');
-
-	});
-
-
-	
-	Handlebars.registerHelper("each_with_index", function(array, fn) {
-		var buffer = "";
-		k=0;
-		for (var i = 0, j = array.length; i < j; i++) {
-			if (array[i])
-			{
-				var item = array[i];
-		
-				// stick an index property onto the item, starting with 0
-				item.index = k;
-				
-				item.first = (k == 0);
-				item.last = (k == array.length);
-	
-				// show the inside of the block
-				buffer += fn(item);
-
-				k++;
-			}
-		}
-
-		// return the finished buffer
-		return buffer;
-	
-	});		
 	
 	var QueryView = Backbone.View.extend({
 	
@@ -109,8 +24,8 @@ define ([
 			this.editor = new fiddleEditor(this.id,this.handleQueryChange, this);
 			this.outputType = "tabular";
 			this.compiledOutputTemplate = {};
-			this.compiledOutputTemplate["tabular"] = Handlebars.compile(this.options.tabularOutputTemplate.html()); 
-			this.compiledOutputTemplate["plaintext"] = Handlebars.compile(this.options.plaintextOutputTemplate.html()); 
+			this.compiledOutputTemplate["tabular"] = Handlebars.compile(tabTemplate); 
+			this.compiledOutputTemplate["plaintext"] = Handlebars.compile(plainTemplate); 
 		      
 		},
 		setOutputType: function (type) {

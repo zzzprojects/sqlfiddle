@@ -1,0 +1,1 @@
+define(["Handlebars"],function(e){e.registerHelper("result_display_padded",function(e){var t=[];return t.length=e[this.index]-this.value.toString().length+1,t.join(" ")+this.value.toString()})})

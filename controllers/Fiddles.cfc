@@ -7,11 +7,6 @@ component extends="Controller" {
 	}
 
 	function index() {
-		contentFor(handleBarsScripts=includePartial('schemaBrowser'));
-		contentFor(handleBarsScripts=includePartial('schemaOutput'));
-		contentFor(handleBarsScripts=includePartial('queryOutput'));
-		contentFor(handleBarsScripts=includePartial('dbType'));
-		
 		contentFor(utilityModals=includePartial('textToDDL'));
 		contentFor(utilityModals=includePartial('loginModal'));
 		contentFor(utilityModals=includePartial('myFiddlesModal'));

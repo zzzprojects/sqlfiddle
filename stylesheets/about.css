@@ -29,3 +29,7 @@ body{
 .panel {
 	margin-top: 70px;	
 }
+
+.use_case {
+	font-weight: bold;
+}

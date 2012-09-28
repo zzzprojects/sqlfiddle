@@ -1,8 +1,9 @@
-define (["jQuery", "Backbone", "Handlebars"], function ($,Backbone,Handlebars) {
+define (["jQuery", "Backbone", "Handlebars", "text!fiddle_backbone/templates/dbTypes.html"], 
+		function ($,Backbone,Handlebars,dbTypesTemplate) {
 
 	var DBTypesListView = Backbone.View.extend({
 		initialize: function () {
-			this.compiledTemplate = Handlebars.compile(this.options.template.html()); 
+			this.compiledTemplate = Handlebars.compile(dbTypesTemplate); 
 		},
 		events: {
 			"click ul.dropdown-menu li": "clickDBType"

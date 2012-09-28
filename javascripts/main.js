@@ -6,12 +6,14 @@ requirejs.config({
 		Backbone: 'libs/backbone',
 		Bootstrap: 'libs/bootstrap',
 		Handlebars: 'libs/handlebars-1.0.0.beta.6',
+		HandlebarsHelpers: 'libs/handlebarsHelpers',
 		DateFormat: 'libs/date.format',
 		BrowserEngines: 'libs/browserEngines',
 		FiddleEditor: 'libs/fiddleEditor',
 		CodeMirror: 'libs/codemirror/codemirror',
 		MySQLCodeMirror: 'libs/codemirror/mode/mysql/mysql',
-		XPlans: 'libs/xplans'
+		XPlans: 'libs/xplans',
+		DDLBuilder: 'libs/ddl_builder'
 	},
 	
     shim: {
@@ -60,7 +62,7 @@ require([
 		'Underscore',
 		'dbTypes_cached', 
 		'fiddle_backbone/app',
-		'libs/ddl_builder',
+		'DDLBuilder/ddl_builder',
 		'libs/idselector'
 	], 
 	function($, _, dbTypesData, App, ddl_builder) {
@@ -338,8 +340,8 @@ require([
 		fiddleBackbone.schemaDefView.editor.setFullscreen(false);
 		fiddleBackbone.queryView.editor.setFullscreen(false);
 		
-		resizeLayout();
 		toggleFullscreenNav('');
+		resizeLayout();
 	});
 	
 	$("#schemaFullscreen").on('click', function (e) {
