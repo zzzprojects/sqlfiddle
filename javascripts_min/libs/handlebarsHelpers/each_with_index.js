@@ -1,1 +1,1 @@
-define(["Handlebars"],function(e){e.registerHelper("each_with_index",function(e,t){var n="";k=0;for(var r=0,i=e.length;r<i;r++)if(e[r]){var s=e[r];s.index=k,s.first=k==0,s.last=k==e.length,n+=t(s),k++}return n})})
+define(["Handlebars"],function(e){e.registerHelper("each_with_index",function(e,t){var n="",r=0;for(var i=0,s=e.length;i<s;i++)if(e[i]){var o=e[i];o.index=r,o.first=r==0,o.last=r==e.length,n+=t(o),r++}return n})})

@@ -49,6 +49,9 @@ libs/bootstrap/bootstrap-tooltip.js
 libs/bootstrap/bootstrap-popover.js
 fiddle_backbone/app.js
 libs/date.format.js
-libs/ddl_builder.js
+text!DDLBuilder/templates/generic.sql
+text!DDLBuilder/templates/oracle.sql
+text!DDLBuilder/templates/sqlite.sql
+libs/ddl_builder/ddl_builder.js
 libs/idselector.js
 main.js

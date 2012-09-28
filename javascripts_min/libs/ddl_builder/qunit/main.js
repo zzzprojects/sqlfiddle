@@ -1,0 +1,1 @@
+define(["jQuery","text!./fixture.html"],function(e,t){e("#qunit-fixture").append(t),require(["DDLBuilder/qunit/columnTypes","DDLBuilder/qunit/headerNames","DDLBuilder/qunit/guessValueSeparators","DDLBuilder/qunit/recordCount"])})
