@@ -54,7 +54,7 @@
 					<cfdirectory action="list" recurse="true" directory="#GetDirectoryFromPath(GetBaseTemplatePath())#stylesheets" name="loc.ssMetaData" type="file">
 
 					<cfset loc.ssTimes = { 
-						"css" = CreateDate(1900,1,1), 
+						"css" = CreateDate(2100,1,1), 
 						"less" = CreateDate(1900,1,1)
 						}>
 
@@ -84,7 +84,9 @@
 							
 								<!--- If any of the less files we are dealing with have a date greater than the oldest css, then we need to regenerate.
 										So, we need to find the most recent date associated with each set of our files. --->
-								<cfif DateCompare(loc.ssTimes[LCase(ListLast(name, '.'))], dateLastModified) LT 0>
+								<cfif 	(LCase(ListLast(name, '.')) IS "less" AND DateCompare(loc.ssTimes[LCase(ListLast(name, '.'))], dateLastModified) LT 0) OR
+										(LCase(ListLast(name, '.')) IS "css" AND DateCompare(loc.ssTimes[LCase(ListLast(name, '.'))], dateLastModified) GT 0)
+										>
 									
 									<cfset loc.ssTimes[LCase(ListLast(name, '.'))] = dateLastModified>
 
@@ -95,7 +97,7 @@
 					</cfloop>
 
 					<!--- if the css is older than the less files, it must be out of date and in need of regeneration --->
-					<cfif DateCompare(loc.ssTimes["css"], loc.ssTimes["less"]) LT 1>
+					<cfif DateCompare(loc.ssTimes["css"], loc.ssTimes["less"]) LT 0>
 	
 						<cftry>
 							<!--- this usually doesn't take too long to do, so we'll do it synchronously instead of in a separate thread --->
