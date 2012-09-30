@@ -30,7 +30,7 @@
   }
   .helpTip {
     width: 180px !important;
-    height: 50% !important;
+    height: 30% !important;
   }
 }
 @media (min-width: 768px) and (max-width: 979px) {
@@ -79,7 +79,7 @@ textarea.fullscreen {
   display: none;
   width: 180px;
   height: 60%;
-  min-height: 100px;
+  min-height: 50px;
   overflow-y: auto;
   right: 0px;
   z-index: 1001;
@@ -102,6 +102,7 @@ textarea.fullscreen {
   white-space: nowrap;
   overflow: auto;
   font-size: 10pt;
+  min-height: 100px;
 }
 .tables,
 .columns {

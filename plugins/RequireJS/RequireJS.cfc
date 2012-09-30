@@ -5,7 +5,7 @@
         <cfreturn this>
     </cffunction>
 
-	<cffunction name="requireStyleTags" output="false">
+	<cffunction name="requireStyleTags" output="true">
 		<cfargument name="href" type="Array" required="true">
 		<cfargument name="outputTarget" type="string" required="false" default="#ListFirst(Replace(CGI.script_name, '/', '_', "ALL"), '.')#.css">
 		
@@ -66,7 +66,10 @@
 
 					<cfloop condition="#ArrayLen(loc.import.pos)# IS 2">
 						<cfset loc.importFile = ReReplace(mid(loc.ssContent, loc.import.pos[2], loc.import.len[2]), "(^""|')|(""|'$)", "", "ALL")>
-						<cfset loc.importFile = GetDirectoryFromPath(loc.stylesheetSrc) & loc.importFile>
+						
+						<cfif Find("/", loc.stylesheetSrc)>
+							<cfset loc.importFile = GetDirectoryFromPath(loc.stylesheetSrc) & loc.importFile>
+						</cfif>
 						
 						<cfset ArrayAppend(loc.ssFiles, loc.importFile)>
 
@@ -74,7 +77,9 @@
 					</cfloop>
 
 					<cfloop query="loc.ssMetaData">
+
 						<cfloop array="#loc.ssFiles#" index="loc.thisSS">
+							
 							<cfif Replace(directory & "/" & REReplaceNoCase(name, ".(le|c)ss$", ""), "#GetDirectoryFromPath(GetBaseTemplatePath())#stylesheets/","") IS REReplaceNoCase(loc.thisSS, ".less$", "")>
 							
 								<!--- If any of the less files we are dealing with have a date greater than the oldest css, then we need to regenerate.
