@@ -125,7 +125,7 @@ define(
 				var template = oracle_template;
 												
 					this.setup({ 
-					
+								dateFormatMask: 'dd-mmm-yyyy hh:MM:ss TT',
 								statement_separator: separator,
 								ddlTemplate: template,
 								dateType: 'timestamp',
