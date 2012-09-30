@@ -316,7 +316,7 @@ require([
 		if ($("#exit_fullscreen").css('display') == "none")
 		{
 			$("body").css("overflow-y", "hidden");
-			$(".navbar-fixed-top").css("position", "fixed");
+			$(".navbar-fixed-top").css("position", "fixed").css("margin", 0);
 			
 			$("#exit_fullscreen").css('display', 'block');
 			$("#exit_fullscreen span").text("Exit Fullscreen " + option);
@@ -326,7 +326,7 @@ require([
 		{
 			$("body").css("overflow-y", "auto");
 			$("body").css("height", "100%");
-			$(".navbar-fixed-top").css("position", "");
+			$(".navbar-fixed-top").css("position", "").css("margin", "");
 			
 			$("#exit_fullscreen").css('display', 'none');
 			$(".nav-collapse, .btn-navbar, #db_type_label_collapsed .navbar-text").css('display', '');

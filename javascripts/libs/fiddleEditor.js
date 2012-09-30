@@ -65,7 +65,7 @@ define(["CodeMirror", "MySQLCodeMirror"], function (CodeMirror, myMode){
 				$(this.codeMirror.getGutterElement()).height(wHeight);
 			}
 			else
-			{	
+			{
 				$(this.textArea).addClass('fullscreen');
 				$(this.textArea).height(wHeight);
 				$(this.textArea).attr('fullscreen', fullscreenMode);
