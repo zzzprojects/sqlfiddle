@@ -44,8 +44,8 @@ requirejs.config({
 		'XPlans/mssql': {
 			exports: "QP"
 		},
-		'QUnit': {
-			exports: "test"
+		QUnit: {
+			exports: function () { return { "test": test, "equal": equal, "ok": ok } }
 		},
 		MySQLCodeMirror : ['CodeMirror'],		
 		'libs/jquery/jquery.blockUI': ['jQuery'],
