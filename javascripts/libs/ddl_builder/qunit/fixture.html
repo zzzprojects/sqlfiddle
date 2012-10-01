@@ -1,72 +1,80 @@
-	
-<span id="simplestFormattedCSV">
-	a,b
-	1,2
-</span>
-<span id="twoColumnFixedWidth">
-	Period   Result
-	1        Green
-	1        Blue
-	1        Blue
-	1        Red
-	1        Blue
-	1        Blue
-	1        Blue
-	2        Green 
-	2        Green 
-	2        Green
-	2        Blue
-	2        Red
-	2        Red
-</span>
-<span id="fixedWidthDates">
-	date_due        date_paid         amount_due     amount_paid    category_type
-	2012-08-12      2012-08-12        500            450            Income
-	2012-08-13      2012-08-17        200            300            Expense
-	2012-09-15      2012-09-13        300            300            Income
-	2012-09-17      2012-09-16        100            100            Income
-</span>
-<span id="centeredPipes">
-	   L    |    N
-	-------------------
-	   A    |    1
-	   A    |    3
-	   A    |    5
-	   B    |    5
-	   B    |    7
-	   B    |    9
-	   C    |    1
-	   C    |    2
-	   C    |    3
-</span>
-<span id="ASCII_bordered">
-	+-----------+--------------+----------+--------+
-	| IdPayment | Costs_IdCost |   Date   | Amount |
-	+-----------+--------------+----------+--------+
-	|     1     |      2       |2012/09/10|  1000  |
-	+-----------+--------------+----------+--------+
-	|     2     |      2       |2012/09/20|  3000  |
-	+-----------+--------------+----------+--------+
-	|     3     |      2       |2012/10/01|  5000  |
-	+-----------+--------------+----------+--------+
-</span>
-<span id="fixedWidthWithSpaces">
-	Cul 1   Cul 2  
-	=====================
-	A10000  Test 
-	A10001  Test 123 
-	A20000  Test 1
-	A20001  Test 999 
-	A30000  Test 2  
-	A30002  Test 5555 
-	A40000  Test 3   
-	A40006  Test 84384848
-</span>
-<span id="pipedColumns">
-	Scoreband| TotalNoOfPeople | AvgScore
-	--------------------------------
-	-5 to 0  | 2               | -2
-	0 to 5   | 3               |  2
-	5 to 10  | 2               |  8
-	10 to 15 | 3               | 13.3
-</span>
+<div id="ddlInputText">
+	<span id="simplestFormattedCSV" types="int,int" valueSeparator="," headers="a,b" recordCount="1">
+		a,b
+		1,2
+	</span>
+	<span id="twoColumnFixedWidth" types="int,varchar(5)" valueSeparator="/\s\s+/" headers="Period,Result" recordCount="13">
+		Period   Result
+		1        Green
+		1        Blue
+		1        Blue
+		1        Red
+		1        Blue
+		1        Blue
+		1        Blue
+		2        Green 
+		2        Green 
+		2        Green
+		2        Blue
+		2        Red
+		2        Red
+	</span>
+	<span id="fixedWidthDates" types="datetime,datetime,int,int,varchar(7)" valueSeparator="/\s\s+/" headers="date_due,date_paid,amount_due,amount_paid,category_type" recordCount="4">
+		date_due        date_paid         amount_due     amount_paid    category_type
+		2012-08-12      2012-08-12        500            450            Income
+		2012-08-13      2012-08-17        200            300            Expense
+		2012-09-15      2012-09-13        300            300            Income
+		2012-09-17      2012-09-16        100            100            Income
+	</span>
+	<span id="centeredPipes" types="varchar(1),int" valueSeparator="|" headers="L,N" recordCount="9">
+		   L    |    N
+		-------------------
+		   A    |    1
+		   A    |    3
+		   A    |    5
+		   B    |    5
+		   B    |    7
+		   B    |    9
+		   C    |    1
+		   C    |    2
+		   C    |    3
+	</span>
+	<span id="ASCII_bordered" types="int,int,datetime,int" valueSeparator="|" headers="IdPayment,Costs_IdCost,Date,Amount" recordCount="3">
+		+-----------+--------------+----------+--------+
+		| IdPayment | Costs_IdCost |   Date   | Amount |
+		+-----------+--------------+----------+--------+
+		|     1     |      2       |2012/09/10|  1000  |
+		+-----------+--------------+----------+--------+
+		|     2     |      2       |2012/09/20|  3000  |
+		+-----------+--------------+----------+--------+
+		|     3     |      2       |2012/10/01|  5000  |
+		+-----------+--------------+----------+--------+
+	</span>
+	<span id="fixedWidthWithSpaces" types="varchar(6),varchar(13)" valueSeparator="/\s\s+/" headers="Cul 1,Cul 2" recordCount="8">
+		Cul 1   Cul 2  
+		=====================
+		A10000  Test 
+		A10001  Test 123 
+		A20000  Test 1
+		A20001  Test 999 
+		A30000  Test 2  
+		A30002  Test 5555 
+		A40000  Test 3   
+		A40006  Test 84384848
+	</span>
+	<span id="pipedColumns" types="varchar(8),int,numeric" valueSeparator="|" headers="Scoreband,TotalNoOfPeople,AvgScore" recordCount="4">
+		Scoreband| TotalNoOfPeople | AvgScore
+		--------------------------------
+		-5 to 0  | 2               | -2
+		0 to 5   | 3               |  2
+		5 to 10  | 2               |  8
+		10 to 15 | 3               | 13.3
+	</span>
+	<span id="variableSpaceDelimited" types="varchar(3),varchar(4),varchar(5)" valueSeparator="/\s\s+/" headers="c1,c2,c3" recordCount="4">
+	c1   c2   c3
+	1A2  cat  black
+	1G2  dog  red
+	B11  frog green
+	1G2  girl  red
+	</span>
+</div>

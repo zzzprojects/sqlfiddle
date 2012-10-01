@@ -1,22 +1,15 @@
-require(["jQuery","QUnit", "DDLBuilder/ddl_builder"], function ($,test,DDLBuilder) {
+define(["jQuery","QUnit", "DDLBuilder/ddl_builder"], function ($,QUnit,DDLBuilder) {
 	
-	test("ddl_builder.guessValueSeparators", function () {
-			var ddl_builder = new DDLBuilder();
-			
-			var sepTest = function(id,sep) {
-				var result = ddl_builder.guessValueSeparator($("#" + id).html());
-				if (result.separator)
-					equal(ddl_builder.guessValueSeparator($("#" + id).html()).separator.toString(), sep.toString());		
-				else
-					ok(false, "Guess failed with message:" + result.message);
-			}
-			sepTest("simplestFormattedCSV",",");
-			sepTest("twoColumnFixedWidth",/\s\s+/);
-			sepTest("fixedWidthDates",/\s\s+/);
-			sepTest("centeredPipes","|");
-			sepTest("ASCII_bordered","|");
-			sepTest("fixedWidthWithSpaces",/\s\s+/);
-			sepTest("pipedColumns","|");
-		});
+	return function(id,sep) {
+		
+		var ddl_builder = new DDLBuilder(),
+			result = ddl_builder.guessValueSeparator($("#" + id).html());
+		
+		if (result.separator)
+			QUnit.equal(ddl_builder.guessValueSeparator($("#" + id).html()).separator.toString(), sep.toString(), "Guessing Value Separators");
+		else
+			QUnit.ok(false, "Guess failed with message:" + result.message);
+	};
+
 
 });

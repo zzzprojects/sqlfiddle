@@ -228,7 +228,12 @@ define(
 			}
 			else if (lines[i].search(/[A-Z0-9_]/i) != -1)
 			{
-				if ($.trim(lines[i]).split(found_separator).length != column_count)
+				if ($.trim(lines[i]).split(found_separator).length != column_count && 
+						(
+								found_separator.toString() != /\s\s+/.toString() ||
+								$.trim(lines[i]).split(/\s+/).length != column_count
+						)
+					)
 					return {status: false, message: 'Line ' + i + ' does not have the same number of columns as the header, based on separator "' + found_separator + '".'};
 			
 			}
@@ -257,63 +262,69 @@ define(
 		
 		for (var i=0;i<lines.length;i++)
 		{
-			if ($.trim(lines[i]).length && $.trim(lines[i]).split(this.valueSeparator).length == this.column_count)
-			{
-				
-					var elements = $.trim(lines[i]).split(this.valueSeparator);
-					
+			var elements = $.trim(lines[i]).split(this.valueSeparator);
 
-					if (! this.definition.columns.length)
+			if ($.trim(lines[i]).length && 
+					(
+						elements.length == this.column_count ||
+						(
+								this.valueSeparator.toString() == /\s\s+/.toString() &&
+								(elements =  $.trim(lines[i]).split(/\s+/)).length == this.column_count
+						)
+					)
+				)
+			{
+				if (! this.definition.columns.length)
+				{	
+					for (var j = 0; j < elements.length; j++)
 					{	
-						for (var j = 0; j < elements.length; j++)
-						{	
-								var value = $.trim(elements[j]);
-								if (value.length)
-									this.definition.columns.push({"name": value});
-								else
-									this.definition.columns.push(false);
-						}
+							var value = $.trim(elements[j]);
+							if (value.length)
+								this.definition.columns.push({"name": value});
+							else
+								this.definition.columns.push(false);
 					}
-					else
+				}
+				else
+				{
+				
+					var tmpRow = [];
+					for (var j = 0; j < elements.length; j++)
 					{
-					
-						var tmpRow = [];
-						for (var j = 0; j < elements.length; j++)
+						if (this.definition.columns[j] !== false)
 						{
-							if (this.definition.columns[j] !== false)
+							var value = $.trim(elements[j]).replace(/'/g, "''");
+	
+							// if the current field is not a number, or if we have previously decided that this one of the non-numeric field types...
+							if (isNaN(value) || this.definition.columns[j].type == 'dateType' || this.definition.columns[j].type == 'charType')
 							{
-								var value = $.trim(elements[j]).replace(/'/g, "''");
-		
-								// if the current field is not a number, or if we have previously decided that this one of the non-numeric field types...
-								if (isNaN(value) || this.definition.columns[j].type == 'dateType' || this.definition.columns[j].type == 'charType')
-								{
-									
-									// if we haven't previously decided that this is a character field, and it can be cast as a date, then declare it a date 
-									if (this.definition.columns[j].type != 'charType' && !isNaN(Date.parse(value)) ) 
-										this.definition.columns[j].type = "dateType";
-									else
-										this.definition.columns[j].type = "charType";
-								}
-								else // this must be some kind of number field
-								{
-									if (this.definition.columns[j].type != 'floatType' && value % 1 != 0)
-										this.definition.columns[j].type = 'floatType';
-									else
-										this.definition.columns[j].type = 'intType';
-								}
 								
-								if (!this.definition.columns[j].length || value.length > this.definition.columns[j].length)
-								{
-									this.definition.columns[j].length = value.length;
-								}
-								
-								tmpRow.push({v:value});
+								// if we haven't previously decided that this is a character field, and it can be cast as a date, then declare it a date 
+								if (this.definition.columns[j].type != 'charType' && !isNaN(Date.parse(value)) ) 
+									this.definition.columns[j].type = "dateType";
+								else
+									this.definition.columns[j].type = "charType";
 							}
-								
+							else // this must be some kind of number field
+							{
+								if (this.definition.columns[j].type != 'floatType' && value % 1 != 0)
+									this.definition.columns[j].type = 'floatType';
+								else
+									this.definition.columns[j].type = 'intType';
+							}
+							
+							if (!this.definition.columns[j].length || value.length > this.definition.columns[j].length)
+							{
+								this.definition.columns[j].length = value.length;
+							}
+							
+							tmpRow.push({v:value});
 						}
-						this.definition.data.push({r: tmpRow});
-					
+							
 					}
+					this.definition.data.push({r: tmpRow});
+				
+				}
 					
 			}
 		}

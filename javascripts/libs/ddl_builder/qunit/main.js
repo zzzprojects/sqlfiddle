@@ -1,18 +1,28 @@
 define([
 	"jQuery",
-	"text!./fixture.html"
+	"QUnit",
+	"text!./fixture.html",
+	"./columnTypes",
+	"./guessValueSeparators",
+	"./headerNames",
+	"./recordCount"
 	], 
 
-	function ($,fixtureContent) {
-
+	function ($,QUnit,fixtureContent,
+			columnTypes,guessValueSeparators,
+			headerNames,recordCount) {
+		
 		$("#qunit-fixture").append(fixtureContent);
-	
-		require([	
-			"DDLBuilder/qunit/columnTypes",
-			"DDLBuilder/qunit/headerNames",
-			"DDLBuilder/qunit/guessValueSeparators",
-			"DDLBuilder/qunit/recordCount"
-		]);
-	
+		
+		$("#qunit-fixture #ddlInputText span").each(function () {
+			var $this = $(this);
+			QUnit.test("Parsing " + this.id, function () {
+				columnTypes($this.attr('id'), $this.attr('types'));
+				guessValueSeparators($this.attr('id'), $this.attr('valueSeparator'));
+				headerNames($this.attr('id'), $this.attr('headers'));
+				recordCount($this.attr('id'), $this.attr('recordCount'));
+			});
+		});
+		
 	}
 )
