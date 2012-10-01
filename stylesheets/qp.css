@@ -1,4 +1,4 @@
-﻿div.qp-node
+div.qp-node
 {
 	background-color: #FFFFCC;
 	margin: 2px;
@@ -175,4 +175,7 @@ div.qp-node:hover .qp-tt
 {
 	display: table-cell;
 	padding-left: 15px;
+}
+.qp-tr canvas,.qp-root canvas {
+	height: 100%;
 }
