@@ -190,7 +190,11 @@ define(
 			if (lines[i].search(/[A-Z0-9_]/i) != -1 && !header_found) // if this line contains letters/numbers/underscores, then we can assume we've hit the header row 
 			{
 				var chunks = $.trim(lines[i]).match(/([A-Z0-9_]+ ?)+([^A-Z0-9_]*)/gi);
-
+				if (chunks.length == 1)
+				{
+					chunks = $.trim(lines[i]).match(/([A-Z0-9_]+ ?)+?([^A-Z0-9_]*)/gi);
+				}
+				
 				header_found = true;
 				
 				for (var j = 0; j < chunks.length; j++)

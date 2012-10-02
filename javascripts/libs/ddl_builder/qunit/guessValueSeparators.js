@@ -8,7 +8,7 @@ define(["jQuery","QUnit", "DDLBuilder/ddl_builder"], function ($,QUnit,DDLBuilde
 		if (result.separator)
 			QUnit.equal(ddl_builder.guessValueSeparator($("#" + id).html()).separator.toString(), sep.toString(), "Guessing Value Separators");
 		else
-			QUnit.ok(false, "Guess failed with message:" + result.message);
+			QUnit.ok(false, "Guessing value separators failed with message:" + result.message);
 	};
 
 
