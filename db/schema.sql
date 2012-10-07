@@ -61,7 +61,8 @@ CREATE TABLE db_types (
     execution_plan_suffix character varying(500),
     execution_plan_xslt text,
     context character varying(10),
-    execution_plan_check character varying(300)
+    execution_plan_check character varying(300),
+    is_latest_stable smallint DEFAULT 0
 );
 
 
@@ -225,7 +226,8 @@ CREATE TABLE user_fiddles (
     query_id integer,
     last_accessed timestamp without time zone DEFAULT now(),
     num_accesses integer DEFAULT 1,
-    show_in_history smallint DEFAULT 1
+    show_in_history smallint DEFAULT 1,
+    favorite smallint DEFAULT 0
 );
 
 
