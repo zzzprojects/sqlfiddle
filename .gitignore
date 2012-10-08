@@ -1,7 +1,9 @@
 src/main/webapp/WEB-INF/flex/
-src/main/webapp/WEB-INF/railo/
+src/main/webapp/WEB-INF/railo/*
+!src/main/webapp/WEB-INF/railo/railo-web.xml.cfm
 src/main/webapp/WEB-INF/lib/
 src/main/webapp/.project
 src/main/webapp/.DS_Store
 src/main/webapp/config/production/settings.cfm
 src/main/webapp/config/environment.cfm
+h2db
