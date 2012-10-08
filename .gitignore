@@ -1,5 +1,7 @@
-WEB-INF
-.project
-.DS_Store
-config/production/settings.cfm
-config/environment.cfm
+src/main/webapp/WEB-INF/flex/
+src/main/webapp/WEB-INF/railo/
+src/main/webapp/WEB-INF/lib/
+src/main/webapp/.project
+src/main/webapp/.DS_Store
+src/main/webapp/config/production/settings.cfm
+src/main/webapp/config/environment.cfm
