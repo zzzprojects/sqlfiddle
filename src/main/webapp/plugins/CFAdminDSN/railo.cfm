@@ -1,3 +1,27 @@
+
+
+<cffunction name="getDatasources">
+	<cfargument name="adminPassword" type="string" required="true">
+	
+	<cfset var dsnList = QueryNew("name")>
+	<cfset var datasources = {}>
+	<cflock name="cfadmin" timeout="30">
+	
+	<cfadmin action="getDatasources" type="web" password="password" returnVariable="dsnList">
+	
+	</cflock>
+	
+	<cfloop query="dsnList">
+		<cfset datasources[name] = {}>
+		
+		<cfloop list="#columnList#" index="col">
+			<cfset datasources[name][col] = dsnList[col][currentRow]>
+		</cfloop>
+	</cfloop>
+	
+	<cfreturn datasources>
+</cffunction>
+
 <cffunction name="setDatasource">
 	<cfargument name="adminPassword" type="string" required="true">
 	<cfargument name="name" type="string" required="true">

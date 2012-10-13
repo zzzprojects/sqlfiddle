@@ -1,3 +1,20 @@
+
+
+<cffunction name="getDatasources">
+    <cfargument name="adminPassword" type="string" required="true">
+    
+    <cfset var dsnList = QueryNew("name")>
+
+    <cflock name="cfadmin" timeout="30">
+    
+    <cfset dsnList = getAdminAPIREf(arguments.adminPassword).getDatasources()>
+    
+    </cflock>
+    
+    <cfreturn dsnList>
+</cffunction>
+
+
 <cffunction name="setDatasource">
 	<cfargument name="adminPassword" type="string" required="true">
 	<cfargument name="name" type="string" required="true">

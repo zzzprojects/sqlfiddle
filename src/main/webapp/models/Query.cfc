@@ -54,7 +54,7 @@
 
 				<cftry>
 	
-	              	<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
+					<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
 						<cfset local.ret = QueryNew("")>
 						<cfset local.executionPlan = QueryNew("")>
 						<cfset local.executionPlanRaw = QueryNew("")>
