@@ -1,6 +1,6 @@
 <!--- Place code here that should be executed on the "onRequestStart" event. --->
 
-<cfif 	(StructKeyExists(URL, "reload") && (!StructKeyExists(application, "wheels") || !StructKeyExists(application.wheels, "reloadPassword") || !Len(application.wheels.reloadPassword) || (StructKeyExists(URL, "password") && URL.password IS application.wheels.reloadPassword)))>
+<cfif !FileExists("#GetDirectoryFromPath(GetBaseTemplatePath())#javascripts/dbTypes_cached.js") || (StructKeyExists(URL, "reload") && (!StructKeyExists(application, "wheels") || !StructKeyExists(application.wheels, "reloadPassword") || !Len(application.wheels.reloadPassword) || (StructKeyExists(URL, "password") && URL.password IS application.wheels.reloadPassword)))>
 	
 	<cfscript>
 	function getBase(){
