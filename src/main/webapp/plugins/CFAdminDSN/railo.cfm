@@ -7,7 +7,7 @@
 	<cfset var datasources = {}>
 	<cflock name="cfadmin" timeout="30">
 	
-	<cfadmin action="getDatasources" type="web" password="password" returnVariable="dsnList">
+	<cfadmin action="getDatasources" type="web" password="#arguments.adminPassword#" returnVariable="dsnList">
 	
 	</cflock>
 	
