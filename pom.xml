@@ -56,7 +56,7 @@
 		<copy file="src/main/webapp/WEB-INF/web.xml.example" tofile="src/main/webapp/WEB-INF/web.xml" overwrite="false" />
                 <copy file="src/main/webapp/config/environment.cfm.example" tofile="src/main/webapp/config/environment.cfm" overwrite="false" />
                 <copy file="src/main/webapp/config/development/settings.cfm.example" tofile="src/main/webapp/config/development/settings.cfm" overwrite="false" />
-		<copy file="railo-server.xml.example" tofile="~/.m2/repository/org/getrailo/railo/3.3.5.004/railo-server/context/railo-server.xml" overwrite=false" />
+		<copy file="railo-server.xml.example" tofile="~/.m2/repository/org/getrailo/railo/3.3.5.004/railo-server/context/railo-server.xml" overwrite="false" />
               </target>
 
             </configuration>
