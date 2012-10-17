@@ -43,7 +43,7 @@ CREATE TABLE queries (
 DROP table IF EXISTS query_sets;
 
 CREATE TABLE query_sets (
-    id integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id integer NOT NULL,
     query_id integer NOT NULL,
     schema_def_id integer NOT NULL,
     row_count integer,
@@ -52,7 +52,8 @@ CREATE TABLE query_sets (
     sql text,
     execution_plan text,
     error_message text,
-    columns_list varchar(500)
+    columns_list varchar(500),
+    PRIMARY KEY(id, schema_def_id, query_id)
 );
 
 DROP table IF EXISTS schema_defs;
