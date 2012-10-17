@@ -32,6 +32,8 @@
 			
 			<cfset returnVal["sets"] = []>
 			
+			<cftry>
+			
 			<cftransaction>
 		
 				<cfif Len(this.schema_def.db_type.batch_separator)>
@@ -198,6 +200,15 @@
 								errorMessage = "Explicit commits and DDL (ex: CREATE, DROP, RENAME, or ALTER) are not allowed within the query panel for Oracle.  Put DDL in the schema panel instead."
                                                         })>     
 
+						<cfelseif this.schema_def.db_type.simple_name IS "PostgreSQL" AND
+								REFindNoCase("current transaction is aborted, commands ignored until end of transaction block$", cfcatch.message)>	
+
+							<!--- The last query statement produced an error, but the real error was hidden by PostgreSQL 
+									since it was within a transaction.  Boo postgres! So, we have to run the failing query 
+									again (outside of a transaction, boo again!) to get back the real message  --->
+
+							<cfthrow type="rerunOutsideTransaction">
+
 						<cfelseif this.schema_def.db_type.simple_name IS "MySQL" AND
 								REFindNoCase("^access denied to execute", cfcatch.message)>	
 
@@ -234,6 +245,23 @@
 	
 	
 			</cftransaction>
+
+			<cfcatch type="rerunOutsideTransaction">
+				<!--- All of these local variables will be valid and have the same values as the last time we tried to run a query. --->
+				<cftry>
+					<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="ret" result="resultInfo">#PreserveSingleQuotes(statement)#</cfquery>								
+					<cfcatch>
+					<cfset ArrayAppend(returnVal["sets"], {
+						succeeded = false,
+						errorMessage = (IsDefined("cfcatch.queryError") ? (cfcatch.message & ": " & cfcatch.queryError) : cfcatch.message)
+					})>							
+					</cfcatch>
+				</cftry>
+
+			
+			</cfcatch>
+			
+			</cftry>
 
 
 			<cfif not local.hasQuerySets>
