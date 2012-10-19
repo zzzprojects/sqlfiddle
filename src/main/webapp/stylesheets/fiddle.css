@@ -152,6 +152,11 @@ pre.results,
 #runQueryOptions {
   min-width: 120px;
 }
+#donationSuggestion {
+  font-size: 8pt;
+  text-align: center;
+  display: block;
+}
 #content .panel form textarea {
   display: block;
   /*	height: 97%;
