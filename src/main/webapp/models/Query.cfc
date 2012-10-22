@@ -228,7 +228,6 @@
 						
 					</cfcatch>
 					<cffinally>	
-	
 						<cftransaction action="rollback" />
 
 						<cfif this.schema_def.db_type.simple_name IS "Oracle">
@@ -238,13 +237,14 @@
 							</cfquery>
 
 						</cfif>
-
 					</cffinally>
 					
 				</cftry>
 	
 	
 			</cftransaction>
+
+			<cfcatch type="database"><!--- Something wrong with the transaction? ---></cfcatch>
 
 			<cfcatch type="rerunOutsideTransaction">
 				<!--- All of these local variables will be valid and have the same values as the last time we tried to run a query. --->
