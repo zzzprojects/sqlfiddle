@@ -48,6 +48,12 @@
 					</tr>
 				{{/if}}
 
+				{{#if ../../../schemaDef/dbType/isPostgreSQL}}
+					<tr>
+						<td><form action="http://explain.depesz.com/" target="_new"><input type="hidden" name="title" value="{{../../schemaDef/dbType/id}}/{{../../schemaDef/short_code}}/{{../../id}}/{{index}}"><input type="hidden" name="plan" value=""><input type="submit" class="btn btn-info depesz" value="View on Depesz"></form></td>
+					</tr>
+				{{/if}}
+
 				</table>
 			{{/if}}
 			

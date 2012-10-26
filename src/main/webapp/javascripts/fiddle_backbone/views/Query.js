@@ -26,7 +26,7 @@ define ([
 			this.compiledOutputTemplate = {};
 			this.compiledOutputTemplate["tabular"] = Handlebars.compile(tabTemplate); 
 			this.compiledOutputTemplate["plaintext"] = Handlebars.compile(plainTemplate); 
-		      
+			  
 		},
 		setOutputType: function (type) {
 			this.outputType = type;
@@ -73,6 +73,7 @@ define ([
 			inspectedData["schemaDef"] = this.model.get("schemaDef").toJSON();
 			inspectedData["schemaDef"]["dbType"] = this.model.get("schemaDef").get("dbType").toJSON();
 			inspectedData["schemaDef"]["dbType"]["isSQLServer"] = this.model.get("schemaDef").get("dbType").get("simple_name") == "SQL Server";
+			inspectedData["schemaDef"]["dbType"]["isPostgreSQL"] = this.model.get("schemaDef").get("dbType").get("simple_name") == "PostgreSQL";
 
 			this.options.output_el.html(
 				this.compiledOutputTemplate[this.outputType](inspectedData)

@@ -194,6 +194,10 @@ define([
 
 	});
 	
+	$("#output").on("click", ".depesz", function (e) {
+		var fullTextPlan = $(this).closest(".set").find(".executionPlan tr:not(:first)").text();
+		$(this).closest("form").find("[name=plan]").val(fullTextPlan);
+	});
 	
 	$(window).bind('beforeunload', function () {
 		if (query.get("pendingChanges"))
@@ -291,6 +295,6 @@ define([
   };
 
   return { 
-    initialize: initialize
+	initialize: initialize
   };
 });
