@@ -6,6 +6,7 @@ define(["CodeMirror", "MySQLCodeMirror"], function (CodeMirror, myMode){
 		if (this.codeMirrorSupported)
 			this.codeMirror = CodeMirror.fromTextArea(document.getElementById(domID), {
 		        mode: "mysql",
+		        matchBrackets: true,
 				extraKeys: {Tab: "indentMore"},
 		        lineNumbers: true,
 		        onChange: function(){ changeHandler.call(viewRef) }
