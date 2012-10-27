@@ -37,12 +37,12 @@
 			<cftransaction>
 		
 				<cfif Len(this.schema_def.db_type.batch_separator)>
-					<cfset sqlBatchList = REReplace(this.sql, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+					<cfset sqlBatchList = REReplaceNoCase(this.sql, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
 				<cfelse>
 					<cfset sqlBatchList = this.sql>
 				</cfif>
 
-				<cfset sqlBatchList = REReplace(sqlBatchList, "#escaped_separator#\s*(\r?\n|$)", "#chr(7)#", "all")>
+				<cfset sqlBatchList = REReplaceNoCase(sqlBatchList, "#escaped_separator#\s*(\r?\n|$)", "#chr(7)#", "all")>
 
 					<cfif this.schema_def.db_type.simple_name IS "Oracle">
 						<cfset local.defered_table = "DEFERRED_#Left(Hash(createuuid(), "MD5"), 8)#">
@@ -75,7 +75,7 @@
 								<cfset local.executionPlanSQL = Replace(local.executionPlanSQL, "##query_id##", this.id, "ALL")>
 	
 								<cfif Len(this.schema_def.db_type.batch_separator)>
-									<cfset local.executionPlanBatchList = REReplace(local.executionPlanSQL, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+									<cfset local.executionPlanBatchList = REReplaceNoCase(local.executionPlanSQL, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
 								<cfelse>
 									<cfset local.executionPlanBatchList = local.executionPlanSQL>
 								</cfif>
@@ -186,7 +186,7 @@
 						
 						<cfset StructDelete(local, "executionPlan")>
 						<cfset StructDelete(local, "ret")>
-	              	</cfloop>
+					</cfloop>
 
 					<cfcatch>
 
@@ -198,7 +198,7 @@
 							<cfset ArrayAppend(returnVal["sets"], {
 								succeeded = false,
 								errorMessage = "Explicit commits and DDL (ex: CREATE, DROP, RENAME, or ALTER) are not allowed within the query panel for Oracle.  Put DDL in the schema panel instead."
-                                                        })>     
+							})>
 
 						<cfelseif this.schema_def.db_type.simple_name IS "PostgreSQL" AND
 								REFindNoCase("current transaction is aborted, commands ignored until end of transaction block$", cfcatch.message)>	
@@ -215,7 +215,7 @@
 							<cfset ArrayAppend(returnVal["sets"], {
 								succeeded = false,
 								errorMessage = "DDL and DML statements are not allowed in the query panel for MySQL; only SELECT statements are allowed. Put DDL and DML in the schema panel."
-                                                        })>     
+							})>
 
 						<cfelse>
 
@@ -254,15 +254,13 @@
 					<cfset ArrayAppend(returnVal["sets"], {
 						succeeded = false,
 						errorMessage = (IsDefined("cfcatch.queryError") ? (cfcatch.message & ": " & cfcatch.queryError) : cfcatch.message)
-					})>							
+					})>
 					</cfcatch>
 				</cftry>
-
 			
 			</cfcatch>
 			
 			</cftry>
-
 
 			<cfif not local.hasQuerySets>
 				<cfloop from="1" to="#ArrayLen(returnVal['sets'])#" index="i" >
@@ -281,7 +279,6 @@
 				</cfloop>
 			</cfif>
 			
-
 
 		</cfif>
 		

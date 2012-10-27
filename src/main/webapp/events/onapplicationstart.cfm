@@ -22,7 +22,7 @@
 	<cfloop query="loc.scripts">
 		<cffile action="read" file="#directory#/#name#" variable="loc.script_content">
 
-		<cfset loc.sqlBatchList = REReplace(loc.script_content, ";\s*(\r?\n|$)", "#chr(7)#", "all")>
+		<cfset loc.sqlBatchList = REReplaceNoCase(loc.script_content, ";\s*(\r?\n|$)", "#chr(7)#", "all")>
 		
 		<cfloop list="#loc.sqlBatchList#" index="loc.statement" delimiters="#chr(7)#">
 			<cfquery datasource="#get('dataSourceName')#">#preserveSingleQuotes(loc.statement)#</cfquery>
