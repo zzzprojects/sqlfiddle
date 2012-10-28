@@ -1,14 +1,17 @@
 define (["jQuery", "Backbone", "Handlebars", "FiddleEditor", "libs/renderTerminator", 
-         "text!fiddle_backbone/templates/schemaOutput.html", "text!fiddle_backbone/templates/schemaBrowser.html"], 
+		 "text!fiddle_backbone/templates/schemaOutput.html", "text!fiddle_backbone/templates/schemaBrowser.html"], 
 		function ($,Backbone,Handlebars,fiddleEditor,renderTerminator,schemaOutputTemplate,schemaBrowserTemplate) {
 
 	var SchemaDefView = Backbone.View.extend({
 	
 		initialize: function () {
 
-			this.editor = new fiddleEditor(this.id,this.handleSchemaChange, this);
+			this.editor = new fiddleEditor(this.id,this.handleSchemaChange, this, 
+											_.bind(function () {
+												this.model.build(); 
+											}, this));
 
-		    this.compiledOutputTemplate = Handlebars.compile(schemaOutputTemplate);
+			this.compiledOutputTemplate = Handlebars.compile(schemaOutputTemplate);
 			
 			this.compiledSchemaBrowserTemplate = Handlebars.compile(schemaBrowserTemplate); 
 

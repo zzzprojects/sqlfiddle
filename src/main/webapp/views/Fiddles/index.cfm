@@ -14,7 +14,7 @@
 
 									<div class="action_buttons ddl_actions">
 											
-										<a href="#" id="buildSchema">
+										<a href="#" id="buildSchema" title="You can also press Ctrl-Enter while editing">
 										<label for="result-ddl" class="btn btn-primary">
 											Build Schema <i class="icon-download-alt icon-white"></i>
 										</label>
@@ -82,7 +82,7 @@
 
 								<div class="btn-group" id="runQueryOptions">
 								
-										<a href="#" class="runQuery btn btn-primary">Run SQL <i class="icon-play icon-white"></i></a>
+										<a href="#" class="runQuery btn btn-primary" title="You can also press Ctrl-Enter while editing">Run SQL <i class="icon-play icon-white"></i></a>
 								
 									<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 										<span class="caret"></span>

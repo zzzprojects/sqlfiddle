@@ -132,7 +132,7 @@ define([
 		$button.data("originalValue", $button.html());
 		$button.prop('disabled', true).text('Building Schema...');
 		
-		schemaDef.build(dbTypes);
+		schemaDef.build();
 	});	
 	
 	var handleRunQuery = function (e) {
@@ -257,6 +257,9 @@ define([
 			router.navigate("!" + this.getSelectedType().id + "/" + schemaDef.get("short_code"));
 		else
 			router.navigate("!" + this.getSelectedType().id);	
+
+        schemaDef.set("dbType", this.getSelectedType());
+
 	});
 
 	schemaDef.on("built", function () {

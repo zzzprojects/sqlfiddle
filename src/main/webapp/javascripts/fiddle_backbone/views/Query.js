@@ -1,5 +1,6 @@
 define ([
 		"jQuery", 
+		"Underscore",
 		"Backbone", 
 		"Handlebars", 
 		"FiddleEditor", 
@@ -14,14 +15,17 @@ define ([
 		'HandlebarsHelpers/result_display_padded',
 		'HandlebarsHelpers/result_display'
 	], 
-	function ($,Backbone,Handlebars,fiddleEditor,renderTerminator,loadswf,QP,tabTemplate,plainTemplate) {
+	function ($,_,Backbone,Handlebars,fiddleEditor,renderTerminator,loadswf,QP,tabTemplate,plainTemplate) {
 
 	
 	var QueryView = Backbone.View.extend({
 	
 		initialize: function () {
 		
-			this.editor = new fiddleEditor(this.id,this.handleQueryChange, this);
+			this.editor = new fiddleEditor(this.id,this.handleQueryChange, this, 
+											_.bind(function () {
+												this.model.execute(); 
+											}, this));
 			this.outputType = "tabular";
 			this.compiledOutputTemplate = {};
 			this.compiledOutputTemplate["tabular"] = Handlebars.compile(tabTemplate); 
@@ -31,7 +35,7 @@ define ([
 		setOutputType: function (type) {
 			this.outputType = type;
 		},
-		handleQueryChange: function () {			
+		handleQueryChange: function (e) {			
 
 			var schemaDef = this.model.get("schemaDef");
 			

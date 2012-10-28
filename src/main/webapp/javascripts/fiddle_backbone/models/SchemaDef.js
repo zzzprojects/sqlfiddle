@@ -19,14 +19,9 @@ define(["Backbone"], function (Backbone) {
 			this.set(this.defaults);
 			this.trigger("reloaded");
 		},
-		build: function (dbTypes) {
-			var selectedDBType = dbTypes.getSelectedType();
+		build: function () {
+			var selectedDBType = this.get("dbType");
 			var thisModel = this;
-			if (!selectedDBType)
-				return false;
-		
-			if (!this.has("dbType") || this.get("dbType").id != selectedDBType.id)
-				this.set("dbType", selectedDBType);
 
 			$.ajax({
 				type: "POST",

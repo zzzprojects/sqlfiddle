@@ -1,16 +1,25 @@
-define(["CodeMirror", "MySQLCodeMirror"], function (CodeMirror, myMode){ 
+define(["CodeMirror", "MySQLCodeMirror", "jQuery"], function (CodeMirror, myMode, $){ 
 	
-	var fiddleEditor = function (domID, changeHandler, viewRef) {
+	var fiddleEditor = function (domID, changeHandler, viewRef, runHandler) {
 		this.codeMirrorSupported = !( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) );
 		
 		if (this.codeMirrorSupported)
+		{
 			this.codeMirror = CodeMirror.fromTextArea(document.getElementById(domID), {
-		        mode: "mysql",
-		        matchBrackets: true,
+				mode: "mysql",
+				matchBrackets: true,
 				extraKeys: {Tab: "indentMore"},
-		        lineNumbers: true,
-		        onChange: function(){ changeHandler.call(viewRef) }
-		      });			
+				lineNumbers: true,
+				onChange: function(){ changeHandler.call(viewRef) }
+			  });
+			$(this.codeMirror.getWrapperElement()).on("keypress", function (e) {
+				if (e.keyCode == 13 && e.ctrlKey && runHandler)
+				{
+					e.preventDefault();
+					runHandler();
+				}
+			})
+		}
 		else
 		{
 			this.textArea = document.getElementById(domID);
