@@ -25,6 +25,14 @@ define(["CodeMirror", "MySQLCodeMirror", "jQuery"], function (CodeMirror, myMode
 			this.textArea = document.getElementById(domID);
 			$(this.textArea).on('change', function(){ changeHandler.call(viewRef) });
 			$(this.textArea).on('keyup', function(){ changeHandler.call(viewRef) });
+			$(this.textArea).on('keypress', function(e){
+				if (e.keyCode == 13 && e.ctrlKey && runHandler)
+				{
+					e.preventDefault();
+					runHandler();
+				}
+			});
+			
 			$(this.textArea).attr('fullscreen',false);
 		}
 		
