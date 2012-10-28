@@ -167,6 +167,7 @@
 								<cfset ArrayAppend(returnVal["sets"], {
 									succeeded = true,
 									results = Duplicate(ret),
+									statement = statement,
 									ExecutionTime = (IsDefined("resultInfo.ExecutionTime") ? resultInfo.ExecutionTime : 0),
 									ExecutionPlan = ((IsDefined("local.executionPlan") AND IsQuery(local.executionPlan) AND local.executionPlan.recordCount) ? Duplicate(local.executionPlan) : []),
 									ExecutionPlanRaw = ((IsDefined("local.executionPlanRaw") AND IsQuery(local.executionPlanRaw) AND local.executionPlanRaw.recordCount) ? Duplicate(local.executionPlanRaw) : [])
@@ -176,6 +177,7 @@
 								<cfset ArrayAppend(returnVal["sets"], {
 									succeeded = true,
 									results = {"DATA" = []},
+									statement = statement,
 									ExecutionTime = (IsDefined("resultInfo.ExecutionTime") ? resultInfo.ExecutionTime : 0),
 									ExecutionPlan = ((IsDefined("local.executionPlan") AND IsQuery(local.executionPlan) AND local.executionPlan.recordCount) ? Duplicate(local.executionPlan) : []),
 									ExecutionPlanRaw = ((IsDefined("local.executionPlanRaw") AND IsQuery(local.executionPlanRaw) AND local.executionPlanRaw.recordCount) ? Duplicate(local.executionPlanRaw) : [])

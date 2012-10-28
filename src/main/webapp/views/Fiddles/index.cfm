@@ -91,6 +91,7 @@
 										<!-- dropdown menu links -->
 										<li><a href="#" id="tabular">Tabular Output</a></li>
 										<li><a href="#" id="plaintext">Plaintext Output</a></li>
+										<li><a href="#" id="markdown">Markdown Output</a></li>
 									</ul>
 
 								</div>

@@ -105,6 +105,7 @@ define(["jQuery","BrowserEngines/sqlite_driver"], function ($,SQLite_driver) {
 					var sequentiallyExecute = function(tx2, result) {
 								
 						var thisSet = {
+							"STATEMENT": statement, 
 							"SUCCEEDED": true,
 							"EXECUTIONTIME": (new Date()) - startTime,
 							"RESULTS": {
@@ -250,7 +251,7 @@ define(["jQuery","BrowserEngines/sqlite_driver"], function ($,SQLite_driver) {
 					var startTime = new Date();
 					
 					/*
-					 * executeSql runs asynchronously, so I impose a semblance of synchronous-ness via recusive calls
+					 * executeSql runs asynchronously, so I impose a semblance of synchronous-ness via recursive calls
 					 */
 					tx.executeSql(statement, [], sequentiallyExecute, handleFailure);
 					

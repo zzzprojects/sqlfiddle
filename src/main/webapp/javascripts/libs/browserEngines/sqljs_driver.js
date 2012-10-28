@@ -79,6 +79,7 @@ define(["jQuery","BrowserEngines/sqlite_driver"], function ($,SQLite_driver) {
 							
 							var thisSet = {
 								"SUCCEEDED": true,
+								"STATEMENT": statement,
 								"EXECUTIONTIME": (new Date()) - startTime,
 								"RESULTS": {
 									"COLUMNS": [],

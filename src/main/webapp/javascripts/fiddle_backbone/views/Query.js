@@ -9,13 +9,16 @@ define ([
 		'XPlans/mssql',
 		"text!fiddle_backbone/templates/queryTabularOutput.html",
 		"text!fiddle_backbone/templates/queryPlaintextOutput.html",
+		"text!fiddle_backbone/templates/queryMarkdownOutput.html",
 		'HandlebarsHelpers/divider_display',
 		'HandlebarsHelpers/each_simple_value_with_index',
 		'HandlebarsHelpers/each_with_index',
 		'HandlebarsHelpers/result_display_padded',
-		'HandlebarsHelpers/result_display'
+		'HandlebarsHelpers/result_display',
+		'HandlebarsHelpers/code_format',
+		'HandlebarsHelpers/add'
 	], 
-	function ($,_,Backbone,Handlebars,fiddleEditor,renderTerminator,loadswf,QP,tabTemplate,plainTemplate) {
+	function ($,_,Backbone,Handlebars,fiddleEditor,renderTerminator,loadswf,QP,tabTemplate,plainTemplate,mdTemplate) {
 
 	
 	var QueryView = Backbone.View.extend({
@@ -30,6 +33,7 @@ define ([
 			this.compiledOutputTemplate = {};
 			this.compiledOutputTemplate["tabular"] = Handlebars.compile(tabTemplate); 
 			this.compiledOutputTemplate["plaintext"] = Handlebars.compile(plainTemplate); 
+            this.compiledOutputTemplate["markdown"] = Handlebars.compile(mdTemplate); 
 			  
 		},
 		setOutputType: function (type) {
