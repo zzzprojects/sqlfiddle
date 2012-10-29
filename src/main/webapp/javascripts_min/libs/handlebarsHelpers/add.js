@@ -1,0 +1,1 @@
+define(["Handlebars"],function(e){e.registerHelper("add",function(e,t){return e+t})})
