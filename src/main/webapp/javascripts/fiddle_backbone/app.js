@@ -212,8 +212,9 @@ define([
 		if (this.length && !this.getSelectedType())
 		{
 			this.setSelectedType(this.first().id, true);
+			schemaDef.set("dbType", this.getSelectedType());
 		}
-		
+
 		// make sure everything is up-to-date on the page
 		dbTypesListView.render();
 		schemaDefView.render();
@@ -258,7 +259,7 @@ define([
 		else
 			router.navigate("!" + this.getSelectedType().id);	
 
-        schemaDef.set("dbType", this.getSelectedType());
+		schemaDef.set("dbType", this.getSelectedType());
 
 	});
 
