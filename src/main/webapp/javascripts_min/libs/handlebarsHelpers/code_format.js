@@ -1,0 +1,1 @@
+define(["Handlebars"],function(e){e.registerHelper("code_format",function(e){var t=[],n=e.split("\n");for(var r=0;r<n.length;r++)t.push("    "+n[r]);return t.join("\n")})})

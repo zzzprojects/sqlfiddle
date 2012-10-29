@@ -32,11 +32,14 @@ libs/xplans/oracle/loadswf.js
 libs/xplans/mssql.js
 text!fiddle_backbone/templates/queryTabularOutput.html
 text!fiddle_backbone/templates/queryPlaintextOutput.html
+text!fiddle_backbone/templates/queryMarkdownOutput.html
 libs/handlebarsHelpers/divider_display.js
 libs/handlebarsHelpers/each_simple_value_with_index.js
 libs/handlebarsHelpers/each_with_index.js
 libs/handlebarsHelpers/result_display_padded.js
 libs/handlebarsHelpers/result_display.js
+libs/handlebarsHelpers/code_format.js
+libs/handlebarsHelpers/add.js
 fiddle_backbone/views/Query.js
 fiddle_backbone/router.js
 libs/jquery/jquery.blockUI.js
