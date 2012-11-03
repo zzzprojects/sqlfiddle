@@ -22,9 +22,11 @@
 				<cfquery datasource="#this.cf_dsn#">#PreserveSingleQuotes(statement)#</cfquery>
 			</cfloop>
 			<cfcatch type="any">
-				<cfset this.dropDatabase(arguments.databaseName)>	
+				<cftry><cfset this.dropDatabase(arguments.databaseName)><cfcatch type="any"></cfcatch></cftry>
 				<cfif arguments.firstAttempt>
 					<cfset this.initializeDatabase(arguments.databaseName, false)>
+				<cfelse>
+					<cfrethrow>
 				</cfif>	
 			</cfcatch>
 		</cftry>
