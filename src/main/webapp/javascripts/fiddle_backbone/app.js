@@ -71,7 +71,7 @@ define([
 		dbTypesListView.render();
 		if (schemaDef.has("dbType"))
 		{
-			schemaDef.set("ready", (schemaDef.get("dbType").id == this.getSelectedType().id));
+			schemaDef.set("ready", (schemaDef.get("short_code").length && schemaDef.get("dbType").id == this.getSelectedType().id));
 		}
 	});
 
