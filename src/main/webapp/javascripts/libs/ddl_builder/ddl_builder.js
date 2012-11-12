@@ -72,7 +72,7 @@ define(
 		this.compiledTemplate = Handlebars.compile(this.ddlTemplate);
 		this.setup(args);
 		return this;
-	}
+	};
 	
 	ddl_builder.prototype.setup = function (settings) {
 		for (var opt in settings)
@@ -87,7 +87,7 @@ define(
 			this.definition.tableName = settings.tableName;
 		
 		return this;
-	}
+	};
 	
 	ddl_builder.prototype.setupForDBType = function (type,separator) {
 		
@@ -158,7 +158,7 @@ define(
 
 		}
 		return this;
-	}
+	};
 	
 	ddl_builder.prototype.populateDBTypes = function () {
 		for (var i=0;i<this.definition.columns.length;i++)
@@ -244,15 +244,22 @@ define(
 		
 		}
 		return {status: true, separator: found_separator, column_count: column_count};
-	}
+	};
 	
 	ddl_builder.prototype.parse = function (raw) {
 
-		
+		/* 
+		 * brokenDateChecker is used to eliminate strings that for some reason pass Chrome's standard of a 'valid' date, and
+		 * yet are not worth considering as such. Chrome will take garbage like 'ABC 1' as an input to `new Date()`, returning
+		 * January 1st 2001 for some reason.  This regex will allow a lot of fuzzy input formats to still pass, but only really 
+		 * keep meaningful entries. This isn't a problem for Firefox or Safari. I haven't checked IE.
+		 */ 
+		var brokenDateChecker = /^(?!Jan)(?!Feb)(?!Mar)(?!Apr)(?!May)(?!Jun)(?!Jul)(?!Aug)(?!Sep)(?!Oct)(?!Nov)(?!Dec)[A-Za-z\ \-\_]+\d+\s*$/,
+			result = {}, lines = [], elements = [], tmpRow = [], i = 0, j = 0, value = "";
 
 		if (!this.valueSeparator.length)
 		{	
-			var result = this.guessValueSeparator(raw);
+			result = this.guessValueSeparator(raw);
 			if (!result.status)
 				return "ERROR! " + result.message;
 			else
@@ -262,11 +269,11 @@ define(
 			}
 		}
 		
-		var lines = raw.split("\n");
+		lines = raw.split("\n");
 		
-		for (var i=0;i<lines.length;i++)
+		for (i=0;i<lines.length;i++)
 		{
-			var elements = $.trim(lines[i]).split(this.valueSeparator);
+			elements = $.trim(lines[i]).split(this.valueSeparator);
 
 			if ($.trim(lines[i]).length && 
 					(
@@ -280,9 +287,9 @@ define(
 			{
 				if (! this.definition.columns.length)
 				{	
-					for (var j = 0; j < elements.length; j++)
+					for (j = 0; j < elements.length; j++)
 					{	
-							var value = $.trim(elements[j]);
+							value = $.trim(elements[j]);
 							if (value.length)
 								this.definition.columns.push({"name": value});
 							else
@@ -291,20 +298,19 @@ define(
 				}
 				else
 				{
-				
-					var tmpRow = [];
-					for (var j = 0; j < elements.length; j++)
+					tmpRow = [];
+					for (j = 0; j < elements.length; j++)
 					{
 						if (this.definition.columns[j] !== false)
 						{
-							var value = $.trim(elements[j]).replace(/'/g, "''");
+							value = $.trim(elements[j]).replace(/'/g, "''");
 	
 							// if the current field is not a number, or if we have previously decided that this one of the non-numeric field types...
 							if (isNaN(value) || this.definition.columns[j].type == 'dateType' || this.definition.columns[j].type == 'charType')
 							{
 								
 								// if we haven't previously decided that this is a character field, and it can be cast as a date, then declare it a date 
-								if (this.definition.columns[j].type != 'charType' && !isNaN(Date.parse(value)) ) 
+								if (this.definition.columns[j].type != 'charType' && !(isNaN(Date.parse(value)) || value.match(brokenDateChecker)) ) 
 									this.definition.columns[j].type = "dateType";
 								else
 									this.definition.columns[j].type = "charType";
@@ -335,7 +341,7 @@ define(
 		this.populateDBTypes();
 		this.populateWrappers();
 		return this.render();		
-	}
+	};
 
 	/* HandlebarsJS-using code below */
 	
@@ -362,7 +368,7 @@ define(
 			return new Handlebars.SafeString("'" + this.v.replace(/'/g, "''") + "'");
 		
 		if (colType == 'dateType')
-			return new Handlebars.SafeString("'" + dateFormat(this.v, root.dateFormatMask) + "'");
+			return new Handlebars.SafeString("'" + dateFormat("UTC:" + this.v, root.dateFormatMask) + "'");
 		
 		return this.v;
 	});
@@ -374,7 +380,7 @@ define(
 	
 	ddl_builder.prototype.render = function () {
 		return this.compiledTemplate($.extend(this.definition, {"separator": this.statement_separator}));		
-	}
+	};
 	
 	return ddl_builder;
 	
