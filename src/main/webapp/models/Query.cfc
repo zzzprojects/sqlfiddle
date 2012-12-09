@@ -80,17 +80,34 @@
 									<cfset local.executionPlanBatchList = local.executionPlanSQL>
 								</cfif>
 
+								<cfif this.schema_def.db_type.simple_name IS "PostgreSQL">
+									<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="savepoint">
+									SAVEPOINT sp;
+									</cfquery>
+								</cfif>
 								<cfloop list="#local.executionPlanBatchList#" index="executionPlanStatement" delimiters="#chr(7)#">
 								<cftry>	
 									<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="executionPlan">#PreserveSingleQuotes(executionPlanStatement)#</cfquery>								
 									<cfcatch>
 										
+										<cfif this.schema_def.db_type.simple_name IS "PostgreSQL">
+											<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="savepoint">
+											ROLLBACK TO sp;
+											</cfquery>
+										</cfif>
+										
 									<!--- execution plan failed! Oh well, carry on.... --->
 									<cfset local.executionPlan = QueryNew("")>
 									
 									</cfcatch>
-								</cftry>								
+								</cftry>
 								</cfloop>
+								
+								<cfif this.schema_def.db_type.simple_name IS "PostgreSQL" AND local.executionPlan.recordCount>
+									<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#" name="savepoint">
+									RELEASE SAVEPOINT sp;
+									</cfquery>
+								</cfif>
 
 								<cfset local.executionPlanRaw = Duplicate(local.executionPlan)>
 	
