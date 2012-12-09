@@ -45,12 +45,9 @@
 				<cfset sqlBatchList = REReplaceNoCase(sqlBatchList, "#escaped_separator#\s*(\r?\n|$)", "#chr(7)#", "all")>
 
 					<cfif this.schema_def.db_type.simple_name IS "Oracle">
-						<cfset local.defered_table = "DEFERRED_#Left(Hash(createuuid(), "MD5"), 8)#">
+						<cfset local.defered_table = "DEFERRED_#this.schema_def.db_type_id#_#this.schema_def.short_code#">
 						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
-						CREATE TABLE #local.defered_table# (val NUMBER(1) CONSTRAINT #local.defered_table#_ck CHECK(val =1) DEFERRABLE INITIALLY DEFERRED)
-						</cfquery>
-						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
-						INSERT INTO #local.defered_table# VALUES (2)
+						INSERT INTO #local.deferred_table# VALUES (2)
 						</cfquery>
 					</cfif>
 
@@ -160,7 +157,7 @@
 							<cfif this.schema_def.db_type.simple_name IS "Oracle">
 								<!--- Just in case some sneaky person finds a way to delete the intentionally-invalid record, we put one back in after each statement that executes. --->
 								<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
-								INSERT INTO #local.defered_table# VALUES (2)
+								INSERT INTO #local.deferred_table# VALUES (2)
 								</cfquery>
 							</cfif>
 	
@@ -212,7 +209,7 @@
 						<cfset ArrayAppend(statementArray, statement)>
 
 						<cfif 	this.schema_def.db_type.simple_name IS "Oracle" AND
-							FindNoCase("ORA-02290: check constraint (USER_#UCase(this.schema_def.short_code)#.#local.defered_table#_CK) violated", cfcatch.message)>
+							FindNoCase("ORA-02290: check constraint (USER_#UCase(this.schema_def.short_code)#.#local.deferred_table#_CK) violated", cfcatch.message)>
 
 							<cfset ArrayAppend(returnVal["sets"], {
 								succeeded = false,
@@ -252,7 +249,7 @@
 						<cfif this.schema_def.db_type.simple_name IS "Oracle">
 
 							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
-							DROP TABLE #local.defered_table#
+							DROP TABLE #local.deferred_table#
 							</cfquery>
 
 						</cfif>
