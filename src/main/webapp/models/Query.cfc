@@ -47,7 +47,7 @@
 					<cfif this.schema_def.db_type.simple_name IS "Oracle">
 						<cfset local.deferred_table = "DEFERRED_#this.schema_def.db_type_id#_#this.schema_def.short_code#">
 						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
-						INSERT INTO #local.deferred_table# VALUES (2)
+						INSERT INTO system.#local.deferred_table# VALUES (2)
 						</cfquery>
 					</cfif>
 
@@ -157,7 +157,7 @@
 							<cfif this.schema_def.db_type.simple_name IS "Oracle">
 								<!--- Just in case some sneaky person finds a way to delete the intentionally-invalid record, we put one back in after each statement that executes. --->
 								<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
-								INSERT INTO #local.deferred_table# VALUES (2)
+								INSERT INTO system.#local.deferred_table# VALUES (2)
 								</cfquery>
 							</cfif>
 	
@@ -209,7 +209,7 @@
 						<cfset ArrayAppend(statementArray, statement)>
 
 						<cfif 	this.schema_def.db_type.simple_name IS "Oracle" AND
-							FindNoCase("ORA-02290: check constraint (USER_#UCase(this.schema_def.short_code)#.#local.deferred_table#_CK) violated", cfcatch.message)>
+							FindNoCase("ORA-02290: check constraint (SYSTEM.#local.deferred_table#_CK) violated", cfcatch.message)>
 
 							<cfset ArrayAppend(returnVal["sets"], {
 								succeeded = false,
