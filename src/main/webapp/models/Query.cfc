@@ -45,7 +45,7 @@
 				<cfset sqlBatchList = REReplaceNoCase(sqlBatchList, "#escaped_separator#\s*(\r?\n|$)", "#chr(7)#", "all")>
 
 					<cfif this.schema_def.db_type.simple_name IS "Oracle">
-						<cfset local.defered_table = "DEFERRED_#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+						<cfset local.deferred_table = "DEFERRED_#this.schema_def.db_type_id#_#this.schema_def.short_code#">
 						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
 						INSERT INTO #local.deferred_table# VALUES (2)
 						</cfquery>
