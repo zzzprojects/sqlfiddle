@@ -245,14 +245,6 @@
 					</cfcatch>
 					<cffinally>	
 						<cftransaction action="rollback" />
-
-						<cfif this.schema_def.db_type.simple_name IS "Oracle">
-
-							<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
-							DROP TABLE #local.deferred_table#
-							</cfquery>
-
-						</cfif>
 					</cffinally>
 					
 				</cftry>
