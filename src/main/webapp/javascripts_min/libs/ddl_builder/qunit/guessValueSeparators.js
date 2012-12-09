@@ -1,1 +1,0 @@
-define(["jQuery","QUnit","DDLBuilder/ddl_builder"],function(e,t,n){return function(r,i){var s=new n,o=s.guessValueSeparator(e("#"+r).html());o.separator?t.equal(s.guessValueSeparator(e("#"+r).html()).separator.toString(),i.toString(),"Guessing Value Separators"):t.ok(!1,"Guessing value separators failed with message:"+o.message)}})
