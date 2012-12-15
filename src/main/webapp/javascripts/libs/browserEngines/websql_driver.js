@@ -134,7 +134,11 @@ define(["jQuery","BrowserEngines/sqlite_driver"], function ($,SQLite_driver) {
 							}
 							
 							for (var j = 0; j < thisSet["RESULTS"]["COLUMNS"].length; j++) {
-								rowVals.push(item[thisSet["RESULTS"]["COLUMNS"][j]]);
+								if (item[thisSet["RESULTS"]["COLUMNS"][j]] === null) {
+									rowVals.push("(null)");
+								} else {
+									rowVals.push(item[thisSet["RESULTS"]["COLUMNS"][j]]);
+								}
 							}
 							
 							thisSet["RESULTS"]["DATA"].push(rowVals);
