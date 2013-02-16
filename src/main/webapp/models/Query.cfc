@@ -44,13 +44,12 @@
 
 				<cfset sqlBatchList = REReplaceNoCase(sqlBatchList, "#escaped_separator#\s*(\r?\n|$)", "#chr(7)#", "all")>
 
-					<cfif this.schema_def.db_type.simple_name IS "Oracle">
-						<cfset local.deferred_table = "DEFERRED_#this.schema_def.db_type_id#_#this.schema_def.short_code#">
-						<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
-						INSERT INTO system.#local.deferred_table# VALUES (2)
-						</cfquery>
-					</cfif>
-
+				<cfif ListFind("Oracle,PostgreSQL",this.schema_def.db_type.simple_name)>
+					<cfset local.deferred_table = "DEFERRED_#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+					<cfquery datasource="#this.schema_def.db_type_id#_#this.schema_def.short_code#">
+					INSERT INTO <cfif this.schema_def.db_type.simple_name IS "Oracle">system.</cfif>#local.deferred_table# VALUES (2)
+					</cfquery>
+				</cfif>
 				<cftry>
 	
 					<cfloop list="#sqlBatchList#" index="statement" delimiters="#chr(7)#">
@@ -214,6 +213,14 @@
 							<cfset ArrayAppend(returnVal["sets"], {
 								succeeded = false,
 								errorMessage = "Explicit commits and DDL (ex: CREATE, DROP, RENAME, or ALTER) are not allowed within the query panel for Oracle.  Put DDL in the schema panel instead."
+							})>
+
+						<cfelseif this.schema_def.db_type.simple_name IS "PostgreSQL" AND
+								REFindNoCase("insert or update on table ""#local.deferred_table#"" violates foreign key constraint ""#local.deferred_table#_ref""", cfcatch.message)>	
+
+							<cfset ArrayAppend(returnVal["sets"], {
+								succeeded = false,
+								errorMessage = "Explicit commits are not allowed within the query panel."
 							})>
 
 						<cfelseif this.schema_def.db_type.simple_name IS "PostgreSQL" AND
