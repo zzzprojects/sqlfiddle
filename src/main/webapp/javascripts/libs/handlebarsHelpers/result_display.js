@@ -7,7 +7,7 @@ define(["jQuery","Handlebars"], function ($,Handlebars) {
 		var urlRegexp = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?������]))/ig;
 		
 		if ($.isPlainObject(value))
-			return JSON.stringify(value);
+			return JSON.stringify(value, null, 4);
 		else if (value == null)
 			return "(null)";
 		else if (value === false)
