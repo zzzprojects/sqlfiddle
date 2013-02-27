@@ -14,7 +14,7 @@
 		<cfset var statement = "">
 
 		<cfif Len(this.db_type.batch_separator)>
-			<cfset sql = REReplaceNoCase(sql, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+			<cfset sql = REReplaceNoCase(sql, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)(#chr(10)#|$)", '#chr(7)#', 'all')>
 		</cfif>
 
 		<cftry>
@@ -69,7 +69,7 @@
 			<cfset var escaped_separator = ReReplace(arguments.statement_separator, "([^A-Za-z0-9])", "\\\1", "ALL")>
 		</cfif>
 		<cfif Len(this.db_type.batch_separator)>
-			<cfset ddl_list = REReplaceNoCase(arguments.ddl, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+			<cfset ddl_list = REReplaceNoCase(arguments.ddl, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)(#chr(10)#|$)", '#chr(7)#', 'all')>
 		<cfelse>
 			<cfset ddl_list = arguments.ddl>
 		</cfif>
@@ -132,7 +132,7 @@
 		<cfset var sql = Replace(this.db_type.drop_script_template, '##databaseName##', this.db_type_id & '_' & ucase(databaseName), 'ALL')>
 
 		<cfif Len(this.db_type.batch_separator)>
-			<cfset sql = REReplaceNoCase(sql, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+			<cfset sql = REReplaceNoCase(sql, "#chr(10)##this.db_type.batch_separator#(#chr(13)#?)(#chr(10)#|$)", '#chr(7)#', 'all')>
 		</cfif>
 
 		<cfloop list="#sql#" index="statement" delimiters="#chr(7)#">

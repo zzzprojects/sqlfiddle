@@ -37,7 +37,7 @@
 			<cftransaction>
 		
 				<cfif Len(this.schema_def.db_type.batch_separator)>
-					<cfset sqlBatchList = REReplaceNoCase(this.sql, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+					<cfset sqlBatchList = REReplaceNoCase(this.sql, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)(#chr(10)#|$)", '#chr(7)#', 'all')>
 				<cfelse>
 					<cfset sqlBatchList = this.sql>
 				</cfif>
@@ -71,7 +71,7 @@
 								<cfset local.executionPlanSQL = Replace(local.executionPlanSQL, "##query_id##", this.id, "ALL")>
 	
 								<cfif Len(this.schema_def.db_type.batch_separator)>
-									<cfset local.executionPlanBatchList = REReplaceNoCase(local.executionPlanSQL, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)#chr(10)#", '#chr(7)#', 'all')>
+									<cfset local.executionPlanBatchList = REReplaceNoCase(local.executionPlanSQL, "#chr(10)##this.schema_def.db_type.batch_separator#(#chr(13)#?)(#chr(10)#|$)", '#chr(7)#', 'all')>
 								<cfelse>
 									<cfset local.executionPlanBatchList = local.executionPlanSQL>
 								</cfif>
