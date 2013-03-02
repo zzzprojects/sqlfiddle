@@ -160,7 +160,7 @@ component extends="Controller" {
 		}
 		catch (Any e) 
 		{
-			renderText(SerializeJSON({"error" = e.message}));					
+			renderText(SerializeJSON({"sets": [{"SUCCEEDED" = false,"ERRORMESSAGE" = e.message}]}));					
 		}
 		
 			

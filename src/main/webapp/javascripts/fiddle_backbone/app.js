@@ -274,14 +274,17 @@ define([
 	
 	query.on("executed", function () {
 		var schemaDef = this.get("schemaDef");
-
-		myFiddleHistory.insert(new UsedFiddle({
-			"fragment": "!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id
-		}));
-
-		router.navigate(
-			"!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id 
-		);
+		
+		if (this.id) {
+			myFiddleHistory.insert(new UsedFiddle({
+				"fragment": "!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id
+			}));
+	
+			router.navigate(
+				"!" + schemaDef.get("dbType").id + "/" + schemaDef.get("short_code") + "/" + this.id 
+			);
+		}
+		
 	});
 	
 	
