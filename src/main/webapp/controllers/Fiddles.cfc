@@ -105,55 +105,64 @@ component extends="Controller" {
 	}
 	
 	function runQuery() {
+		try 
+		{
 	
-		if (Len(params.sql) GT 8000)
-			throw ("Your sql is too large (more than 8000 characters).  Please submit a smaller SQL statement.");
-		
-		var schema_def = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND short_code='#params.schema_short_code#'");
-		
-		if (params.statement_separator IS NOT ";") // necessary to preserve older fiddles
-			var md5 = Lcase(hash(params.statement_separator & params.sql, "MD5"));
-		else
-			var md5 = Lcase(hash(params.sql, "MD5"));
-		
-
-		if (! IsObject(schema_def))
-		{
-			throw("Schema short code provided was not recognized.");		
-		}
-		
-		if (! IsNumeric(schema_def.current_host_id))
-		{
-			schema_def.initialize();		
-		}
-		
-		query = model("Query").findOne(where="md5 = '#md5#' AND schema_def_id = #schema_def.id#", include="Schema_Def");
-
-		if (! IsObject(query))
-		{
-			nextQueryID = model("Query").findAll(select="count(*) + 1 AS nextID", where="schema_def_id = #schema_def.id#").nextID;
-			query = model("Query").new();
-			query.schema_def_id = schema_def.id;
-			query.sql = params.sql;
-			query.statement_separator = params.statement_separator;
-			query.md5 = md5;
-			query.id = nextQueryID;
+			if (Len(params.sql) GT 8000)
+				throw ("Your sql is too large (more than 8000 characters).  Please submit a smaller SQL statement.");
 			
-			if (StructKeyExists(session, "user"))
+			var schema_def = model("Schema_Def").findOne(where="db_type_id=#params.db_type_id# AND short_code='#params.schema_short_code#'");
+			
+			if (params.statement_separator IS NOT ";") // necessary to preserve older fiddles
+				var md5 = Lcase(hash(params.statement_separator & params.sql, "MD5"));
+			else
+				var md5 = Lcase(hash(params.sql, "MD5"));
+			
+	
+			if (! IsObject(schema_def))
 			{
-				query.author_id = session.user.id;
+				throw("Schema short code provided was not recognized.");		
 			}
 			
-			query.save();
+			if (! IsNumeric(schema_def.current_host_id))
+			{
+				schema_def.initialize();		
+			}
+			
+			query = model("Query").findOne(where="md5 = '#md5#' AND schema_def_id = #schema_def.id#", include="Schema_Def");
+	
+			if (! IsObject(query))
+			{
+				nextQueryID = model("Query").findAll(select="count(*) + 1 AS nextID", where="schema_def_id = #schema_def.id#").nextID;
+				query = model("Query").new();
+				query.schema_def_id = schema_def.id;
+				query.sql = params.sql;
+				query.statement_separator = params.statement_separator;
+				query.md5 = md5;
+				query.id = nextQueryID;
+				
+				if (StructKeyExists(session, "user"))
+				{
+					query.author_id = session.user.id;
+				}
+				
+				query.save();
+			}
+	
+			model("User_Fiddle").logAccess(schema_def_id=schema_def.id,query_id=query.id);
+			
+			returnVal = {id = query.id};
+			StructAppend(returnVal, query.executeSQL());
+	
+			
+			renderText(SerializeJSON(returnVal));
+
 		}
-
-		model("User_Fiddle").logAccess(schema_def_id=schema_def.id,query_id=query.id);
+		catch (Any e) 
+		{
+			renderText(SerializeJSON({"error" = e.message}));					
+		}
 		
-		returnVal = {id = query.id};
-		StructAppend(returnVal, query.executeSQL());
-
-		
-		renderText(SerializeJSON(returnVal));
 			
 	}
 	
