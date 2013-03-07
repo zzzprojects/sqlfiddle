@@ -17,9 +17,9 @@ Markdown is useful for posting on sites like <a href="http://stackoverflow.com" 
 {{/if}}
 {{/each_with_index}}
 
-  [1]: http://sqlfiddle.com/#!{{../schemaDef/dbType/id}}/{{../schemaDef/short_code}}/{{id}}
+  [1]: http://sqlfiddle.com/#!{{schemaDef/dbType/id}}/{{schemaDef/short_code}}/{{id}}
 {{#each_with_index sets}}
-  [{{add index 2}}]: http://sqlfiddle.com/#!{{../../schemaDef/dbType/id}}/{{../../schemaDef/short_code}}/{{../../id}}/{{index}}
+  [{{add index 2}}]: http://sqlfiddle.com/#!{{../schemaDef/dbType/id}}/{{../schemaDef/short_code}}/{{../id}}/{{index}}
 {{/each_with_index}}
 </pre>
 
