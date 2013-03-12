@@ -310,7 +310,7 @@ define(
 							{
 								
 								// if we haven't previously decided that this is a character field, and it can be cast as a date, then declare it a date 
-								if (this.definition.columns[j].type != 'charType' && !(isNaN(Date.parse(value)) || value.match(brokenDateChecker)) ) 
+                                if (this.definition.columns[j].type != 'charType' && !(isNaN(Date.parse("UTC:" + value)) || value.match(brokenDateChecker)) ) 
 									this.definition.columns[j].type = "dateType";
 								else
 									this.definition.columns[j].type = "charType";
