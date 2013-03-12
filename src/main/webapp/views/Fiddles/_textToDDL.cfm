@@ -11,10 +11,16 @@
 			
 			<pre id="parseResults"></pre>
 	
-	  </div>
-	  <div class="modal-footer">
-	    <a href="#" id="appendDDL" class="btn btn-primary">Append to DDL</a>
-	    <a href="#" id="parseDDL" class="btn">Test Parse</a>
-	  </div>
+	</div>
+	<div class="modal-footer">
+		<div class="pull-left">
+			<i class="icon-info-sign"></i>
+			<a href="http://dygraphs.com/date-formats.html" target="_blank">Date problems?</a>
+			|
+			<a href="https://github.com/jakefeasel/DDLBuilder/blob/master/ddl_builder/qunit/fixture.html" target="_blank">Example Input</a>
+		</div>
+		<a href="#" id="appendDDL" class="btn btn-primary">Append to DDL</a>
+		<a href="#" id="parseDDL" class="btn">Test Parse</a>
+	</div>
 	
-	</div>	
+	</div>
