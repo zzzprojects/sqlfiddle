@@ -365,7 +365,7 @@ define(
 		if (!this.v.length || this.v.toUpperCase() == 'NULL')
 			return 'NULL';
 		if (colType == 'charType')
-			return new Handlebars.SafeString("'" + this.v.replace(/'/g, "''") + "'");
+		    return new Handlebars.SafeString("'" + this.v + "'");
 		
 		if (colType == 'dateType')
 			return new Handlebars.SafeString("'" + dateFormat("UTC:" + this.v, root.dateFormatMask) + "'");
