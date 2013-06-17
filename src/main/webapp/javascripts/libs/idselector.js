@@ -22,7 +22,116 @@
         var unameCookie = readCookie('__openid_selector_uname');
 
         var s;
-        var providers = [{shortname: "myOpenID", url_suffix: ".myopenid.com/", openid1: true, openid2: true, id: 8, icon: "myopenid.ico", url_prefix: "http://", website: "https://www.myopenid.com/", longname: "myOpenID", usercalled: "username"}, {shortname: "claimID", url_suffix: "", openid1: true, openid2: false, id: 4, icon: "claimid.ico", url_prefix: "http://claimid.com/", website: "http://claimid.com/", longname: "claimID", usercalled: "username"}, {shortname: "Clickpass", url_suffix: "", openid1: true, openid2: true, id: 5, icon: "clickpass.ico", url_prefix: "http://clickpass.com/public/", website: "http://www.clickpass.com/", longname: "Clickpass", usercalled: "username"}, {shortname: "Wordpress", url_suffix: ".wordpress.com/", openid1: true, openid2: false, id: 14, icon: "wordpress.ico", url_prefix: "http://", website: "http://www.wordpress.com/", longname: "Wordpress", usercalled: "username"}, {shortname: "Blogger", url_suffix: ".blogspot.com/", openid1: true, openid2: false, id: 2, icon: "blogger.ico", url_prefix: "http://", website: "http://www.blogger.com/", longname: "Google Blogger", usercalled: "blog name"}, {shortname: "Livejournal", url_suffix: ".livejournal.com/", openid1: true, openid2: false, id: 7, icon: "lj.ico", url_prefix: "http://", website: "http://www.livejournal.com/", longname: "Livejournal", usercalled: "username"}, {shortname: "Technorati", url_suffix: "", openid1: true, openid2: false, id: 10, icon: "technorati.ico", url_prefix: "http://technorati.com/people/technorati/", website: "http://www.technorati.com/", longname: "Technorati", usercalled: "username"}, {shortname: "Flickr", url_suffix: "", openid1: false, openid2: true, id: 6, icon: "flickr.ico", url_prefix: "http://www.flickr.com/photos/", website: "http://www.flickr.com/", longname: "Flickr", usercalled: "username"}, {shortname: "Identity.net", url_suffix: ".identity.net/", openid1: true, openid2: true, id: 23, icon: "identity.ico", url_prefix: "http://", website: "http://identity.net/", longname: "Identity.net", usercalled: "username"}, {shortname: "Google", url_suffix: "", openid1: false, openid2: true, id: 26, icon: "google.ico", url_prefix: "", website: "https://www.google.com/accounts/o8/id", longname: "Google", usercalled: "username"}, {shortname: "Yahoo!", url_suffix: "", openid1: false, openid2: true, id: 15, icon: "yahoo.ico", url_prefix: "http://me.yahoo.com/", website: "http://yahoo.com/", longname: "Yahoo!", usercalled: "yahoo id"}, {shortname: "AOL", url_suffix: "", openid1: true, openid2: false, id: 1, icon: "aol.ico", url_prefix: "http://openid.aol.com/", website: "http://www.aol.com/", longname: "America Online/AIM", usercalled: "screenname"}];
+        var providers = [
+            {
+                "shortname": "myOpenID",
+                "url_suffix": ".myopenid.com/",
+                "openid1": true,
+                "openid2": true,
+                "id": 8,
+                "icon": "-27px -326px",
+                "url_prefix": "http://",
+                "website": "https://www.myopenid.com/",
+                "longname": "myOpenID",
+                "usercalled": "username"
+            },
+            {
+                "shortname": "claimID",
+                "url_suffix": "",
+                "openid1": true,
+                "openid2": false,
+                "id": 4,
+                "icon": "-1px -326px",
+                "url_prefix": "http://claimid.com/",
+                "website": "http://claimid.com/",
+                "longname": "claimID",
+                "usercalled": "username"
+            },
+            {
+                "shortname": "Clickpass",
+                "url_suffix": "",
+                "openid1": true,
+                "openid2": true,
+                "id": 5,
+                "icon": "-1px -274px",
+                "url_prefix": "http://clickpass.com/public/",
+                "website": "http://www.clickpass.com/",
+                "longname": "Clickpass",
+                "usercalled": "username"
+            },
+            {
+                "shortname": "Wordpress",
+                "url_suffix": ".wordpress.com/",
+                "openid1": true,
+                "openid2": false,
+                "id": 14,
+                "icon": "-1px -404px",
+                "url_prefix": "http://",
+                "website": "http://www.wordpress.com/",
+                "longname": "Wordpress",
+                "usercalled": "username"
+            },
+            {
+                "shortname": "Blogger",
+                "url_suffix": ".blogspot.com/",
+                "openid1": true,
+                "openid2": false,
+                "id": 2,
+                "icon": "-1px -249px",
+                "url_prefix": "http://",
+                "website": "http://www.blogger.com/",
+                "longname": "Google Blogger",
+                "usercalled": "blog name"
+            },
+            {
+                "shortname": "Livejournal",
+                "url_suffix": ".livejournal.com/",
+                "openid1": true,
+                "openid2": false,
+                "id": 7,
+                "icon": "-1px -352px",
+                "url_prefix": "http://",
+                "website": "http://www.livejournal.com/",
+                "longname": "Livejournal",
+                "usercalled": "username"
+            },
+            {
+                "shortname": "Google",
+                "url_suffix": "",
+                "openid1": false,
+                "openid2": true,
+                "id": 26,
+                "icon": "-27px -274px",
+                "url_prefix": "",
+                "website": "https://www.google.com/accounts/o8/id",
+                "longname": "Google",
+                "usercalled": "username"
+            },
+            {
+                "shortname": "Yahoo!",
+                "url_suffix": "",
+                "openid1": false,
+                "openid2": true,
+                "id": 15,
+                "icon": "-27px -300px",
+                "url_prefix": "http://me.yahoo.com/",
+                "website": "http://yahoo.com/",
+                "longname": "Yahoo!",
+                "usercalled": "yahoo id"
+            },
+            {
+                "shortname": "AOL",
+                "url_suffix": "",
+                "openid1": true,
+                "openid2": false,
+                "id": 1,
+                "icon": "-27px -249px",
+                "url_prefix": "http://openid.aol.com/",
+                "website": "http://www.aol.com/",
+                "longname": "America Online/AIM",
+                "usercalled": "screenname"
+            }
+        ];
   
         var oidTbId = window.idselector_input_id ? window.idselector_input_id : "openid_identifier";
         var oidTb = document.getElementById(oidTbId);
@@ -37,26 +146,19 @@
         if (oidTb == null) {log('couldn\'t find openid input box'); return;}
         var orig = oidTb.value;
 
-        var btnIcn = document.createElement('img');
-        s = btnIcn.style; s.width = '16px'; s.height = '16px';
-        s.verticalAlign = 'middle'; s.padding = '0px'; s.border = '0px';
-        s.margin = '0px'; s.display = 'inline';
 
         var btnMkr = document.createElement('div');
         btnMkr.innerHTML = "<button type=\"button\"></button>";
-        
-        var arrow = document.createElement('img');
-        arrow.src = "https://www.idselector.com/images/arrow.gif";
-        arrow.style.display = 'inline';
-        
+                
         var btn = btnMkr.firstChild;
         btnMkr.removeChild(btn);
-	btn.id = '__idselector_button';
+	    btn.id = '__idselector_button';
         btn.style.cursor = "pointer";
+        btn.style.background = "#fff url(http://cdn.sstatic.net/Img/openid/openid-logos.png?v=8)";
+        btn.style.backgroundPosition = "-27px -404px";
+        btn.style.width = "27px";
+        btn.style.height = "27px";
         
-        btn.appendChild(btnIcn);
-        btn.appendChild(document.createTextNode(" "));
-        btn.appendChild(arrow);
 
         var popup = document.createElement('iframe');
         popup.frameBorder = 0; popup.scrolling = 'no';
@@ -85,13 +187,6 @@
 
         var pbody = pdoc.body;
  
-        var back = pdoc.createElement('img');
-        back.style.verticalAlign = "middle"; back.style.cursor = "pointer";
-        back.src = "https://www.idselector.com/images/arrow_white_back.png";
-
-        var forward = pdoc.createElement('img');
-        forward.style.verticalAlign = "middle"; forward.style.cursor = "pointer";
-        forward.src = "https://www.idselector.com/images/arrow_white_forward.png";
 
         var headRight = pdoc.createElement('div');
         headRight.style[document.all ? 'styleFloat' : 'cssFloat'] = 'right';
@@ -110,8 +205,10 @@
         var nameTb = pdoc.createElement('input');
         nameTb.type = "text";
         nameTb.size = 20;
-        s = nameTb.style; s.verticalAlign = 'middle'; s.padding = '2px 2px 2px 20px';
-        s.backgroundRepeat = 'no-repeat'; s.backgroundPosition = '2px 2px';
+        s = nameTb.style; 
+        s.height = '24px';
+        s.marginLeft = 0;
+        s.paddingLeft = 0;
 
         var footer = pdoc.createElement('div');
         s = footer.style;
@@ -120,8 +217,22 @@
         s.textAlign = "right";
         s.position = "relative";
 
+        var nameIcon = pdoc.createElement("div");
+
+        nameIcon.style.background = "#fff url(http://cdn.sstatic.net/Img/openid/openid-logos.png?v=8)";
+
+        nameIcon.style.display = "inline-block";
+        nameIcon.style.width = "24px";
+        nameIcon.style.height = "24px";
+        nameIcon.style.verticalAlign = "top";
+        nameIcon.style.borderStyle = "inset";
+        nameIcon.style.borderWidth = "2px 0 2px 2px";
+        nameIcon.style.visibility = "hidden";
+
+
         footer.appendChild(nameLabel);
-        footer.appendChild(pdoc.createTextNode(" "))
+        footer.appendChild(nameIcon);
+        //footer.appendChild(pdoc.createTextNode(" "))
             footer.appendChild(nameTb);
 
         function Cell(grid, idx) {
@@ -147,12 +258,16 @@
             }
 
             var provider = providers[idx];
-            var icon = pdoc.createElement("img");
-            icon.src = provider ? ('https://www.idselector.com/static/opicons/' + provider.icon) :
-                'https://www.idselector.com/images/openid.ico';
-            icon.style.width = "16px";
-            icon.style.height = "16px";
+            var icon = pdoc.createElement("div");
+
+            icon.style.background = "#fff url(http://cdn.sstatic.net/Img/openid/openid-logos.png?v=8)";
+
+            icon.style.backgroundPosition = provider ? provider.icon : "-27px -404px";
+            icon.style.display = "inline-block";
+            icon.style.width = "24px";
+            icon.style.height = "24px";
             icon.style.verticalAlign = "middle";
+
             td.appendChild(icon);
             td.appendChild(pdoc.createTextNode(" "));
             td.appendChild(pdoc.createTextNode(provider ? provider.shortname : "Other OpenID"));
@@ -251,8 +366,6 @@
                     row.appendChild(pdoc.createElement('td'));
                 }
             }
-            forward.style.visibility = (this.offset == this.maxOffset) ? 'hidden' : '';
-            back.style.visibility = (this.offset == 0) ? 'hidden' : '';
             popup.style.height = (pbody.offsetHeight + 2) + "px";
         }
 
@@ -269,25 +382,36 @@
                 if (provider["openid2"] && !provider["openid1"]) {
                     nameLabel.style.visibility = 'hidden';
                     nameTb.style.visibility = 'hidden';
+                    nameIcon.style.visibility = 'hidden';
+                    nameIcon.style.display = 'none';
                     oidTb.value = provider['website'];
                 } else {
                     nameLabel.style.visibility = '';
+                    nameIcon.style.display = 'inline-block';
                     nameTb.style.visibility = '';
+                    nameIcon.style.visibility = '';
 
                     nameLabel.removeChild(nameLabel.firstChild);
                     var s = pdoc.createTextNode(provider.longname + " " +
                                                 provider.usercalled + ":");
+
                     nameLabel.appendChild(s);
-                    nameTb.style.backgroundImage = 'url(https://www.idselector.com/static/opicons/' + provider.icon + ')';
+
+                    nameIcon.style.backgroundPosition = provider ? provider.icon : "-27px -404px";
+
+                    nameTb.style.borderLeftWidth = 0;
                     oidTb.value = provider.url_prefix + "username" +
                         provider.url_suffix;
                     nameTb.value = "username";
                 }
-                btnIcn.src = 'https://www.idselector.com/static/opicons/' + provider.icon;
+                btn.style.backgroundPosition = provider ? provider.icon : "-27px -404px";
             } else {
+                hidePopup();
                 nameLabel.style.visibility = 'hidden';
+                nameIcon.style.visibility = 'hidden';
+                nameIcon.style.display = 'none';
                 nameTb.style.visibility = 'hidden';
-                btnIcn.src = 'https://www.idselector.com/images/openid.ico';
+                btn.style.backgroundPosition = "-27px -404px";
             }
         }
 
@@ -374,14 +498,6 @@
 
         btn.onfocus = function () {
             btn.blur();
-        }
-
-        forward.onclick = function() {
-            grid.forward();
-        }
-
-        back.onclick = function() {
-            grid.back();
         }
 
         oidTb.onkeypress = function(e) {
