@@ -90,9 +90,9 @@
 					<!--- using dbinfo is far too slow for Oracle, since it returns thousands of unneeded system tables --->
 	
 					<cfquery datasource="#this.db_type_id#_#this.short_code#" name="local.tablesList">
-					SELECT table_name as table_Name, 'TABLE' as table_Type from all_tables where owner = Upper(<cfqueryparam value="user_#this.short_code#" cfsqltype="cf_sql_varchar">)
+					SELECT table_name as table_Name, 'TABLE' as table_Type from all_tables where owner = Upper(<cfqueryparam value="user_#this.db_type_id#_#this.short_code#" cfsqltype="cf_sql_varchar">)
 					UNION
-					SELECT view_name as table_Name, 'VIEW' as table_Type from all_views where owner = Upper(<cfqueryparam value="user_#this.short_code#" cfsqltype="cf_sql_varchar">)
+					SELECT view_name as table_Name, 'VIEW' as table_Type from all_views where owner = Upper(<cfqueryparam value="user_#this.db_type_id#_#this.short_code#" cfsqltype="cf_sql_varchar">)
 					</cfquery>
 					
 				<cfelse>
