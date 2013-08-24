@@ -3,7 +3,7 @@
 	<cffunction name="cleanup">
 		<cfscript>
 	
-		var stale_schemas = model("Schema_Def").findAll(where="last_used < '#DateAdd('n', -30, Now())#' AND current_host_id IS NOT NULL", returnAs="objects", order="last_used");
+		var stale_schemas = model("Schema_Def").findAll(where="last_used < '#DateAdd('n', -30, Now())#' AND current_host_id IS NOT NULL", returnAs="objects", order="last_used", maxRows="100", select="db_type_id,short_code,current_host_id,id");
 		var i = 0;
 		for (i = 1; i<= ArrayLen(stale_schemas); i++)
 		{
