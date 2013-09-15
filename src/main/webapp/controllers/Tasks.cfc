@@ -36,7 +36,7 @@
 					loc.db_type_id = mid(loc.dsnArray[loc.i], loc.dsnMatch.pos[2], loc.dsnMatch.len[2]);
 					loc.short_code = mid(loc.dsnArray[loc.i], loc.dsnMatch.pos[3], loc.dsnMatch.len[3]);
 					loc.active_database = model("Schema_Def").findOne(where="current_host_id IS NOT NULL AND db_type_id = #loc.db_type_id# AND short_code = '#loc.short_code#'", returnAs="object", select="db_type_id,short_code,current_host_id,id");
-					if (loc.active_database IS false) {
+					if (IsObject(loc.active_database) IS false) {
 						loc.host = model("Host");
 						loc.host.db_type_id = loc.db_type_id;
 						loc.host.dropDSN(loc.short_code);
