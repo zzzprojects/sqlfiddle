@@ -3,7 +3,7 @@
 	{{#if this.RESULTS.DATA.length}}
 		<pre class="results">
 |{{#each_simple_value_with_index this.RESULTS.COLUMNS}} {{result_display_padded ../this/RESULTS/COLUMNWIDTHS}} |{{/each_simple_value_with_index}}
--{{#each_simple_value_with_index this.RESULTS.COLUMNS}}-{{divider_display ../this/RESULTS/COLUMNWIDTHS}}--{{/each_simple_value_with_index}}{{#each this.RESULTS.DATA}}
+|{{#each_simple_value_with_index this.RESULTS.COLUMNS}}{{divider_display ../this/RESULTS/COLUMNWIDTHS}}{{/each_simple_value_with_index}}{{#each this.RESULTS.DATA}}
 |{{#each_simple_value_with_index this}} {{result_display_padded ../../this/RESULTS/COLUMNWIDTHS}} |{{/each_simple_value_with_index}}{{/each}}
 		</pre>
 	{{/if}}
