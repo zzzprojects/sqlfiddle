@@ -48,5 +48,52 @@
 		</cfscript>
 	</cffunction>
 
+	<cffunction name="cleanDatabases">
+		<cfscript>
+			var loc = {};
+			loc.list_database_scripts = model("DB_Type").findAll(where="context='host' AND id = 9", include="Hosts", returnAs="objects", order="full_name");
+		</cfscript>
+		<cfloop from="1" to="#ArrayLen(loc.list_database_scripts)#" index="loc.i">
+			<cfloop from="1" to="#ArrayLen(loc.list_database_scripts[loc.i].hosts)#" index="loc.j">
+				<cfquery datasource="#loc.list_database_scripts[loc.i].hosts[loc.j].cf_dsn#" name="loc.databases">
+				#preserveSingleQuotes("#loc.list_database_scripts[loc.i].list_database_script#")#
+				</cfquery>
+	<cfdump var="#loc.databases#">
+				<cfloop query="loc.databases">
+					<cfscript>
+					if (StructKeyExists(loc.databases, "schema_name")) {
+						loc.schema_name = loc.databases.schema_name;
+					} else {
+						loc.schema_name = loc.databases.database; // some versions of mysql are different
+					}
+					</cfscript>
+					<cfscript>
+					loc.databaseMatches = reFindNoCase("^db_(\d+)_([a-z0-9]+)$", loc.schema_name, 0, true);
+					if (ArrayLen(loc.databaseMatches.len) IS 3) {
+						loc.db_type_id = mid(loc.schema_name, loc.databaseMatches.pos[2], loc.databaseMatches.len[2]);
+						loc.short_code = mid(loc.schema_name, loc.databaseMatches.pos[3], loc.databaseMatches.len[3]);
+						loc.active_database = model("Schema_Def").findOne(where="current_host_id IS NOT NULL AND db_type_id = #loc.db_type_id# AND short_code = '#LCase(loc.short_code)#'", returnAs="object", select="db_type_id,short_code,current_host_id,id");
+
+						if (IsObject(loc.active_database) IS false) {
+							try {
+								writeDump(var="Dropping Database #loc.short_code#", abort=true);
+								loc.list_database_scripts[loc.i].hosts[loc.j].dropDatabase(loc.short_code);
+                                                                writeDump("Database #loc.short_code# dropped");
+
+							} catch (any e) {
+
+								writeDump(e);
+							 }
+						}
+
+					}
+					</cfscript>
+				</cfloop>
+			</cfloop>
+		</cfloop>
+					<cfdump var="Done dropping all" abort=true>
+		<cfabort>
+	</cffunction>
+
 
 </cfcomponent>
