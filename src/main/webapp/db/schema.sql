@@ -43,6 +43,17 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: activesql2008; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE activesql2008 (
+    short_code character varying(8)
+);
+
+
+ALTER TABLE public.activesql2008 OWNER TO postgres;
+
+--
 -- Name: db_types; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -62,7 +73,8 @@ CREATE TABLE db_types (
     execution_plan_xslt text,
     context character varying(10),
     execution_plan_check character varying(300),
-    is_latest_stable smallint DEFAULT 0
+    is_latest_stable smallint DEFAULT 0,
+    list_database_script character varying(250)
 );
 
 
