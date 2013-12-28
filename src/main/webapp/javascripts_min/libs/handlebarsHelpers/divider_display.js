@@ -1,1 +1,1 @@
-define(["Handlebars"],function(e){e.registerHelper("divider_display",function(e){var t=[];return t.length=e[this.index]+1,t.join("-")})})
+define(["Handlebars"],function(e){e.registerHelper("divider_display",function(e){var t=[];return t.length=e[this.index]+3,t.join("-")+"|"})})
