@@ -8,7 +8,7 @@
 						</div>
 
 								<form id="fiddleFormDDL" method="post" action="">
-									<textarea id="schema_ddl"></textarea>
+									<textarea id="schema_ddl" wrap="off"></textarea>
 
 									<div id="browser"></div>
 
@@ -76,7 +76,7 @@
 						
 						
 						<form id="fiddleFormSQL" method="post" action="" class="schema_ready">
-							<textarea id="sql"></textarea>
+							<textarea id="sql" wrap="off"></textarea>
 
 							<div class="action_buttons">
 
