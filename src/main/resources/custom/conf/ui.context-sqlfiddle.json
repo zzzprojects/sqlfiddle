@@ -1,0 +1,8 @@
+{
+    "enabled" : true,
+    "urlContextRoot" : "/sqlfiddle",
+    "bundle" : {
+        "name" : "org.forgerock.openidm.ui",
+        "resourceDir" : "/www"
+    }
+}

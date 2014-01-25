@@ -1,1 +1,0 @@
-define([],function(){var e=function(e,t){var n=e.find(".terminator a.btn");n.html(n.html().replace(/\[ .+ \]/,"[ "+t+" ]")),e.find(".terminator").data("statement_separator",t)};return e})

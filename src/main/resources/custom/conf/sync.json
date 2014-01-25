@@ -1,0 +1,84 @@
+{
+    "mappings" : [
+        {
+            "name" : "fiddles_hosts",
+            "source" : "system/fiddles/schema_defs",
+            "target" : "system/hosts/databases",
+            "sourceQuery" : {
+                "_filter" : "context eq \"host\" and minutes_since_last_used lt 30"
+            },
+            "validSource" : {
+                "type" : "text/javascript",
+                "source" : "source.minutes_since_last_used < 30"
+            },
+            "correlationQuery" : {
+                "type" : "text/javascript",
+                "source" : "var qry = { '_filter': 'schema_name eq \"db_' + source.db_type_id + '_' + source.short_code + '\"'}; qry;"
+            },
+            "properties" : [
+                {
+                    "source" : "db_type_id",
+                    "target" : "db_type_id"
+                },
+                {
+                    "source" : "",
+                    "transform" : {
+                        "type" : "text/javascript",
+                        "source" : "'db_' + source.db_type_id + '_' + source.short_code"
+                    },
+                    "target" : "schema_name"
+                },
+                {
+                    "source" : "",
+                    "transform" : {
+                        "type" : "text/javascript",
+                        "source" : "'user_' + source.db_type_id + '_' + source.short_code"
+                    },
+                    "target" : "username"
+                },
+                {
+                    "source" : "",
+                    "transform" : {
+                        "type" : "text/javascript",
+                        "source" : "source.db_type_id + '_' + source.short_code"
+                    },
+                    "target" : "password"
+                },
+                {
+                    "source" : "ddl",
+                    "target" : "ddl"
+                }
+            ],
+            "policies" : [
+                {
+                    "situation" : "CONFIRMED",
+                    "action" : "IGNORE"
+                },
+                {
+                    "situation" : "FOUND",
+                    "action" : "LINK"
+                },
+                {
+                    "situation" : "ABSENT",
+                    "action" : "CREATE"
+                },
+                {
+                    "situation" : "MISSING",
+                    "action" : "CREATE"
+                },
+                {
+                    "situation" : "SOURCE_MISSING",
+                    "action" : "DELETE"
+                },
+                {
+                    "situation" : "UNASSIGNED",
+                    "action" : "DELETE"
+                },
+                {
+                    "situation" : "UNQUALIFIED",
+                    "action" : "DELETE"
+                }
+            ]
+        }
+    ]
+}

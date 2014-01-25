@@ -1,88 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ DO NOT REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+  ~
+  ~ Copyright (c) 2013 ForgeRock AS All rights reserved.
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>www-sqlfiddle-com</artifactId>
+    <groupId>sqlfiddle</groupId>
+    <version>2</version>
+    <packaging>pom</packaging>
+    <name>SQL Fiddle file assembly</name>
+    <properties>
+        <!-- ************** -->
+        <!-- Build settings -->
+        <!-- ************** -->
 
-  <groupId>com.sqlfiddle</groupId>
-  <artifactId>www</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>war</packaging>
+        <!-- Cross plugins settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-  <name>www</name>
-  <url>http://maven.apache.org</url>
+        <openidm.version>2.2.0-SNAPSHOT</openidm.version>
+    </properties>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <repositories>
+        <repository>
+            <id>forgerock-staging-repository</id>
+            <name>ForgeRock Release Repository</name>
+            <url>http://maven.forgerock.org/repo/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>forgerock-snapshots-repository</id>
+            <name>ForgeRock Snapshot Repository</name>
+            <url>http://maven.forgerock.org/repo/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.getrailo</groupId>
-			<artifactId>railo</artifactId>
-			<version>3.3.5.004</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>1.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.forgerock.openicf.connectors</groupId>
+            <artifactId>scriptedsql-connector</artifactId>
+            <version>1.1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.28</version>
+        </dependency>        
+    </dependencies>
+    <build>
+        <finalName>sqlfiddle</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources/custom</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources/${environment}</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>unpack-openidm-staging</id>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.forgerock.openidm</groupId>
+                                    <artifactId>openidm-zip</artifactId>
+                                    <version>${openidm.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/idm-staging/</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.3.168</version>
-		</dependency>
+            <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>js/css optimization</id>
+                        <phase>package</phase>
 
-	</dependencies>
-  <build>
-      <plugins>
+                        <configuration>
+                            <target name="optimize">
 
-<plugin>
-  <groupId>org.mortbay.jetty</groupId>
-  <artifactId>jetty-maven-plugin</artifactId>
-  <version>8.1.3.v20120416</version>
+                                <copy todir="${project.build.directory}/idm-staging/openidm/ui/salesforce/admin" overwrite="true">
+                                    <fileset dir="${basedir}/src/main/resources/custom/ui/salesforce/admin" />
+                                </copy>
 
-  <configuration>
-    <scanIntervalSeconds>10</scanIntervalSeconds>
-    <contextPath>/</contextPath>
-  </configuration>
+                                <copy todir="${project.build.directory}/idm-staging/openidm/ui/salesforce/connect" overwrite="true">
+                                    <fileset dir="${basedir}/src/main/resources/custom/ui/salesforce/connect" />
+                                </copy>
 
-</plugin>
+                                <path id="class.path">
+                                    <fileset dir="${project.build.directory}/idm-staging/openidm/bundle">
+                                        <include name="org.apache.servicemix.bundles.rhino-*.jar" />
+                                    </fileset>
+                                </path>
+                                
+                                <property name="requirejs.dir" value="${basedir}/src/main/resources/custom/ui/optimization" />
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <phase> validate </phase>
-            <configuration>
+                                <java classname="org.mozilla.javascript.tools.shell.Main"
+                                    failonerror="true">
+                                    <classpath refid="class.path" />
+                                    <arg value="${requirejs.dir}/r.js" />
+                                    <arg value="-o" />
+                                    <arg value="${requirejs.dir}/admin.build.js" />
+                                </java>
+                                
+                                <concat destfile="${project.build.directory}/idm-staging/openidm/ui/salesforce/admin_minified/main_with_licenses.js">
+                                    <fileset file="${requirejs.dir}/license" />
+                                    <fileset file="${project.build.directory}/idm-staging/openidm/ui/salesforce/admin_minified/main.js" />
+                                </concat>
+                                
+                                <move   file="${project.build.directory}/idm-staging/openidm/ui/salesforce/admin_minified/main_with_licenses.js" 
+                                        tofile="${project.build.directory}/idm-staging/openidm/ui/salesforce/admin_minified/main.js" />
 
-              <target>
-		<copy file="src/main/webapp/WEB-INF/web.xml.example" tofile="src/main/webapp/WEB-INF/web.xml" overwrite="false" />
-                <copy file="src/main/webapp/config/environment.cfm.example" tofile="src/main/webapp/config/environment.cfm" overwrite="false" />
-                <copy file="src/main/webapp/config/development/settings.cfm.example" tofile="src/main/webapp/config/development/settings.cfm" overwrite="false" />
-		<copy file="railo-server.xml.example" tofile="${settings.localRepository}/org/getrailo/railo/3.3.5.004/railo-server/context/railo-server.xml" overwrite="false" />
-              </target>
+                                <java classname="org.mozilla.javascript.tools.shell.Main"
+                                    failonerror="true">
+                                    <classpath refid="class.path" />
+                                    <arg value="${requirejs.dir}/r.js" />
+                                    <arg value="-o" />
+                                    <arg value="${requirejs.dir}/connect.build.js" />
+                                </java>
+                                
+                                <concat destfile="${project.build.directory}/idm-staging/openidm/ui/salesforce/connect_minified/main_with_licenses.js">
+                                    <fileset file="${requirejs.dir}/license" />
+                                    <fileset file="${project.build.directory}/idm-staging/openidm/ui/salesforce/connect_minified/main.js" />
+                                </concat>
+                                
+                                <move   file="${project.build.directory}/idm-staging/openidm/ui/salesforce/connect_minified/main_with_licenses.js" 
+                                        tofile="${project.build.directory}/idm-staging/openidm/ui/salesforce/connect_minified/main.js" />
 
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+                                <java classname="org.mozilla.javascript.tools.shell.Main"
+                                    failonerror="true">
+                                    <classpath refid="class.path" />
+                                    <arg value="${requirejs.dir}/less-rhino-1.3.3.js" />
+                                    <arg value="${basedir}/src/main/resources/custom/ui/salesforce/connect/css/styles.less" />
+                                    <arg value="${project.build.directory}/idm-staging/openidm/ui/salesforce/connect_minified/css/styles.css" />
+                                </java>
+
+                                <java classname="org.mozilla.javascript.tools.shell.Main"
+                                    failonerror="true">
+                                    <classpath refid="class.path" />
+                                    <arg value="${requirejs.dir}/r.js" />
+                                    <arg value="-o" />
+                                    <arg value="cssIn=${project.build.directory}/idm-staging/openidm/ui/salesforce/connect_minified/css/styles.css" />
+                                    <arg value="out=${project.build.directory}/idm-staging/openidm/ui/salesforce/connect_minified/css/styles_min.css" />
+                                    <arg value="optimizeCss=default" />
+                                </java>
+
+                                <move   file="${project.build.directory}/idm-staging/openidm/ui/salesforce/connect_minified/index_min.html" 
+                                        tofile="${project.build.directory}/idm-staging/openidm/ui/salesforce/connect_minified/index.html" />
+
+                                <exec executable="bash">
+                                    <arg value="-c"/>
+                                    <arg value="perl -e '$_ = &quot;${svn-revision.revision}&quot;; s/\s//g; $/ = undef; open (LOCALE, &quot;${basedir}/src/main/resources/custom/ui/salesforce/admin/locales/en-US/translation.json&quot;) || die (&quot;Failed to open translation.json: &quot; . $!); $xlate = &lt;LOCALE&gt;; close LOCALE; $xlate =~ s/&quot;version&quot;: &quot;Dev&quot;/&quot;version&quot;: &quot;r$_&quot;/; print $xlate;' &gt; ${project.build.directory}/idm-staging/openidm/ui/salesforce/admin_minified/locales/en-US/translation.json"/>
+                                </exec>
+
+                                <delete dir="${project.build.directory}/idm-staging/openidm/ui/salesforce/connect" />
+                                <delete dir="${project.build.directory}/idm-staging/openidm/ui/salesforce/admin" />
+
+                                <move   file="${project.build.directory}/idm-staging/openidm/ui/salesforce/connect_minified" 
+                                        tofile="${project.build.directory}/idm-staging/openidm/ui/salesforce/connect" />
+
+                                <move   file="${project.build.directory}/idm-staging/openidm/ui/salesforce/admin_minified" 
+                                        tofile="${project.build.directory}/idm-staging/openidm/ui/salesforce/admin" />
+
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
 
 
 
-    </plugins>
-  </build>
-
-	<repositories>
-		<repository>
-			<id>cfmlprojects.org</id>
-			<url>http://cfmlprojects.org/artifacts</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <descriptor>src/main/assembly/zip.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>zip-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId> 
+              <artifactId>maven-install-plugin</artifactId>
+              <version>2.4</version>
+              <configuration>
+                <createChecksum>true</createChecksum>
+              </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>development</id>
+            <activation>
+                <property>
+                    <name>!environment</name>
+                </property>
+            </activation>
+            <properties>
+                <environment>development</environment>
+                <openidm.options>
+             	    -Xmx1024m -Xms1024m -Dlogback.configurationFile=conf/logging-config.xml
+             	</openidm.options>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <activation>
+                <property>
+                    <name>environment</name>
+                    <value>test</value>
+                </property>
+            </activation>
+            <properties>
+                <environment>test</environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>quality</id>
+            <activation>
+                <property>
+                    <name>environment</name>
+                    <value>quality</value>
+                </property>
+            </activation>
+            <properties>
+                <environment>quality</environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>production</id>
+            <activation>
+                <property>
+                    <name>environment</name>
+                    <value>production</value>
+                </property>
+            </activation>
+            <properties>
+                <environment>production</environment>
+                <openidm.options>
+             	    -Xmx1024m -Xms1024m
+             	</openidm.options>
+            </properties>
+        </profile>
+    </profiles>
 </project>

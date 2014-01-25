@@ -1,0 +1,7 @@
+{
+    "instanceId" : "&{openidm.node.id}",
+    "instanceTimeout" : "30000",
+    "instanceRecoveryTimeout" : "30000",
+    "instanceCheckInInterval" : "5000",
+    "instanceCheckInOffset" : "0"
+}

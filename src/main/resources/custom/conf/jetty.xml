@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//
+DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+
+<Configure class="org.eclipse.jetty.server.Server">
+
+    <!-- =========================================================== -->
+    <!-- Set connectors                                              -->
+    <!-- =========================================================== -->
+    <!-- One of each type!                                           -->
+    <!-- =========================================================== -->
+
+    <Set name="connectors">
+        <Array type="org.eclipse.jetty.server.Connector">
+            <Item>
+                <!-- Use this connector for many frequently idle connections
+                     and for threadless continuations.
+                -->
+                <New class="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                    <Set name="host"><Property name="jetty.host" /></Set>
+                    <Set name="port"><Call class="org.forgerock.openidm.jetty.Param"  name="getProperty"><Arg>openidm.port.http</Arg></Call></Set>
+                    <Set name="maxIdleTime">300000</Set>
+                    <Set name="Acceptors">2</Set>
+                    <Set name="statsOn">false</Set>
+                    <Set name="confidentialPort"><Call class="org.forgerock.openidm.jetty.Param"  name="getProperty"><Arg>openidm.port.https</Arg></Call></Set>
+                    <Set name="lowResourcesConnections">20000</Set>
+                    <Set name="lowResourcesMaxIdleTime">5000</Set>
+                </New>
+            </Item>
+            <Item>
+                <New class="org.eclipse.jetty.server.ssl.SslSelectChannelConnector">
+                    <Set name="Port"><Call class="org.forgerock.openidm.jetty.Param"  name="getProperty"><Arg>openidm.port.https</Arg></Call></Set>
+                    <Set name="maxIdleTime">30000</Set>
+                    <Set name="keystoreType"><Get class="org.forgerock.openidm.jetty.Param" name="keystoreType"/></Set>
+                    <Set name="keystore"><Get class="org.forgerock.openidm.jetty.Param" name="keystoreLocation"/></Set>
+                    <Set name="password"><Get class="org.forgerock.openidm.jetty.Param" name="keystorePassword"/></Set>
+                    <Set name="keyPassword"><Get class="org.forgerock.openidm.jetty.Param" name="keystoreKeyPassword"/></Set>
+                    <Set name="truststore"><Get class="org.forgerock.openidm.jetty.Param" name="truststoreLocation"/></Set>
+                    <Set name="trustPassword"><Get class="org.forgerock.openidm.jetty.Param" name="truststorePassword"/></Set>
+                    <Set name="wantClientAuth">true</Set>
+                    <Set name="needClientAuth">false</Set>
+                </New>
+            </Item>
+            <!-- Port set up to require SSL mutual authentication only -->
+            <Item>
+                <New class="org.eclipse.jetty.server.ssl.SslSelectChannelConnector" id="MutualAuthPort">
+                    <Set name="Port"><Call class="org.forgerock.openidm.jetty.Param"  name="getProperty"><Arg>openidm.port.mutualauth</Arg></Call></Set>
+                    <Set name="maxIdleTime">30000</Set>
+                    <Set name="keystoreType"><Get class="org.forgerock.openidm.jetty.Param" name="keystoreType"/></Set>
+                    <Set name="keystore"><Get class="org.forgerock.openidm.jetty.Param" name="keystoreLocation"/></Set>
+                    <Set name="password"><Get class="org.forgerock.openidm.jetty.Param" name="keystorePassword"/></Set>
+                    <Set name="keyPassword"><Get class="org.forgerock.openidm.jetty.Param" name="keystoreKeyPassword"/></Set>
+                    <Set name="truststore"><Get class="org.forgerock.openidm.jetty.Param" name="truststoreLocation"/></Set>
+                    <Set name="trustPassword"><Get class="org.forgerock.openidm.jetty.Param" name="truststorePassword"/></Set>
+                    <Set name="wantClientAuth">true</Set>
+                    <Set name="needClientAuth">true</Set>
+                    <Call class="org.forgerock.openidm.jetty.DisableOpenIDMAuth" name="add"><Arg><Ref id="MutualAuthPort"/></Arg></Call>
+                </New>
+            </Item>
+        </Array>
+    </Set>
+
+</Configure>
+

@@ -1,1 +1,0 @@
-define(["Handlebars"],function(e){e.registerHelper("divider_display",function(e){var t=[];return t.length=e[this.index]+3,t.join("-")+"|"})})

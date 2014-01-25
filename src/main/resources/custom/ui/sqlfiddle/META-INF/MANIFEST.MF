@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-Description: OpenIDM is an open standards based Identity Manageme
+ nt, Provisioning and Compliance solution.        Experience shows that 
+ the most important features of an identity management product are: high
+  flexibility in        Business Process handling and compliance with op
+ en standards and interfaces. A highly flexible user interface        co
+ mbined with a very robust workflow engine make OpenIDM ready for any Id
+ entity Management project.
+Bundle-License: http://www.opensource.org/licenses/cddl1.php, http://cre
+ ativecommons.org/licenses/by-nc-nd/3.0/
+Bundle-ManifestVersion: 2
+Bundle-Name: OpenIDM End-user Web UI
+Bundle-SymbolicName: org.forgerock.openidm.ui
+Bundle-Vendor: ForgeRock AS
+Bundle-Version: 2.2.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Implementation-Build: 0
+SCM-Revision: 0

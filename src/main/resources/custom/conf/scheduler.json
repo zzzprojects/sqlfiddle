@@ -1,0 +1,8 @@
+{
+    "threadPool" : {
+        "threadCount" : "10"
+    },
+    "scheduler" : {
+        "instanceId" : "scheduler1234"
+    }
+}

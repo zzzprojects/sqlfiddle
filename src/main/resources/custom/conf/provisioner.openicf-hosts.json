@@ -1,0 +1,136 @@
+{
+    "name" : "hosts",
+    "connectorRef" : {
+        "bundleName" : "org.forgerock.openicf.connectors.scriptedsql-connector",
+        "bundleVersion" : "1.1.0.1",
+        "connectorName" : "org.forgerock.openicf.connectors.scriptedsql.ScriptedSQLConnector"
+    },
+    "producerBufferSize" : 100,
+    "connectorPoolingSupported" : true,
+    "poolConfigOption" : {
+        "maxObjects" : 10,
+        "maxIdle" : 10,
+        "maxWait" : 150000,
+        "minEvictableIdleTimeMillis" : 120000,
+        "minIdle" : 1
+    },
+    "operationTimeout" : {
+        "CREATE" : -1,
+        "TEST" : -1,
+        "AUTHENTICATE" : -1,
+        "SEARCH" : -1,
+        "VALIDATE" : -1,
+        "GET" : -1,
+        "UPDATE" : -1,
+        "DELETE" : -1,
+        "SCRIPT_ON_CONNECTOR" : -1,
+        "SCRIPT_ON_RESOURCE" : -1,
+        "SYNC" : -1,
+        "SCHEMA" : -1
+    },
+    "configurationProperties" : {
+        "host" : "localhost",
+        "port" : "5432",
+        "user" : "postgres",
+        "password" : "password",
+        "database" : "sqlfiddle",
+        "autoCommit" : true,
+        "reloadScriptOnExecution" : true,
+        "jdbcDriver" : "org.postgresql.Driver",
+        "jdbcConnectionUrl" : "jdbc:postgresql://localhost:5432/sqlfiddle",
+        "jdbcUrlTemplate" : "jdbc:postgresql://%h:%p/%d",
+        "createScriptFileName" : "&{launcher.project.location}/tools/hosts/CreateScript.groovy",
+        "testScriptFileName" : "&{launcher.project.location}/tools/hosts/TestScript.groovy",
+        "searchScriptFileName" : "&{launcher.project.location}/tools/hosts/SearchScript.groovy",
+        "deleteScriptFileName" : "&{launcher.project.location}/tools/hosts/DeleteScript.groovy",
+        "updateScriptFileName" : "&{launcher.project.location}/tools/hosts/UpdateScript.groovy",
+        "syncScriptFileName" : "&{launcher.project.location}/tools/hosts/SyncScript.groovy"
+    },
+    "syncFailureHandler" : {
+        "maxRetries" : 5,
+        "postRetryAction" : "logged-ignore"
+    },
+    "objectTypes" : {
+        "databases" : {
+            "$schema" : "http://json-schema.org/draft-03/schema",
+            "id" : "schema_defs",
+            "type" : "object",
+            "nativeType" : "databases",
+            "properties" : {
+                "db_type_id" : {
+                    "type" : "integer",
+                    "required" : true,
+                    "nativeName" : "db_type_id",
+                    "nativeType" : "integer",
+                    "flags" : [
+                        "NOT_UPDATEABLE"
+                    ]
+                },
+                "host_id" : {
+                    "type" : "integer",
+                    "required" : true,
+                    "nativeName" : "host_id",
+                    "nativeType" : "integer",
+                    "flags" : [
+                        "NOT_CREATABLE",
+                        "NOT_UPDATEABLE"
+                    ]
+                },
+                "schema_name" : {
+                    "type" : "string",
+                    "required" : true,
+                    "nativeName" : "__NAME__",
+                    "nativeType" : "string",
+                    "flags" : [
+                        "NOT_UPDATEABLE"
+                    ]
+                },
+                "ddl" : {
+                    "type" : "string",
+                    "required" : true,
+                    "nativeName" : "ddl",
+                    "nativeType" : "string",
+                    "flags" : [
+                        "NOT_UPDATEABLE",
+                        "NOT_READABLE",
+                        "NOT_RETURNED_BY_DEFAULT"
+                    ]
+                },
+                "statement_separator" : {
+                    "type" : "string",
+                    "required" : true,
+                    "nativeName" : "statement_separator",
+                    "nativeType" : "string",
+                    "flags" : [
+                        "NOT_UPDATEABLE",
+                        "NOT_READABLE",
+                        "NOT_RETURNED_BY_DEFAULT"
+                    ]
+                },
+                "username" : {
+                    "type" : "string",
+                    "required" : true,
+                    "nativeName" : "username",
+                    "nativeType" : "string",
+                    "flags" : [
+                        "NOT_UPDATEABLE",
+                        "NOT_READABLE",
+                        "NOT_RETURNED_BY_DEFAULT"
+                    ]
+                },
+                "password" : {
+                    "type" : "string",
+                    "required" : true,
+                    "nativeName" : "password",
+                    "nativeType" : "string",
+                    "flags" : [
+                        "NOT_UPDATEABLE",
+                        "NOT_READABLE",
+                        "NOT_RETURNED_BY_DEFAULT"
+                    ]
+                }
+            }
+        }
+    },
+    "operationOptions" : { }
+}
