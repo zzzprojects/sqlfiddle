@@ -14,7 +14,6 @@
 	<meta property="og:url" content="http://sqlfiddle.com/" />
 	<meta property="og:image" content="http://sqlfiddle.com/images/fiddle_transparent.png" />
 	<meta property="og:site_name" content="SQL Fiddle" />
-	<!-- <meta property="fb:admins" content="_FBID_or_APPID_" /> -->
 	
 	<link rel="icon" href="favicon.ico?20120504" type="image/x-icon">
 	<link rel="shortcut icon" href="favicon.ico?20120504" type="image/x-icon">
@@ -67,13 +66,17 @@
 						</li>
 												
 						<li class="dropdown" id="userInfo">
-							<cfoutput>
+
+							<a href="#loginModal" data-toggle="modal"><i class="icon-user"></i>Login</a>
+
+<!--							<cfoutput>
 							<cfif !StructKeyExists(session, "user")>
 							#includePartial("/Users/_login")#
 							<cfelse>
 							#includePartial("/Users/_info")#
 							</cfif>
 							</cfoutput>
+-->
 						</li>
 
 						<li>
@@ -263,11 +266,84 @@
 
 	<div id="hosting">
 		<ul id="hostingPartners">
-			<li id="sqlsentry"><a href="http://www.sqlsentry.net/download-trial/landing/complete.asp?ad=201208-sqlfiddle" target="_new"><img src="images/sqlsentry/0<cfoutput>#RandRange(0,4)#</cfoutput>.jpg" alt="SQL Sentry"></a></li>
+			<li id="sqlsentry"><a href="http://www.sqlsentry.net/download-trial/landing/complete.asp?ad=201208-sqlfiddle" target="_new"><img src="images/sqlsentry/00.jpg" alt="SQL Sentry"></a></li>
 		</ul>
 	</div>
 
-	<cfoutput>#includeContent('utilityModals')#</cfoutput>
+	<div id="textToDDLModal" class="modal">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">x</a>
+			<h3>Formatted Text Table to DDL</h3>
+		</div>
+	
+	  <div class="modal-body">
+			<label for="tableName">Table Name: </label><input type="text" id="tableName" value="Table1"><br>
+			<textarea id="raw" cols="40" rows="8" placeholder="Paste formatted text here. CSV, space-separated, pipe-delimited are all valid."></textarea>
+			<hr>
+			
+			<pre id="parseResults"></pre>
+	
+	</div>
+	<div class="modal-footer">
+		<div class="pull-left">
+			<i class="icon-info-sign"></i>
+			<a href="http://dygraphs.com/date-formats.html" target="_blank">Date problems?</a>
+			|
+			<a href="https://github.com/jakefeasel/DDLBuilder/blob/master/ddl_builder/qunit/fixture.html" target="_blank">Example Input</a>
+		</div>
+		<a href="#" id="appendDDL" class="btn btn-primary">Append to DDL</a>
+		<a href="#" id="parseDDL" class="btn">Test Parse</a>
+	</div>
+	
+	</div>
+
+	<div id="loginModal" class="modal">
+		<form action="index.cfm/Users/auth" method="post" class="form-horizontal">
+		<input type="hidden" name="hash" value="" id="hash">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">x</a>
+			<h3>Login to SQL Fiddle</h3>
+		</div>
+		<div class="modal-body">
+			<div class="control-group">
+				<label class="control-label" for="openid_identifier">OpenID Identity: </label>
+				<div class="controls">
+					<input type="text" id="openid_identifier" name="openid_identity" value="" size="20" />
+				</div>
+			</div>	
+			
+			<div class="control-group">				
+				<label class="control-label" for="remember">Remember Me: </label>
+				<div class="controls">
+					<input type="checkbox" value="true" name="remember" id="remember">
+				</div>
+			</div>	
+		</div>
+	  
+		<div class="modal-footer">
+			<input class="btn btn-primary" type="submit" value="Login" />
+		</div>	
+	  
+		</form>
+	</div>	
+
+	<div id="myFiddlesModal" class="modal">
+		
+		<form action="index.cfm/Users/auth" method="post">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">x</a>
+			<ul class="nav nav-tabs" id="myFiddlesTabs">
+				<li class="active"><a href="#fiddle_history" data-toggle="tab">Fiddle History</a></li>
+				<li><a href="#favorites" data-toggle="tab">Favorites <i class="icon-star"></i></a></li>
+			</ul>
+		</div>
+
+		<div class="modal-body tab-content">
+		</div>
+	  
+		</form>
+	</div>	
+
 	<script type="text/javascript" src="javascript/require.js" data-main="javascript/main"></script>
 
 <script type="text/javascript">

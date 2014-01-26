@@ -1,2 +1,3 @@
 .project
 target
+src/main/resources/custom/dev/node_modules

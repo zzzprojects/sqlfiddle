@@ -38,6 +38,9 @@
             <includes>
                 <include>**/*.json</include>
             </includes>
+            <excludes>
+                <exclude>dev/**</exclude>
+            </excludes>
         </fileSet>
        <fileSet>
             <directory>${basedir}/src/main/resources/custom</directory>
@@ -63,6 +66,7 @@
                 <exclude>*.sh</exclude>
                 <exclude>README.txt</exclude>
                 <exclude>ui/sqlfiddle/qunit/**</exclude>
+                <exclude>dev/**</exclude>
             </excludes>
         </fileSet>
         <fileSet>
