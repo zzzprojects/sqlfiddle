@@ -5,15 +5,15 @@
             "source" : "system/fiddles/schema_defs",
             "target" : "system/hosts/databases",
             "sourceQuery" : {
-                "_filter" : "context eq \"host\" and minutes_since_last_used lt 30"
+                "_queryFilter" : "context eq \"host\" and minutes_since_last_used lt 30"
             },
             "validSource" : {
                 "type" : "text/javascript",
-                "source" : "source.minutes_since_last_used < 30"
+                "source" : "console.log(JSON.stringify(source, null, 4)); source.minutes_since_last_used < 30"
             },
             "correlationQuery" : {
                 "type" : "text/javascript",
-                "source" : "var qry = { '_filter': 'schema_name eq \"db_' + source.db_type_id + '_' + source.short_code + '\"'}; qry;"
+                "source" : "var qry = { '_queryFilter': 'schema_name eq \"db_' + source.db_type_id + '_' + source.short_code + '\"'}; qry;"
             },
             "properties" : [
                 {

@@ -9,7 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>www-sqlfiddle-com</artifactId>
     <groupId>sqlfiddle</groupId>
-    <version>2</version>
+    <version>2.0</version>
     <packaging>pom</packaging>
     <name>SQL Fiddle file assembly</name>
     <properties>
@@ -60,7 +60,7 @@
         </dependency>        
     </dependencies>
     <build>
-        <finalName>sqlfiddle</finalName>
+        <finalName>sqlfiddle-${projects.version}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources/custom</directory>

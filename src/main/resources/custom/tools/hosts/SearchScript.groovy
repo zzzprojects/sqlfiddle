@@ -1,4 +1,4 @@
-
+println("Starting SEARCH for hosts")
  
 import groovy.sql.Sql;
 import groovy.sql.DataSet;
@@ -40,7 +40,7 @@ import groovy.sql.DataSet;
                         d.id = h.db_type_id
             """ + dbTypeWhere, dbTypeWhereParams) {
             def populatedUrl = it.jdbc_url_template.replace("#databaseName#", it.default_database)
-println ("Searching " + populatedUrl)
+
             def db_type_id = it.db_type_id
             def host_id = it.host_id
 
@@ -63,7 +63,7 @@ println ("Searching " + populatedUrl)
 
             }
 
-            def hostConnection = Sql.newInstance(populatedUrl, it.admin_username, it.admin_password, it.jdbc_class_name);
+            def hostConnection = Sql.newInstance(populatedUrl, it.admin_username, it.admin_password, it.jdbc_class_name)
             hostConnection.eachRow(it.list_database_script + schemaNameWhere, schemaNameWhereParams) {
                 result.add([
                     __UID__:it.getAt(0),
@@ -77,7 +77,7 @@ println ("Searching " + populatedUrl)
 
         sql.close()
 
-        return result;
+        return result
 
     }
 
@@ -98,6 +98,6 @@ switch ( objectClass ) {
     break
 
     default:
-    result;
+    result
 }
-return result;
+return result

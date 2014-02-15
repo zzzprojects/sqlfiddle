@@ -60,7 +60,7 @@
                 "id" : {
                     "type" : "integer",
                     "required" : false,
-                    "nativeName" : "__UID__",
+                    "nativeName" : "id",
                     "nativeType" : "integer"
                 },
                 "db_type_id" : {
@@ -79,6 +79,16 @@
                         "NOT_UPDATEABLE"
                     ]
                 },
+                "md5" : {
+                    "type" : "string",
+                    "required" : false,
+                    "nativeName" : "__NAME__",
+                    "nativeType" : "string",
+                    "flags" : [
+                        "NOT_CREATABLE",
+                        "NOT_UPDATEABLE"
+                    ]
+                },                
                 "simple_name" : {
                     "type" : "string",
                     "required" : false,
@@ -123,11 +133,7 @@
                     "type" : "string",
                     "required" : false,
                     "nativeName" : "last_used",
-                    "nativeType" : "string",
-                    "flags" : [
-                        "NOT_CREATABLE",
-                        "NOT_UPDATEABLE"
-                    ]
+                    "nativeType" : "string"
                 },
                 "current_host_id" : {
                     "type" : "integer",
@@ -141,7 +147,7 @@
                 },
                 "fragment" : {
                     "type" : "string",
-                    "nativeName" : "__NAME__",
+                    "nativeName" : "__UID__",
                     "nativeType" : "string"
                 },
                 "ddl" : {

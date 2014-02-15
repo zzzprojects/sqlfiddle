@@ -39,12 +39,10 @@ import java.security.MessageDigest;
 // password: password string, clear text
 // options: a handler to the OperationOptions Map
 
-log.info("Entering "+action+" Script");
-
 def sql = new Sql(connection);
 def digest = MessageDigest.getInstance("MD5");
 
-//Create must return UID. Let's return the name for now.
+//Create must return UID. 
 
 switch ( objectClass ) {
     case "schema_defs":
@@ -64,15 +62,13 @@ switch ( objectClass ) {
                                 1, digest.digest( (statement_separator + ddl).getBytes() )
                             ).toString(16).padLeft(32,"0");
         }
-
         sql.eachRow("SELECT id,short_code FROM schema_defs WHERE db_type_id = ? AND md5 = ?", [db_type_id, md5hash]) {
-            existing_schema = it.short_code;
+            existing_schema = db_type_id + "/" + it.short_code;
         }
 
         if (existing_schema) {
-            return existing_schema;
+            return java.net.URLEncoder.encode(existing_schema, "UTF-8");
         } else {
-
             def short_code = md5hash.substring(0,5);
             def checkedUniqueCode = false;
 
@@ -82,9 +78,8 @@ switch ( objectClass ) {
                     short_code = md5hash.substring(0,short_code.size()+1);
                     checkedUniqueCode = false;
                 }
-
             }
-            sql.executeInsert("INSERT INTO schema_defs (db_type_id,short_code,ddl,md5,statement_separator,last_used) values (?,?,?,?,?,current_timestamp)",
+            result = sql.executeInsert("INSERT INTO schema_defs (db_type_id,short_code,ddl,md5,statement_separator,last_used) values (?,?,?,?,?,current_timestamp)",
                 [
                     db_type_id,
                     short_code,
@@ -92,8 +87,7 @@ switch ( objectClass ) {
                     md5hash,
                     ';'
                 ]);
-
-            return db_type_id + "/" + short_code;
+            return java.net.URLEncoder.encode(db_type_id + "/" + short_code, "UTF-8");
 
         }
 

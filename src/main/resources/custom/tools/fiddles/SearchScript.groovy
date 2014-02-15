@@ -58,8 +58,8 @@ import groovy.sql.DataSet;
 //Need to handle the __UID__ and __NAME__ in queries
 def fieldMap = [
     "schema_defs": [
-        "__UID__": "s.id",
-        "__NAME__": "(s.db_type_id || '/' || s.short_code)",
+        "__NAME__": "s.id",
+        "__UID__": "(s.db_type_id || '_' || s.short_code)",
         "last_used": "to_char(s.last_used, 'YYYY-MM-DD HH24:MI:SS.MS')",
         "minutes_since_last_used": "floor(EXTRACT(EPOCH FROM age(current_timestamp, last_used))/60)"
     ]
@@ -91,7 +91,7 @@ queryParser = { queryObj ->
             whereParams.push("%" + queryObj.get("right"))
         } else if (queryObj.get("operation") == "STARTSWITH") {
             whereParams.push(queryObj.get("right") + "%")
-        } else if (queryObj.get("left") == "__UID__" || queryObj.get("left") == "minutes_since_last_used") {
+        } else if (queryObj.get("left") == "minutes_since_last_used") {
             whereParams.push(queryObj.get("right").toInteger())
         } else {
             whereParams.push(queryObj.get("right"))
@@ -118,19 +118,39 @@ def where = ""
 
 if (query != null) {
     // We can use Groovy template engine to generate our custom SQL queries
-    where = " WHERE " + queryParser(query)
-    log.ok("Search WHERE clause is: "+ where)
+    where = "WHERE " + queryParser(query)
+    //println("Search WHERE clause is: ${where} + ${whereParams}")
 }
 
 switch ( objectClass ) {
     case "schema_defs":
-    sql.eachRow("SELECT s.id,s.db_type_id,s.short_code,to_char(s.last_used, 'YYYY-MM-DD HH24:MI:SS.MS') as last_used,floor(EXTRACT(EPOCH FROM age(current_timestamp, last_used))/60) as minutes_since_last_used,s.current_host_id,s.ddl,s.statement_separator,d.simple_name,d.full_name,d.context FROM schema_defs s INNER JOIN db_types d ON s.db_type_id = d.id" + where, whereParams) {
+
+    sql.eachRow("""
+        SELECT 
+            s.id,
+            s.db_type_id,
+            s.short_code,
+            to_char(s.last_used, 'YYYY-MM-DD HH24:MI:SS.MS') as last_used,
+            floor(EXTRACT(EPOCH FROM age(current_timestamp, last_used))/60) as minutes_since_last_used,
+            s.current_host_id,
+            s.ddl,
+            s.statement_separator,
+            d.simple_name,
+            d.full_name,
+            d.context 
+        FROM 
+            schema_defs s 
+                INNER JOIN db_types d ON 
+                    s.db_type_id = d.id
+        """ + where, whereParams) {
+
         result.add([
-            __UID__:it.id.toInteger(), 
+            __NAME__:it.id.toInteger(), 
+            __UID__: it.db_type_id + '_' + it.short_code,
+            id:it.id.toInteger(),
             db_type_id:it.db_type_id.toInteger(), 
             context: it.context,
-            __NAME__: it.db_type_id + '/' + it.short_code,
-            fragment: it.db_type_id + '/' + it.short_code,
+            fragment: it.db_type_id + '_' + it.short_code,
             ddl: it.ddl,
             last_used:it.last_used, 
             minutes_since_last_used:it.minutes_since_last_used != null ? it.minutes_since_last_used.toInteger(): null, 
@@ -140,14 +160,12 @@ switch ( objectClass ) {
             simple_name:it.simple_name,
             full_name:it.full_name
         ])
+
     }
     break
 
     default:
     result;
 }
-
-println query
-println result
-
+println(result)
 return result;

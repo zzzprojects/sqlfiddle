@@ -51,17 +51,27 @@ import groovy.sql.DataSet;
 //
 // options: a handler to the OperationOptions Map
 
-log.info("Entering "+action+" Script");
+println("Entering "+action+" Script");
 def sql = new Sql(connection);
-
 
 switch ( action ) {
     case "UPDATE":
     switch ( objectClass ) {
 
         case "schema_defs":
-        sql.executeUpdate("UPDATE schema_defs set last_used = ?, current_host_id = ? where id = ?", [attributes.get("last_used").get(0), attributes.get("current_host_id").get(0), uid.toInteger()]);
-        sql.commit();
+        sql.executeUpdate("""
+            UPDATE 
+                schema_defs s 
+            SET 
+                last_used = ? 
+            WHERE 
+                (s.db_type_id || '_' || s.short_code) = ?
+            """, 
+            [
+                Date.parse("yyyy-MM-dd HH:mm:ss.S", attributes.last_used[0]).toTimestamp(), 
+                uid
+            ]
+        );
         break
 
         default:

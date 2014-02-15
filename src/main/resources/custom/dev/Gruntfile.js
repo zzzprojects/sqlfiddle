@@ -3,7 +3,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         watch: {
             copy: {
-                files: ['../ui/**/*.js','../script/**/*.js', '../ui/**/*.html', '../conf/*.json', '../ui/**/*.less', '../ui/**/*.css'],
+                files: ['../ui/**/*.js','../**/*.groovy', '../ui/**/*.html', '../conf/*.json', '../ui/**/*.less', '../ui/**/*.css'],
                 tasks: [ 'sync' ]
             }
         },

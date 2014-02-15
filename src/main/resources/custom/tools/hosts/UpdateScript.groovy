@@ -60,8 +60,7 @@ switch ( action ) {
     switch ( objectClass ) {
 
         case "schema_defs":
-        sql.executeUpdate("UPDATE schema_defs set last_used = ?, current_host_id = ? where id = ?", [attributes.get("last_used").get(0), attributes.get("current_host_id").get(0), uid.toInteger()]);
-        sql.commit();
+        sql.executeUpdate("UPDATE schema_defs set last_used = ? where (s.db_type_id || '_' || s.short_code) = ?", [attributes.get("last_used").get(0), uid]);
         break
 
         default:

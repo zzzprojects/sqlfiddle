@@ -26,7 +26,7 @@
 import groovy.sql.Sql;
 import groovy.sql.DataSet;
 import java.util.regex.Pattern;
-
+println("Starting CREATE")
 // Parameters:
 // The connector sends us the following:
 // connection : SQL connection

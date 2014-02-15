@@ -1,0 +1,5 @@
+{
+    "context" : "endpoint/executeQuery",
+    "type" : "groovy",
+    "file" : "script/executeQuery.groovy"
+}
