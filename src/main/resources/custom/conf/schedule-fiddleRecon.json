@@ -1,0 +1,13 @@
+{
+    "invokeContext" : {
+        "action" : "reconcile",
+        "mapping" : "fiddles_hosts"
+    },
+    "enabled" : true,
+    "misfirePolicy" : "fireAndProceed",
+    "schedule" : "0 0,30 * * * ?",
+    "concurrentExecution" : false,
+    "persisted" : false,
+    "type" : "cron",
+    "invokeService" : "sync"
+}

@@ -62,6 +62,10 @@ def fieldMap = [
         "__UID__": "(s.db_type_id || '_' || s.short_code)",
         "last_used": "to_char(s.last_used, 'YYYY-MM-DD HH24:MI:SS.MS')",
         "minutes_since_last_used": "floor(EXTRACT(EPOCH FROM age(current_timestamp, last_used))/60)"
+    ],
+    "queries": [
+        "__NAME__": "q.md5",
+        "__UID__": "(s.id || '_' || s.short_code || '_' || q.id)"
     ]
 ]
 
@@ -91,7 +95,7 @@ queryParser = { queryObj ->
             whereParams.push("%" + queryObj.get("right"))
         } else if (queryObj.get("operation") == "STARTSWITH") {
             whereParams.push(queryObj.get("right") + "%")
-        } else if (queryObj.get("left") == "minutes_since_last_used") {
+        } else if (queryObj.get("left") == "minutes_since_last_used" || queryObj.get("left") == "schema_def_id") {
             whereParams.push(queryObj.get("right").toInteger())
         } else {
             whereParams.push(queryObj.get("right"))
@@ -164,8 +168,38 @@ switch ( objectClass ) {
     }
     break
 
+    case "queries":
+    sql.eachRow("""
+        SELECT 
+            q.schema_def_id,
+            q.id,
+            s.db_type_id,
+            s.short_code,
+            q.sql,
+            q.statement_separator,
+            q.md5
+        FROM 
+            schema_defs s 
+                INNER JOIN queries q ON
+                    q.schema_def_id = s.id
+        """ + where, whereParams) {
+
+        result.add([
+            __NAME__:it.md5, 
+            __UID__: it.db_type_id + '_' + it.short_code + '_' + it.id,
+            fragment: it.db_type_id + '_' + it.short_code + '_' + it.id,
+            md5: it.md5,
+            id:it.id.toInteger(),
+            schema_def_id:it.schema_def_id.toInteger(), 
+            sql: it.sql,
+            statement_separator:it.statement_separator
+        ])
+
+    }
+    break
+
     default:
     result;
 }
-println(result)
+
 return result;

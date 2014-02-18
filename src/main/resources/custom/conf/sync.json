@@ -42,11 +42,15 @@
                         "type" : "text/javascript",
                         "source" : "source.db_type_id + '_' + source.short_code"
                     },
-                    "target" : "password"
+                    "target" : "pw"
                 },
                 {
                     "source" : "ddl",
                     "target" : "ddl"
+                },
+                {
+                    "source" : "statement_separator",
+                    "target" : "statement_separator"
                 }
             ],
             "policies" : [

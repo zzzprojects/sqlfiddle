@@ -163,6 +163,47 @@
                     "nativeType" : "string"
                 }
             }
+        },
+        "queries": {
+            "$schema" : "http://json-schema.org/draft-03/schema",
+            "id" : "queries",
+            "type" : "object",
+            "nativeType" : "queries",
+            "properties" : {
+                "fragment" : {
+                    "type" : "string",
+                    "nativeName" : "__UID__",
+                    "nativeType" : "string"
+                },
+                "md5" : {
+                    "type" : "string",
+                    "nativeName" : "__NAME__",
+                    "nativeType" : "string"
+                },
+                "sql" : {
+                    "type" : "string",
+                    "nativeName" : "sql",
+                    "nativeType" : "string"
+                },
+                "statement_separator" : {
+                    "type" : "string",
+                    "required" : false,
+                    "nativeName" : "statement_separator",
+                    "nativeType" : "string"
+                },                
+                "schema_def_id" : {
+                    "type" : "integer",
+                    "required" : false,
+                    "nativeName" : "schema_def_id",
+                    "nativeType" : "integer"
+                },
+                "id" : {
+                    "type" : "integer",
+                    "required" : false,
+                    "nativeName" : "id",
+                    "nativeType" : "integer"
+                }
+            }
         }
     },
     "operationOptions" : { }

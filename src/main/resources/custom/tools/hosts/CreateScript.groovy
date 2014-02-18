@@ -23,10 +23,10 @@
  *
  * $Id$
  */
+ 
 import groovy.sql.Sql;
 import groovy.sql.DataSet;
 import java.util.regex.Pattern;
-println("Starting CREATE")
 // Parameters:
 // The connector sends us the following:
 // connection : SQL connection
@@ -41,7 +41,7 @@ println("Starting CREATE")
 
 log.info("Entering "+action+" Script");
 
-def sql = new Sql(connection);
+def sql = new Sql(connection)
 
 def findAvailableHost = { db_type_id ->
     def query = """\
@@ -118,7 +118,7 @@ switch ( objectClass ) {
             hostConnection.close()
 
             populatedUrl = it.jdbc_url_template.replaceAll("#databaseName#", id)
-            hostConnection = Sql.newInstance(populatedUrl, attributes.username.get(0), attributes.password.get(0), it.jdbc_class_name)
+            hostConnection = Sql.newInstance(populatedUrl, attributes.username.get(0), attributes.pw.get(0), it.jdbc_class_name)
 
             def ddl = ""
             if (attributes.ddl) {

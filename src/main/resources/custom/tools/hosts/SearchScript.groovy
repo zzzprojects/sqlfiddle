@@ -1,5 +1,3 @@
-println("Starting SEARCH for hosts")
- 
 import groovy.sql.Sql;
 import groovy.sql.DataSet;
 
@@ -40,6 +38,7 @@ import groovy.sql.DataSet;
                         d.id = h.db_type_id
             """ + dbTypeWhere, dbTypeWhereParams) {
             def populatedUrl = it.jdbc_url_template.replace("#databaseName#", it.default_database)
+            def jdbc_class_name = it.jdbc_class_name
 
             def db_type_id = it.db_type_id
             def host_id = it.host_id
@@ -65,11 +64,19 @@ import groovy.sql.DataSet;
 
             def hostConnection = Sql.newInstance(populatedUrl, it.admin_username, it.admin_password, it.jdbc_class_name)
             hostConnection.eachRow(it.list_database_script + schemaNameWhere, schemaNameWhereParams) {
+                println(it.getAt(0))
+                def name = it.getAt(0)
+                def short_code_matcher = name =~ /^db_\d+_(.*)$/
+                def short_code = short_code_matcher[0][1]
+
                 result.add([
-                    __UID__:it.getAt(0),
-                    __NAME__:it.getAt(0),
+                    __UID__:name,
+                    __NAME__:name,
                     db_type_id: db_type_id,
-                    host_id: host_id
+                    jdbc_class_name: jdbc_class_name,
+                    jdbc_url: populatedUrl,
+                    username: "user_" + db_type_id + "_" + short_code,
+                    pw: db_type_id + "_" + short_code
                 ])
             }
             hostConnection.close()

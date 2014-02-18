@@ -66,11 +66,21 @@
                         "NOT_UPDATEABLE"
                     ]
                 },
-                "host_id" : {
-                    "type" : "integer",
+                "jdbc_url" : {
+                    "type" : "string",
                     "required" : true,
-                    "nativeName" : "host_id",
-                    "nativeType" : "integer",
+                    "nativeName" : "jdbc_url",
+                    "nativeType" : "string",
+                    "flags" : [
+                        "NOT_CREATABLE",
+                        "NOT_UPDATEABLE"
+                    ]
+                },
+                "jdbc_class_name" : {
+                    "type" : "string",
+                    "required" : true,
+                    "nativeName" : "jdbc_class_name",
+                    "nativeType" : "string",
                     "flags" : [
                         "NOT_CREATABLE",
                         "NOT_UPDATEABLE"
@@ -113,20 +123,16 @@
                     "nativeName" : "username",
                     "nativeType" : "string",
                     "flags" : [
-                        "NOT_UPDATEABLE",
-                        "NOT_READABLE",
-                        "NOT_RETURNED_BY_DEFAULT"
+                        "NOT_UPDATEABLE"
                     ]
                 },
-                "password" : {
+                "pw" : {
                     "type" : "string",
                     "required" : true,
-                    "nativeName" : "password",
+                    "nativeName" : "pw",
                     "nativeType" : "string",
                     "flags" : [
-                        "NOT_UPDATEABLE",
-                        "NOT_READABLE",
-                        "NOT_RETURNED_BY_DEFAULT"
+                        "NOT_UPDATEABLE"
                     ]
                 }
             }
