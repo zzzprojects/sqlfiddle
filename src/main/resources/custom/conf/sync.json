@@ -9,7 +9,7 @@
             },
             "validSource" : {
                 "type" : "text/javascript",
-                "source" : "console.log(JSON.stringify(source, null, 4)); source.minutes_since_last_used < 30"
+                "source" : "source.minutes_since_last_used < 30"
             },
             "correlationQuery" : {
                 "type" : "text/javascript",

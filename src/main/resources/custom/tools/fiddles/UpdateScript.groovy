@@ -51,7 +51,7 @@ import groovy.sql.DataSet;
 //
 // options: a handler to the OperationOptions Map
 
-println("Entering "+action+" Script");
+log.info("Entering "+action+" Script");
 def sql = new Sql(connection);
 
 switch ( action ) {

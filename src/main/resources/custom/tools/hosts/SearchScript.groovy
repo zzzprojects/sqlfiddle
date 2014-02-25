@@ -64,7 +64,6 @@ import groovy.sql.DataSet;
 
             def hostConnection = Sql.newInstance(populatedUrl, it.admin_username, it.admin_password, it.jdbc_class_name)
             hostConnection.eachRow(it.list_database_script + schemaNameWhere, schemaNameWhereParams) {
-                println(it.getAt(0))
                 def name = it.getAt(0)
                 def short_code_matcher = name =~ /^db_\d+_(.*)$/
                 def short_code = short_code_matcher[0][1]

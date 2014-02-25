@@ -135,16 +135,6 @@
                     "nativeName" : "last_used",
                     "nativeType" : "string"
                 },
-                "current_host_id" : {
-                    "type" : "integer",
-                    "required" : false,
-                    "nativeName" : "current_host_id",
-                    "nativeType" : "integer",
-                    "flags" : [
-                        "NOT_CREATABLE",
-                        "NOT_UPDATEABLE"
-                    ]
-                },
                 "fragment" : {
                     "type" : "string",
                     "nativeName" : "__UID__",

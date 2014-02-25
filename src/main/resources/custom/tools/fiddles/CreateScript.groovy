@@ -46,6 +46,9 @@ def digest = MessageDigest.getInstance("MD5");
 //Create must return UID. 
 
 switch ( objectClass ) {
+
+    // both schema_defs and queries will return an existing ID if provided
+    // with a duplicate ddl / sql (respectively)
     case "schema_defs":
 
         def db_type_id = attributes.get("db_type_id").get(0).toInteger()
@@ -64,7 +67,20 @@ switch ( objectClass ) {
                             ).toString(16).padLeft(32,"0")
         }
 
-        sql.eachRow("SELECT id,short_code FROM schema_defs WHERE db_type_id = ? AND md5 = ?", [db_type_id, md5hash]) {
+        sql.eachRow("""
+            SELECT 
+                id,
+                short_code 
+            FROM 
+                schema_defs 
+            WHERE 
+                db_type_id = ? AND 
+                md5 = ?
+            """, 
+            [
+                db_type_id, 
+                md5hash
+            ]) {
             existing_schema = db_type_id + "_" + it.short_code
         }
 
@@ -77,12 +93,36 @@ switch ( objectClass ) {
 
             while (!checkedUniqueCode) {
                 checkedUniqueCode = true
-                sql.eachRow("SELECT id FROM schema_defs WHERE short_code = ? AND db_type_id = ?", [ short_code, db_type_id ]) {
+                sql.eachRow("""
+                    SELECT 
+                        id 
+                    FROM 
+                        schema_defs 
+                    WHERE 
+                        short_code = ? AND 
+                        db_type_id = ?
+                    """, 
+                    [ 
+                        short_code, 
+                        db_type_id 
+                    ]) {
                     short_code = md5hash.substring(0,short_code.size()+1)
                     checkedUniqueCode = false
                 }
             }
-            sql.executeInsert("INSERT INTO schema_defs (db_type_id,short_code,ddl,md5,statement_separator,last_used) values (?,?,?,?,?,current_timestamp)",
+            sql.executeInsert("""
+                INSERT INTO 
+                    schema_defs 
+                (
+                    db_type_id,
+                    short_code,
+                    ddl,
+                    md5,
+                    statement_separator,
+                    last_used
+                ) 
+                VALUES (?,?,?,?,?,current_timestamp)
+                """,
                 [
                     db_type_id,
                     short_code,
@@ -102,46 +142,86 @@ switch ( objectClass ) {
         def statement_separator = attributes.get("statement_separator").get(0)
         def sql_query = attributes.get("sql").get(0)
         def schema_def_id = attributes.get("schema_def_id").get(0).toInteger()
-        def md5hash = new BigInteger(
+
+        def md5hash
+
+        if (statement_separator != ";") {
+            md5hash = new BigInteger(
+                                1, digest.digest( sql_query.getBytes() )
+                            ).toString(16).padLeft(32,"0")
+        } else {
+            md5hash = new BigInteger(
                                 1, digest.digest( (statement_separator + sql_query).getBytes() )
                             ).toString(16).padLeft(32,"0")
+        }
 
-        def newQueryId = sql.firstRow("""
+        def existing_query = sql.firstRow("""
             SELECT 
-                (SELECT count(q.id) + 1 FROM queries q WHERE schema_def_id = s.id) as nextID,
+                (
+                    SELECT 
+                        q.id
+                    FROM 
+                        queries q
+                    WHERE 
+                        q.schema_def_id = s.id AND
+                        q.md5 = ?
+                ) as queryId,
                 s.db_type_id,
                 s.short_code
             FROM
                 schema_defs s
-                    LEFT OUTER JOIN queries q ON
-                        s.id = q.schema_def_id
             WHERE
                 s.id = ?
-            """, [schema_def_id])
+            """, [md5hash, schema_def_id])
 
-        sql.executeInsert(
-            """
-            INSERT INTO
-                queries
-            (
-                id,
-                schema_def_id,
-                md5,
-                sql,
-                statement_separator
-            )
-            VALUES ( ?, ?, ?, ?, ? )
-            """, 
-            [
-                newQueryId.nextID,
-                schema_def_id,                                
-                md5hash,                
-                sql_query,
-                statement_separator
-            ]
-        )
+        if (!existing_query.queryId) {
+            def new_query
+            sql.withTransaction {
 
-        return newQueryId.db_type_id + "_" + newQueryId.short_code + "_" + newQueryId.nextID
+                sql.execute(
+                    """
+                    INSERT INTO
+                        queries
+                    (
+                        id,
+                        md5,
+                        sql,
+                        statement_separator,
+                        schema_def_id
+                    )
+                    SELECT  
+                        count(*) + 1, ?, ?, ?, ?
+                    FROM
+                        queries
+                    WHERE
+                        schema_def_id = ?
+                    """, 
+                    [                               
+                        md5hash,                
+                        sql_query,
+                        statement_separator,
+                        schema_def_id,
+                        schema_def_id
+                    ]
+                )
+
+                new_query = sql.firstRow("""
+                    SELECT
+                        max(id) as queryId
+                    FROM
+                        queries
+                    WHERE
+                        schema_def_id = ?
+                    """,
+                    [
+                        schema_def_id
+                    ]
+                )
+            }
+            return existing_query.db_type_id + "_" + existing_query.short_code + "_" + new_query.queryId
+        } else {
+            return existing_query.db_type_id + "_" + existing_query.short_code + "_" + existing_query.queryId
+        }
 
     break
 
