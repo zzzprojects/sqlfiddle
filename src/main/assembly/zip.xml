@@ -57,6 +57,7 @@
         <fileSet>
             <directory>${basedir}/src/main/resources/custom/security</directory>
             <outputDirectory>/sqlfiddle/security</outputDirectory>
+            <directoryMode>0700</directoryMode>
             <fileMode>0600</fileMode>
         </fileSet>
         <fileSet>
@@ -83,6 +84,7 @@
         <fileSet>
             <directory>${project.build.directory}/idm-staging/openidm/security</directory>
             <outputDirectory>/sqlfiddle/security</outputDirectory>
+            <directoryMode>0700</directoryMode>
             <fileMode>0600</fileMode>
         </fileSet>
         <fileSet>
