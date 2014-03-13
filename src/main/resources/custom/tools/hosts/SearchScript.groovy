@@ -37,7 +37,8 @@ import groovy.sql.DataSet;
                     INNER JOIN hosts h ON 
                         d.id = h.db_type_id
             """ + dbTypeWhere, dbTypeWhereParams) {
-            def populatedUrl = it.jdbc_url_template.replace("#databaseName#", it.default_database)
+            def jdbc_url_template = it.jdbc_url_template
+            def populatedUrl = jdbc_url_template.replace("#databaseName#", it.default_database)
             def jdbc_class_name = it.jdbc_class_name
 
             def db_type_id = it.db_type_id
@@ -67,6 +68,7 @@ import groovy.sql.DataSet;
                 def name = it.getAt(0)
                 def short_code_matcher = name =~ /^db_\d+_(.*)$/
                 def short_code = short_code_matcher[0][1]
+                populatedUrl = jdbc_url_template.replace("#databaseName#", name)
 
                 result.add([
                     __UID__:name,
