@@ -140,6 +140,8 @@
 	<div id="hosting">
 		<ul id="hostingPartners">
 			<li id="sqlsentry"><a href="http://www.sqlsentry.net/download-trial/landing/complete.asp?ad=201208-sqlfiddle" target="_new"><img src="images/sqlsentry/0<cfoutput>#RandRange(0,4)#</cfoutput>.jpg" alt="SQL Sentry"></a></li>
+
+			<li id="csi"><a href="http://www.collectserver.info/" target="_new"><img src="images/collectserver_info.png" alt="CollectServer.info - Easy Server Health Monitoring"></a></li>			
 		</ul>
 	</div>
 
