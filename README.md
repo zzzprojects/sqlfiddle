@@ -1,6 +1,11 @@
 SQL Fiddle
 ==========
 
+## THIS VERSION IS NOT IN USE ANY MORE
+
+SQL Fiddle has been implemented with a new codebase - see https://github.com/jakefeasel/sqlfiddle2 for those details
+
+
 ##About
 
 See [the SQL Fiddle about page](http://sqlfiddle.com/about.html) page for background on the site.
