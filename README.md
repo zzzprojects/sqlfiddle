@@ -6,7 +6,7 @@ SQL Fiddle
 SQL Fiddle has been implemented with a new codebase - see https://github.com/jakefeasel/sqlfiddle2 for those details
 
 
-##About
+## About
 
 See [the SQL Fiddle about page](http://sqlfiddle.com/about.html) page for background on the site.
 
@@ -30,7 +30,7 @@ You should now have a functional copy of SQL Fiddle running locally.  Out of the
 
 The document root being served is src/main/webapp.  You can edit the files under there and see the changes immediately upon refresh (no need to restart the jetty server).
 
-##Optional
+## Optional
 
 You *should* set the Railo Admin passwords.  Here are the links to get to both admin contexts, once you have Jetty running:
 
