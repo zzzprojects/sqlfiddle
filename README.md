@@ -46,7 +46,7 @@ You *should* set the Railo Admin passwords.  Here are the links to get to both a
 
 The simplest thing to do would be to set the password just to "password" (no quotes).  This is the default password in the config.  If you choose to use another Railo admin password, you must set it in the file src/main/webapp/config/development/settings.cfm and update the CFAdminPassword.  Once you set the admin password, you don't need to do anything else in the Railo Administrator. 
 
-## Usefull links
+## Useful links
 
 - [Website](http://sqlfiddle.com/)
 - [Documentation](http://sqlfiddle.com/about.html)
